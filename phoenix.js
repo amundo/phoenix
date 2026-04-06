@@ -22,8 +22,12 @@ class PlayerAvatar extends HTMLElement {
   constructor() {
     super()
   }
-  set data(playerData) { this.#player = playerData }
-  get data() { return this.#player }
+  set data(playerData) { 
+    this.#player = playerData 
+  }
+  get data() { 
+    return this.#player 
+  }
   render() {
     this.style.gridRow = this.#player.y
     this.style.gridColumn = this.#player.x
