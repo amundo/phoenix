@@ -1,0 +1,38 @@
+:root {
+  --deep-blue: #3c2c9c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, game-board, main#game-board { 
+  margin: 0; 
+  padding:0;
+  width: 100%;
+    height: 100vh;       /* lock to viewport */
+  overflow: hidden;    /* prevents rubber-band scrolling */
+} 
+
+body { 
+  padding:2rem;
+  display: grid;
+}
+
+game-board { 
+  height: 100%;
+  display: grid; 
+  main {
+    /* height: 100%; */
+    display:grid;
+    background: forestgreen;
+    .cell {
+      aspect-ratio: 1; 
+      display:grid;
+      place-content: center;
+      padding:0;
+      margin: 0;
+      outline: 1px solid white;
+    }
+  }
+}
