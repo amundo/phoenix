@@ -1,5 +1,7 @@
 :root {
   --deep-blue: #3c2c9c;
+  --grassland-green: #4a824a;
+  --dark-grassland-green: #448644;
 }
 
 * {
@@ -19,21 +21,20 @@ body {
   padding: 2rem;
 
   background-image: url(waves.png);
-  background-color: #46a4b5;
+  background-color:#46a4b5;
 }
 
 game-board {
-  display: block;
+  display: grid;
 
-  aspect-ratio: var(--board-columns) / var(--board-rows);
+  aspect-ratio: var(--board-column-count) / var(--board-row-count);
 
-  /* fit inside padded viewport, no magic numbers */
   width: min(
     calc(100dvw - 4rem),
-    calc((100dvh - 4rem) * (var(--board-columns) / var(--board-rows)))
+    calc((100dvh - 4rem) * (var(--board-column-count) / var(--board-row-count)))
   );
 
-  height: auto;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
 
@@ -43,13 +44,30 @@ game-board {
     display: grid;
     background: #549254;
 
-    .cell {
+    game-cell {
       aspect-ratio: 1;
       display: grid;
       place-content: center;
       padding: 0;
       margin: 0;
-      outline: 1px solid white;
+      /* outline: 1px solid white; */
+      height: 100%;
+      width: 100%;
+
+      &[terrain="water"] {
+        background-color: var(--deep-blue);
+      }
+
+      &[terrain="grassland"] {
+        background-image: radial-gradient(circle, var(--grassland-green), var(--dark-grassland-green))
+      }
+
+      .avatar {
+        display: contents;
+        place-content: center;
+        height: 100%;
+        width: 100%;
+      }
     }
   }
 }

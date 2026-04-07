@@ -10,7 +10,57 @@
   <body>
 
     <game-board></game-board>
-    
-    <script type=module src="./phoenix.js"></script>
+
+    <script type=module>
+      import { Game } from './phoenix.js'
+
+
+let fantasyGameData = {
+  columnCount: 8,
+  rowCount: 6,
+  player: {
+    name: "Phoenix",
+    emoji: "🐦‍🔥",
+  },
+  enemies: [
+    {
+      name: "Giant Snake",
+      emoji: "🐍"
+    },
+    {
+      name: "Giant Spider",
+      emoji: "🕷"
+    },
+    {
+      name: "Giant Giant",
+      emoji: "👹"
+    }
+  ],
+  items: [
+    {
+      name: "Sword",
+      emoji: "🗡"
+    },
+    {
+      name: "Shield",
+      emoji: "🛡"
+    },
+    {
+      name: "Health Potion",
+      emoji: "🧪"
+    },
+    {
+      name: "Scroll",
+      emoji: "📜"
+    }
+  ]
+}
+
+let game = new Game(fantasyGameData)
+addEventListener('keydown', event => {
+  game.handleInput(event.key)
+})
+
+    </script>
   </body>
 </html>
