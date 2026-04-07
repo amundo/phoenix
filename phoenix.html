@@ -1,69 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8"> 
-    <link rel="stylesheet" href="./phoenix.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'48'%20height%3D'48'%20viewBox%3D'0%200%2016%2016'%3E%3Ctext%20x%3D'0'%20y%3D'14'%3E%F0%9F%90%A6%E2%80%8D%F0%9F%94%A5%3C%2Ftext%3E%3C%2Fsvg%3E" />
-    <title>phoenix</title>
-  </head>
-  <body>
 
-    <game-board></game-board>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./phoenix.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'48'%20height%3D'48'%20viewBox%3D'0%200%2016%2016'%3E%3Ctext%20x%3D'0'%20y%3D'14'%3E%F0%9F%90%A6%E2%80%8D%F0%9F%94%A5%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <title>phoenix</title>
+</head>
 
-    <script type=module>
-      import { GameManager } from './phoenix.js'
-let fantasyGameData = {
-  columnCount: 13 * 10,
-  rowCount: 10 * 10,
+<body>
 
-  player: {
-    name: "Phoenix",
-    emoji: "🧝",
-    x: 1,
-    y: 1,
-  },
+  <game-app src="./fantasy-game-data.json"></game-app>
 
-  enemies: [
-    { name: "Giant Snake", emoji: "🐍", x: 2,  y: 3 },   // visible
-    { name: "Giant Spider", emoji: "🕷", x: 7,  y: 2 },   // visible
-    { name: "Giant Giant", emoji: "👹", x: 11, y: 8 },   // visible
-    { name: "Skeleton Warrior", emoji: "💀", x: 12, y: 0 }, // visible edge
-    { name: "Zombie", emoji: "🧟", x: 13, y: 2 },         // just off right
-    { name: "Ghost", emoji: "👻", x: 3,  y: 10 },         // just off bottom
-    { name: "Orc", emoji: "👺", x: 20, y: 4 },            // far right
-    { name: "Dragon", emoji: "🐉", x: 25, y: 12 },        // far away
-    { name: "Bat Swarm", emoji: "🦇", x: 0,  y: 15 },     // below viewport
-    { name: "Slime", emoji: "🟢", x: 40, y: 1 },          // far right
-    { name: "Dark Wizard", emoji: "🧙‍♂️", x: 9, y: 25 },  // far below
-    { name: "Imp", emoji: "😈", x: 50, y: 50 },           // very far away
-  ],
+  <script type=module>
+  import { GameApp } from './phoenix.js'
 
-  items: [
-    { name: "Sword", emoji: "🗡", x: 4,  y: 6 },   // visible
-    { name: "Shield", emoji: "🛡", x: 8,  y: 5 },   // visible
-    { name: "Health Potion", emoji: "🧪", x: 10, y: 1 },  // visible
-    { name: "Scroll", emoji: "📜", x: 12, y: 9 },   // visible edge
-    { name: "Bow", emoji: "🏹", x: 13, y: 5 },      // just off right
-    { name: "Magic Ring", emoji: "💍", x: 6,  y: 10 }, // just off bottom
-    { name: "Gold Coins", emoji: "🪙", x: 18, y: 2 },  // off right
-    { name: "Treasure Chest", emoji: "🧰", x: 2,  y: 14 }, // off bottom
-    { name: "Torch", emoji: "🔥", x: 30, y: 8 },     // far right
-    { name: "Key", emoji: "🗝", x: 5,  y: 30 },      // far below
-    { name: "Spell Book", emoji: "📖", x: 60, y: 3 }, // far right
-    { name: "Helmet", emoji: "🪖", x: 1,  y: 40 },   // far below
-    { name: "Boots", emoji: "🥾", x: 22, y: 22 },    // far away
-    { name: "Gemstone", emoji: "💎", x: 99, y: 99 }, // very far away
-  ]
-}
+  const app = document.querySelector('game-app')
 
+  </script>
+</body>
 
-let gameManager = new GameManager(fantasyGameData)
-
-addEventListener('keydown', event => {
-  gameManager.handleInput(event.key)
-})
-
-    </script>
-  </body>
 </html>

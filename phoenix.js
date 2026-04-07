@@ -24,7 +24,6 @@ class World {
   }
 }
 
-window.ENTITIES = [] 
 
 class Cell {
   constructor({ x, y, terrain = 'grassland' }) {
@@ -179,34 +178,91 @@ class Camera {
   }
 }
 
-class GameBoard extends HTMLElement {
+class BaseLayer extends HTMLElement {
   #world = null
   #camera = null
 
   constructor() {
     super()
-    this.innerHTML = `
-      <section class="tile-layer"></section>
-      <section class="avatar-layer"></section>
-    `
+    this.style.display = 'grid'
+    this.style.gridColumn = '1 / -1'
+    this.style.gridRow = '1 / -1'
+    this.style.gridTemplateColumns = 'subgrid'
+    this.style.gridTemplateRows = 'subgrid'
+  }
 
-    this.tileLayer = this.querySelector('.tile-layer')
-    this.avatarLayer = this.querySelector('.avatar-layer')
+  setContext({ world = null, camera = null } = {}) {
+    this.#world = world
+    this.#camera = camera
+  }
 
-    this.cellElements = new Map()
+  get world() {
+    return this.#world
+  }
+
+  get camera() {
+    return this.#camera
+  }
+
+  toLocalX(worldX) {
+    return worldX - this.#camera.x
+  }
+
+  toLocalY(worldY) {
+    return worldY - this.#camera.y
+  }
+
+  contains(x, y) {
+    return this.#camera?.contains(x, y)
+  }
+
+  render() { }
+}
+
+
+
+class AvatarLayer extends BaseLayer {
+  constructor() {
+    super()
     this.avatarElements = new Map()
   }
 
-  set data({ world, camera }) {
-    this.#world = world
-    this.#camera = camera
-    this.renderTiles()
+  render({ world, camera, entities = [] }) {
+    this.setContext({ world, camera })
+
+    entities.forEach(entity => this.syncEntity(entity, camera))
+    this.removeMissingEntities(entities)
   }
 
-  get data() {
-    return {
-      world: this.#world,
-      camera: this.#camera,
+  syncEntity(entity, camera) {
+    let avatar = this.avatarElements.get(entity)
+
+    if (!avatar) {
+      avatar = this.createAvatar(entity)
+      this.avatarElements.set(entity, avatar)
+      this.append(avatar)
+    }
+
+    avatar.data = entity
+
+    const localX = this.toLocalX(entity.x)
+    const localY = this.toLocalY(entity.y)
+
+    avatar.placeAt(localX, localY)
+    avatar.hidden = !camera.contains(entity.x, entity.y)
+  }
+
+  speak(entity, message) {
+    const avatar = this.avatarElements.get(entity)
+    if (avatar) avatar.speak(message)
+  }
+
+  removeMissingEntities(liveEntities) {
+    for (const [entity, avatar] of this.avatarElements) {
+      if (!liveEntities.includes(entity)) {
+        avatar.remove()
+        this.avatarElements.delete(entity)
+      }
     }
   }
 
@@ -215,141 +271,96 @@ class GameBoard extends HTMLElement {
     if (entity instanceof Enemy) return new EnemyAvatar()
     return new ItemAvatar()
   }
+}
+customElements.define('avatar-layer', AvatarLayer)
 
-  renderTiles() {
-    if (!this.#world || !this.#camera) return
+class TerrainLayer extends BaseLayer {
+  render({ world, camera }) {
+    this.setContext({ world, camera })
+    this.replaceChildren()
 
-    let { columnCount, rowCount } = this.#camera
-
-    this.style.setProperty('--column-count', this.#camera.columnCount)
-    this.style.setProperty('--row-count', this.#camera.rowCount)
-
-
-    this.tileLayer.innerHTML = ''
-    this.cellElements.clear()
-
-    for (let localY = 0; localY < rowCount; localY++) {
-      for (let localX = 0; localX < columnCount; localX++) {
-        let worldX = this.#camera.x + localX
-        let worldY = this.#camera.y + localY
-        let cellData = this.#world.at(worldX, worldY)
+    for (let localY = 0; localY < camera.rowCount; localY++) {
+      for (let localX = 0; localX < camera.columnCount; localX++) {
+        const worldX = camera.x + localX
+        const worldY = camera.y + localY
+        const cellData = world.at(worldX, worldY)
         if (!cellData) continue
 
-        let cell = new GameCell()
+        const cell = new GameCell()
         cell.data = {
           ...cellData,
           x: localX,
           y: localY,
         }
 
-        this.cellElements.set(`${localX},${localY}`, cell)
-        this.tileLayer.append(cell)
+        this.append(cell)
       }
     }
-  }
-
-  syncEntity(entity) {
-    let avatar = this.avatarElements.get(entity)
-
-    if (!avatar) {
-      avatar = this.createAvatar(entity)
-      this.avatarElements.set(entity, avatar)
-      this.avatarLayer.append(avatar)
-    }
-
-    avatar.data = entity
-console.log(entity.name, this.#camera, entity.x, entity.y)
-    if (!this.#camera.contains(entity.x, entity.y)) {
-      avatar.hidden = true
-      return
-    }
-
-    avatar.hidden = false
-
-    let localX = this.#camera.toLocalX(entity.x)
-    let localY = this.#camera.toLocalY(entity.y)
-
-
-    avatar.placeAt(localX, localY)
-    ENTITIES.push(entity.name, {
-      localX,
-      localY,
-      gridColumn: avatar.style.gridColumn,
-      gridRow: avatar.style.gridRow,
-      hidden: avatar.hidden,
-      tag: avatar.localName
-    })
-  }
-
-  removeMissingEntities(liveEntities) {
-    for (let [entity, avatar] of this.avatarElements) {
-      if (!liveEntities.includes(entity)) {
-        avatar.remove()
-        this.avatarElements.delete(entity)
-      }
-    }
-  }
-
-  renderEntities({ items = [], characters = [] }) {
-    let entities = [...items, ...characters]
-    entities.forEach(entity => this.syncEntity(entity))
-    this.removeMissingEntities(entities)
-  }
-
-  speak(entity, message) {
-    let avatar = this.avatarElements.get(entity)
-    if (avatar) avatar.speak(message)
   }
 }
 
+customElements.define('terrain-layer', TerrainLayer)
+
+class GameBoard extends HTMLElement {
+  constructor() {
+    super()
+    this.innerHTML = `
+      <terrain-layer></terrain-layer>
+      <avatar-layer></avatar-layer>
+    `
+
+    this.terrainLayer = this.querySelector('terrain-layer')
+    this.avatarLayer = this.querySelector('avatar-layer')
+  }
+
+  speak(entity, message) {
+    this.avatarLayer.speak(entity, message)
+  }
+
+  render({ world, camera, entities }) {
+    this.style.setProperty('--column-count', camera.columnCount)
+    this.style.setProperty('--row-count', camera.rowCount)
+
+    this.terrainLayer.render({ world, camera, entities })
+    this.avatarLayer.render({ world, camera, entities })
+  }
+}
 customElements.define('game-board', GameBoard)
 
-class GameManager {
-  #data = null
-
+class GameEngine {
   constructor(gameData) {
-    this.data = gameData
+    this.initialize(gameData)
   }
 
-  set data(gameData) {
-    this.#data = gameData
-    this.initialize()
+  initialize(gameData) {
+    this.world = new World(gameData.world)
+    this.camera = new Camera(gameData.camera)
+
+    this.player = new Player(gameData.entities.player)
+    this.enemies = gameData.entities.enemies.map(enemy => new Enemy(enemy))
+    this.items = gameData.entities.items.map(item => new Item(item))
   }
 
-  get characters() {
-    return [this.player, ...this.enemies]
+  get entities() {
+    return [this.player, ...this.enemies, ...this.items]
   }
 
-  initialize() {
-    this.world = new World({
-      columnCount: this.#data.columnCount,
-      rowCount: this.#data.rowCount,
-    })
-
-    this.camera = new Camera({
-      x: 0,
-      y: 0,
-      columnCount: 13,
-      rowCount: 10,
-    })
-
-    this.player = new Player(this.#data.player)
-this.enemies = this.#data.enemies.map(enemy => new Enemy(enemy))
-this.items = this.#data.items.map(item => new Item(item))
-
-    this.gameBoard = document.querySelector('game-board')
-    this.gameBoard.data = {
-        world: this.world,
-        camera: this.camera,
+  getState() {
+    return {
+      world: this.world,
+      camera: this.camera,
+      entities: this.entities,
     }
-    this.render()
   }
 
-  render() {
-    this.gameBoard.renderEntities({
-      items: this.items,
-      characters: this.characters,
-    })
+  handleInput(key) {
+    if (key === 'ArrowUp') this.movePlayerBy(0, -1)
+    if (key === 'ArrowDown') this.movePlayerBy(0, 1)
+    if (key === 'ArrowLeft') this.movePlayerBy(-1, 0)
+    if (key === 'ArrowRight') this.movePlayerBy(1, 0)
+
+    this.camera.centerOn(this.player.x, this.player.y, this.world)
+    return effect
   }
 
   movePlayerBy(dx, dy) {
@@ -357,53 +368,97 @@ this.items = this.#data.items.map(item => new Item(item))
     const nextY = this.player.y + dy
 
     if (!this.world.contains(nextX, nextY)) {
-      return { type: 'speech', actor: this.player, message: 'Edge of the world!' }
-    }
-
-    if (this.enemies.some(enemy => enemy.x === nextX && enemy.y === nextY)) {
-      let enemy = this.enemies.find(enemy => enemy.x === nextX && enemy.y === nextY)
-      return { type: 'speech', actor: this.player, message: `Look out! ${enemy.name}!` }
+      return { 
+        type: 'speech', 
+        actor: this.player, 
+        message: 'Edge of the world!' 
+      }
     }
 
     this.player.moveTo({ x: nextX, y: nextY })
-    return { type: 'render' }
+    return null
+  }
+}
+
+class GameUI extends HTMLElement {}
+customElements.define('game-ui', GameUI)
+
+class GameApp extends HTMLElement {
+  #engine = null
+  #gameBoard = null
+  #ui = null
+
+  constructor() {
+    super()
+    this.innerHTML = `
+      <game-board></game-board>
+      <game-ui></game-ui>
+    `
+
+    this.#gameBoard = this.querySelector('game-board')
+    this.#ui = this.querySelector('game-ui')
+
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
-  handleInput(key) {
-    let effect = null
+  static get observedAttributes() {
+    return ['src']
+  }
 
-    if (key === 'ArrowUp') effect = this.movePlayerBy(0, -1)
-    if (key === 'ArrowDown') effect = this.movePlayerBy(0, 1)
-    if (key === 'ArrowLeft') effect = this.movePlayerBy(-1, 0)
-    if (key === 'ArrowRight') effect = this.movePlayerBy(1, 0)
+  get src() {
+    return this.getAttribute('src')
+  }
 
+  connectedCallback() {
+    if (this.src) {
+      this.loadGameData(this.src)
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'src' && oldValue !== newValue && this.isConnected) {
+      this.loadGameData(newValue)
+    }
+  }
+
+  async loadGameData(url) {
+    const gameData = await this.fetchJSON(url)
+    this.start(gameData)
+  }
+
+  async fetchJSON(url) {
+    const relativeUrl = new URL(url, import.meta.url)
+    const response = await fetch(relativeUrl)
+    return await response.json()
+  }
+
+  start(gameData) {
+    this.#engine = new GameEngine(gameData)
+    this.render()
+
+    removeEventListener('keydown', this.handleKeyDown)
+    addEventListener('keydown', this.handleKeyDown)
+  }
+
+  render() {
+    if (!this.#engine || !this.#gameBoard) return
+    this.#gameBoard.render(this.#engine.getState())
+  }
+
+  handleKeyDown(event) {
+    if (!this.#engine) return
+
+    const effect = this.#engine.handleInput(event.key)
     this.render()
 
     if (effect?.type === 'speech') {
-      this.gameBoard.speak(effect.actor, effect.message)
+      this.#gameBoard.speak(effect.actor, effect.message)
     }
   }
 }
 
+customElements.define('game-app', GameApp)
 
 export {
-  GameManager,
+  GameApp,
 }
-
-
-Object.assign(window, {
-  Camera,
-  World,
-  Cell,
-  Character,
-  Player,
-  Enemy,
-  Item,
-  BaseAvatar,
-  PlayerAvatar,
-  EnemyAvatar,
-  ItemAvatar,
-  GameCell,
-  GameBoard,
-
-})
