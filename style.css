@@ -1,7 +1,5 @@
 :root {
   --deep-blue: #3c2c9c;
-  --board-columns: 13;
-  --board-rows: 10;
 }
 
 * {

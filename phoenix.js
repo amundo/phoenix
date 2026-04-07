@@ -1,43 +1,76 @@
-const ROW_COUNT = 10
-const COLUMN_COUNT = 13
+const ROW_COUNT = 15
+const COLUMN_COUNT = 20
 
 class World {
   constructor({ rowCount, columnCount }) {
     Object.assign(this, { rowCount, columnCount })
-    this.grid = new Array(rowCount).fill().map((rowIndex, y) =>
-      new Array(columnCount).fill().map((columnIndex, x) => {
+    this.grid = new Array(rowCount).fill().map((_, y) =>
+      new Array(columnCount).fill().map((_, x) => {
         return { x, y }
       })
     )
   }
 }
-class Player {
+
+class Character {
   constructor({ name, emoji, x, y }) {
-    Object.assign(this, { name, emoji, x, y })
+    this.name = name
+    this.emoji = emoji
+    this.x = x
+    this.y = y
+  }
+
+  moveTo({ x, y }) {
+    this.x = x
+    this.y = y
   }
 }
 
-class PlayerAvatar extends HTMLElement {
-  #player = {}
-  constructor() {
-    super()
+class Enemy extends Character {
+  constructor({ aggressionLevel, ...characterParameters }) {
+    super(characterParameters)
+    this.aggressionLevel = aggressionLevel
   }
-  set data(playerData) { 
-    this.#player = playerData 
+}
+
+class Player extends Character {
+  constructor(...parameters){
+    super(...parameters)
   }
-  get data() { 
-    return this.#player 
+}
+
+class CharacterAvatar extends HTMLElement {
+  #character = {}
+
+  set data(characterData) {
+    this.#character = characterData
+    this.render()
   }
+
+  get data() {
+    return this.#character
+  }
+
   render() {
-    this.style.gridRow = this.#player.y
-    this.style.gridColumn = this.#player.x
-    this.textContent = this.#player.emoji
+    this.style.gridRow = this.#character.y + 1
+    this.style.gridColumn = this.#character.x + 1
+    this.textContent = this.#character.emoji
   }
-  move({ x, y }) {
 
+  move({ x, y }) {
+    this.#character.x = x
+    this.#character.y = y
+    this.render()
   }
 }
+
+class EnemyAvatar extends CharacterAvatar {}
+customElements.define('enemy-avatar', EnemyAvatar)
+
+class PlayerAvatar extends CharacterAvatar {}
 customElements.define('player-avatar', PlayerAvatar)
+
+
 
 class Cell {
   constructor({ x, y }) {
@@ -47,6 +80,7 @@ class Cell {
     this.terrain = null
   }
 }
+
 class GameCell extends HTMLElement {
   #cell = {}
   constructor() {
@@ -55,7 +89,9 @@ class GameCell extends HTMLElement {
   set data(cellData) {
     this.#cell = cellData
   }
-  get data() { return this.#cell }
+  get data() { 
+    return this.#cell 
+  }
 }
 
 class GameBoard extends HTMLElement {
@@ -73,11 +109,15 @@ class GameBoard extends HTMLElement {
     return this.#world
   }
   render() {
+    console.log(`rendering`)
     this.root.innerHTML = ""
 
+    document.documentElement.style.setProperty('--board-columns', this.data.columnCount)
+    document.documentElement.style.setProperty('--board-rows', this.data.rowCount)
+
     this.root.style.display = "grid"
-    this.root.style.gridTemplateColumns = `repeat(${this.#world.columnCount}, 1fr)`
-    this.root.style.gridTemplateRows = `repeat(${this.#world.rowCount}, 1fr)`
+    this.root.style.gridTemplateColumns = `repeat(${this.data.columnCount}, 1fr)`
+    this.root.style.gridTemplateRows = `repeat(${this.data.rowCount}, 1fr)`
     this.root.style.height = "100%"
     this.root.style.width = "100%"
 
@@ -97,19 +137,73 @@ class GameBoard extends HTMLElement {
 }
 customElements.define('game-board', GameBoard)
 
-const world = new World({ rowCount: ROW_COUNT, columnCount: COLUMN_COUNT })
-const gameBoard = document.querySelector('game-board')
-gameBoard.data = world
 
 // boot everything and start game loop
 class Game {
-  constructor() {
-
+  #gameData = null
+  constructor(gameData) { 
+    this.data = gameData
   }
-  initialize() {
 
+  initialize() {
+    this.world = new World({ rowCount: ROW_COUNT, columnCount: COLUMN_COUNT })
+
+    this.gameBoard = document.querySelector('game-board')
+    this.gameBoard.data = this.world
+    this.gameBoard.render()
+  }
+
+  set data(gameData){
+    this.#gameData = gameData
+    this.initialize()
+  }
+
+  startGameLoop(){
+    
   }
 }
+
+
+let fantasyGameData = { 
+  player: {
+    name: "Phoenix",
+    emoji: "🐦‍🔥",
+  },
+  enemies: [
+    {
+      name: "Giant Snake",
+      emoji: "🐍"
+    },
+    {
+      name: "Giant Spider",
+      emoji: "🕷"
+    },
+    {
+      name: "Giant Giant",
+      emoji: "👹"
+    }
+  ],
+  items: [
+    {
+      name: "Sword",
+      emoji: "🗡"
+    },
+    {
+      name: "Shield",
+      emoji: "🛡"
+    },
+    {
+      name: "Health Potion",
+      emoji: "🧪"
+    },
+    {
+      name: "Scroll",
+      emoji: "📜"
+    }
+  ]
+}
+
+let game = new Game()
 
 let player = new Player({ emoji: "🐦‍🔥", name: "Phoenix" })
 let playerAvatar = new PlayerAvatar()
