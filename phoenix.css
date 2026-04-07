@@ -6,9 +6,12 @@
 
 * {
   box-sizing: border-box;
+  margin:0;
+  padding: 0;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -21,72 +24,75 @@ body {
   padding: 2rem;
 
   background-image: url(images/waves.png);
-  background-color:#46a4b5;
+  background-color: #46a4b5;
 }
+
 
 game-board {
   display: grid;
-
-  aspect-ratio: var(--board-column-count) / var(--board-row-count);
+  grid-template-columns: repeat(var(--column-count), 1fr);
+  grid-template-rows: repeat(var(--row-count), 1fr);
+  aspect-ratio: var(--column-count) / var(--row-count);
 
   width: min(
-    calc(100dvw - 4rem),
-    calc((100dvh - 4rem) * (var(--board-column-count) / var(--board-row-count)))
+      calc(100dvw - 4rem),
+      calc((100dvh - 4rem) * (var(--column-count) / var(--row-count)))
   );
-
   height: 100%;
   max-width: 100%;
   max-height: 100%;
-
-  main#game-board {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    background: #549254;
-
-    game-cell {
-      aspect-ratio: 1;
-      display: grid;
-      place-content: center;
-      padding: 0;
-      margin: 0;
-      font-size: 3rem;
-      /* outline: 1px solid white; */
-      height: 100%;
-      width: 100%;
-
-      &[terrain="water"] {
-        background-color: var(--deep-blue);
-      }
-
-      &[terrain="grassland"] {
-        background-image: radial-gradient(circle, var(--grassland-green), var(--dark-grassland-green))
-      }
-
-      .avatar {
-        display: contents;
-        place-content: center;
-        height: 100%;
-        width: 100%;
-      }
-    }
-  }
+  background: var(--grassland-green);
 }
 
-player-avatar {
-  anchor-scope: --avatar;
+.tile-layer,
+.avatar-layer {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+  font-size: 2rem;
+  width: 100%;
+  height: 100%;
 }
 
-.avatar-emoji {
+game-cell {
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  font-size: 3rem;
+  outline: 1px solid white;
+  width: 100%;
+  height: 100%;
+}
+
+game-cell[terrain="water"] {
+  background-color: var(--deep-blue);
+}
+
+game-cell[terrain="grassland"] {
+  background-image: radial-gradient(circle, var(--grassland-green), var(--dark-grassland-green));
+}
+
+.avatar {
+  display: grid;
+  place-content: center;
+  width: 100%;
+  height: 100%;
   anchor-name: --avatar;
 }
 
-.speech-bubble {
-  position: absolute;
-  position-anchor: --avatar;
-  left: anchor(right);
-  background: white;
-  font-size: 2rem;
-  border-radius: .2rem;
-  box-shadow: -2px 2px 5px rgba(0, 0, 0, .3);
+.avatar {
+  display: grid;
+  place-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-emoji {
+  position: static;
+}
+
+.avatar[hidden] {
+  display: none;
 }

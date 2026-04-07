@@ -1,8 +1,9 @@
+/* DATA LAYER */
 class World {
   constructor({ rowCount, columnCount }) {
     this.rowCount = rowCount
     this.columnCount = columnCount
-    this.grid = Array.from({ length: rowCount }, (_, y) =>
+    this.worldGrid = Array.from({ length: rowCount }, (_, y) =>
       Array.from({ length: columnCount }, (_, x) =>
         new Cell({ x, y, terrain: 'grassland' })
       )
@@ -10,10 +11,10 @@ class World {
   }
 
   at(x, y) {
-    return this.grid[y]?.[x] ?? null
+    return this.worldGrid[y]?.[x] ?? null
   }
 
-  isInside(x, y) {
+  contains(x, y) {
     return (
       y >= 0 &&
       y < this.rowCount &&
@@ -23,6 +24,8 @@ class World {
   }
 }
 
+window.ENTITIES = [] 
+
 class Cell {
   constructor({ x, y, terrain = 'grassland' }) {
     this.x = x
@@ -31,7 +34,7 @@ class Cell {
   }
 }
 
-class Player {
+class Character {
   constructor({ name, emoji, x, y }) {
     this.name = name
     this.emoji = emoji
@@ -45,19 +48,8 @@ class Player {
   }
 }
 
-class Enemy {
-  constructor({ name, emoji, x, y }) {
-    this.name = name
-    this.emoji = emoji
-    this.x = x
-    this.y = y
-  }
-
-  moveTo({ x, y }) {
-    this.x = x
-    this.y = y
-  }
-}
+class Player extends Character { }
+class Enemy extends Character { }
 
 class Item {
   constructor({ name, emoji, x, y }) {
@@ -68,6 +60,7 @@ class Item {
   }
 }
 
+/* UI LAYER */
 
 // Base avatar class that character and item avatars will extend from
 class BaseAvatar extends HTMLElement {
@@ -82,8 +75,8 @@ class BaseAvatar extends HTMLElement {
     `
   }
 
-  set data(value) {
-    this.#data = value
+  set data(entityData) {
+    this.#data = entityData
     this.render()
   }
 
@@ -93,12 +86,18 @@ class BaseAvatar extends HTMLElement {
 
   speak(message) {
     const bubble = this.querySelector('.speech-bubble')
-    let messageLength = message.length
+    const messageLength = message.length
     bubble.textContent = message
     bubble.style.display = 'block'
+    bubble.style.position = 'absolute'
     setTimeout(() => {
       bubble.style.display = 'none'
-    }, 1000 + messageLength * 2000)
+    }, 1000 + messageLength * 10)
+  }
+
+  placeAt(localX, localY) {
+    this.style.gridColumn = localX + 1
+    this.style.gridRow = localY + 1
   }
 
   render() {
@@ -143,99 +142,163 @@ class GameCell extends HTMLElement {
 
 customElements.define('game-cell', GameCell)
 
+class Camera {
+  constructor({ x = 0, y = 0, columnCount = 8, rowCount = 6 }) {
+    this.x = x
+    this.y = y
+    this.columnCount = columnCount
+    this.rowCount = rowCount
+  }
+
+  contains(x, y) {
+    return (
+      x >= this.x &&
+      x < this.x + this.columnCount &&
+      y >= this.y &&
+      y < this.y + this.rowCount
+    )
+  }
+
+  toLocalX(worldX) {
+    return worldX - this.x
+  }
+
+  toLocalY(worldY) {
+    return worldY - this.y
+  }
+
+  centerOn(x, y, world) {
+    let nextX = x - Math.floor(this.columnCount / 2)
+    let nextY = y - Math.floor(this.rowCount / 2)
+
+    let maxX = Math.max(0, world.columnCount - this.columnCount)
+    let maxY = Math.max(0, world.rowCount - this.rowCount)
+
+    this.x = Math.max(0, Math.min(nextX, maxX))
+    this.y = Math.max(0, Math.min(nextY, maxY))
+  }
+}
+
 class GameBoard extends HTMLElement {
   #world = null
+  #camera = null
 
   constructor() {
     super()
-    this.innerHTML = `<main id="game-board"></main>`
-    this.root = this.querySelector('#game-board')
+    this.innerHTML = `
+      <section class="tile-layer"></section>
+      <section class="avatar-layer"></section>
+    `
+
+    this.tileLayer = this.querySelector('.tile-layer')
+    this.avatarLayer = this.querySelector('.avatar-layer')
+
     this.cellElements = new Map()
+    this.avatarElements = new Map()
   }
 
-  set data(worldData) {
-    this.#world = worldData
-    this.render()
+  set data({ world, camera }) {
+    this.#world = world
+    this.#camera = camera
+    this.renderTiles()
   }
 
   get data() {
-    return this.#world
+    return {
+      world: this.#world,
+      camera: this.#camera,
+    }
   }
 
-  findAvatarForEntity(entity) {
-    return this.root.querySelectorAll('player-avatar, enemy-avatar, item-avatar')
-      .find?.(avatar => avatar.data === entity) ?? null
+  createAvatar(entity) {
+    if (entity instanceof Player) return new PlayerAvatar()
+    if (entity instanceof Enemy) return new EnemyAvatar()
+    return new ItemAvatar()
   }
 
-  speak(entity, message) {
-    const avatars = this.root.querySelectorAll('player-avatar, enemy-avatar, item-avatar')
-    for (const avatar of avatars) {
-      if (avatar.data === entity) {
-        avatar.speak(message)
-        break
+  renderTiles() {
+    if (!this.#world || !this.#camera) return
+
+    let { columnCount, rowCount } = this.#camera
+
+    this.style.setProperty('--column-count', this.#camera.columnCount)
+    this.style.setProperty('--row-count', this.#camera.rowCount)
+
+
+    this.tileLayer.innerHTML = ''
+    this.cellElements.clear()
+
+    for (let localY = 0; localY < rowCount; localY++) {
+      for (let localX = 0; localX < columnCount; localX++) {
+        let worldX = this.#camera.x + localX
+        let worldY = this.#camera.y + localY
+        let cellData = this.#world.at(worldX, worldY)
+        if (!cellData) continue
+
+        let cell = new GameCell()
+        cell.data = {
+          ...cellData,
+          x: localX,
+          y: localY,
+        }
+
+        this.cellElements.set(`${localX},${localY}`, cell)
+        this.tileLayer.append(cell)
       }
     }
   }
 
-  getCellElement(x, y) {
-    return this.cellElements.get(`${x},${y}`) ?? null
-  }
+  syncEntity(entity) {
+    let avatar = this.avatarElements.get(entity)
 
-  render() {
-    if (!this.#world) return
+    if (!avatar) {
+      avatar = this.createAvatar(entity)
+      this.avatarElements.set(entity, avatar)
+      this.avatarLayer.append(avatar)
+    }
 
-    this.root.innerHTML = ''
-    this.cellElements.clear()
+    avatar.data = entity
+console.log(entity.name, this.#camera, entity.x, entity.y)
+    if (!this.#camera.contains(entity.x, entity.y)) {
+      avatar.hidden = true
+      return
+    }
 
-    this.root.style.display = 'grid'
-    this.root.style.gridTemplateColumns = `repeat(${this.#world.columnCount}, 1fr)`
-    this.root.style.gridTemplateRows = `repeat(${this.#world.rowCount}, 1fr)`
+    avatar.hidden = false
 
-    this.#world.grid.forEach(row =>
-      row.forEach(cellData => {
-        const cell = new GameCell()
-        cell.data = cellData
-        this.cellElements.set(`${cellData.x},${cellData.y}`, cell)
-        this.root.append(cell)
-      })
-    )
-  }
+    let localX = this.#camera.toLocalX(entity.x)
+    let localY = this.#camera.toLocalY(entity.y)
 
-  clearEntities() {
-    this.root
-      .querySelectorAll('player-avatar, enemy-avatar, item-avatar')
-      .forEach(el => el.remove())
-  }
 
-  renderItems(items) {
-    items.forEach(item => {
-      const cell = this.getCellElement(item.x, item.y)
-      if (!cell) return
-
-      const avatar = new ItemAvatar()
-      avatar.data = item
-      cell.append(avatar)
+    avatar.placeAt(localX, localY)
+    ENTITIES.push(entity.name, {
+      localX,
+      localY,
+      gridColumn: avatar.style.gridColumn,
+      gridRow: avatar.style.gridRow,
+      hidden: avatar.hidden,
+      tag: avatar.localName
     })
   }
 
-  renderCharacters(characters) {
-    characters.forEach(character => {
-      const cell = this.getCellElement(character.x, character.y)
-      if (!cell) return
-
-      const avatar = character instanceof Player
-        ? new PlayerAvatar()
-        : new EnemyAvatar()
-
-      avatar.data = character
-      cell.append(avatar)
-    })
+  removeMissingEntities(liveEntities) {
+    for (let [entity, avatar] of this.avatarElements) {
+      if (!liveEntities.includes(entity)) {
+        avatar.remove()
+        this.avatarElements.delete(entity)
+      }
+    }
   }
 
   renderEntities({ items = [], characters = [] }) {
-    this.clearEntities()
-    this.renderItems(items)
-    this.renderCharacters(characters)
+    let entities = [...items, ...characters]
+    entities.forEach(entity => this.syncEntity(entity))
+    this.removeMissingEntities(entities)
+  }
+
+  speak(entity, message) {
+    let avatar = this.avatarElements.get(entity)
+    if (avatar) avatar.speak(message)
   }
 }
 
@@ -263,30 +326,22 @@ class GameManager {
       rowCount: this.#data.rowCount,
     })
 
-    this.player = new Player({
-      ...this.#data.player,
+    this.camera = new Camera({
       x: 0,
       y: 0,
+      columnCount: 13,
+      rowCount: 10,
     })
 
-    this.enemies = this.#data.enemies.map((enemy, index) =>
-      new Enemy({
-        ...enemy,
-        x: index + 2,
-        y: 2,
-      })
-    )
-
-    this.items = this.#data.items.map((item, index) =>
-      new Item({
-        ...item,
-        x: index + 4,
-        y: 5,
-      })
-    )
+    this.player = new Player(this.#data.player)
+this.enemies = this.#data.enemies.map(enemy => new Enemy(enemy))
+this.items = this.#data.items.map(item => new Item(item))
 
     this.gameBoard = document.querySelector('game-board')
-    this.gameBoard.data = this.world
+    this.gameBoard.data = {
+        world: this.world,
+        camera: this.camera,
+    }
     this.render()
   }
 
@@ -301,12 +356,13 @@ class GameManager {
     const nextX = this.player.x + dx
     const nextY = this.player.y + dy
 
-    if (!this.world.isInside(nextX, nextY)) {
+    if (!this.world.contains(nextX, nextY)) {
       return { type: 'speech', actor: this.player, message: 'Edge of the world!' }
     }
 
     if (this.enemies.some(enemy => enemy.x === nextX && enemy.y === nextY)) {
-      return { type: 'speech', actor: this.player, message: 'Enemy ahead!' }
+      let enemy = this.enemies.find(enemy => enemy.x === nextX && enemy.y === nextY)
+      return { type: 'speech', actor: this.player, message: `Look out! ${enemy.name}!` }
     }
 
     this.player.moveTo({ x: nextX, y: nextY })
@@ -333,3 +389,21 @@ class GameManager {
 export {
   GameManager,
 }
+
+
+Object.assign(window, {
+  Camera,
+  World,
+  Cell,
+  Character,
+  Player,
+  Enemy,
+  Item,
+  BaseAvatar,
+  PlayerAvatar,
+  EnemyAvatar,
+  ItemAvatar,
+  GameCell,
+  GameBoard,
+
+})
