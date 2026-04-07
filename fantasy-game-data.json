@@ -1,0 +1,180 @@
+{
+  "world": {
+    "columnCount": 40,
+    "rowCount": 30
+  },
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "columnCount": 13,
+    "rowCount": 10
+  },
+  "entities": {
+    "player": {
+      "name": "Phoenix",
+      "emoji": "🧝",
+      "x": 1,
+      "y": 1
+    },
+    "enemies": [
+      {
+        "name": "Giant Snake",
+        "emoji": "🐍",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "name": "Giant Spider",
+        "emoji": "🕷",
+        "x": 7,
+        "y": 2
+      },
+      {
+        "name": "Giant Giant",
+        "emoji": "👹",
+        "x": 11,
+        "y": 8
+      },
+      {
+        "name": "Skeleton Warrior",
+        "emoji": "💀",
+        "x": 12,
+        "y": 0
+      },
+      {
+        "name": "Zombie",
+        "emoji": "🧟",
+        "x": 13,
+        "y": 2
+      },
+      {
+        "name": "Ghost",
+        "emoji": "👻",
+        "x": 3,
+        "y": 10
+      },
+      {
+        "name": "Orc",
+        "emoji": "👺",
+        "x": 20,
+        "y": 4
+      },
+      {
+        "name": "Dragon",
+        "emoji": "🐉",
+        "x": 25,
+        "y": 12
+      },
+      {
+        "name": "Bat Swarm",
+        "emoji": "🦇",
+        "x": 0,
+        "y": 15
+      },
+      {
+        "name": "Slime",
+        "emoji": "🦠",
+        "x": 40,
+        "y": 1
+      },
+      {
+        "name": "Dark Wizard",
+        "emoji": "🧙‍♂️",
+        "x": 9,
+        "y": 25
+      },
+      {
+        "name": "Imp",
+        "emoji": "😈",
+        "x": 50,
+        "y": 50
+      }
+    ],
+    "items": [
+      {
+        "name": "Sword",
+        "emoji": "🗡",
+        "x": 4,
+        "y": 6
+      },
+      {
+        "name": "Shield",
+        "emoji": "🛡",
+        "x": 8,
+        "y": 5
+      },
+      {
+        "name": "Health Potion",
+        "emoji": "🧪",
+        "x": 10,
+        "y": 1
+      },
+      {
+        "name": "Scroll",
+        "emoji": "📜",
+        "x": 12,
+        "y": 9
+      },
+      {
+        "name": "Bow",
+        "emoji": "🏹",
+        "x": 13,
+        "y": 5
+      },
+      {
+        "name": "Magic Ring",
+        "emoji": "💍",
+        "x": 6,
+        "y": 10
+      },
+      {
+        "name": "Gold Coins",
+        "emoji": "🪙",
+        "x": 18,
+        "y": 2
+      },
+      {
+        "name": "Treasure Chest",
+        "emoji": "🧰",
+        "x": 2,
+        "y": 14
+      },
+      {
+        "name": "Torch",
+        "emoji": "🔥",
+        "x": 30,
+        "y": 8
+      },
+      {
+        "name": "Key",
+        "emoji": "🗝",
+        "x": 5,
+        "y": 30
+      },
+      {
+        "name": "Spell Book",
+        "emoji": "📖",
+        "x": 60,
+        "y": 3
+      },
+      {
+        "name": "Helmet",
+        "emoji": "🪖",
+        "x": 1,
+        "y": 40
+      },
+      {
+        "name": "Boots",
+        "emoji": "🥾",
+        "x": 22,
+        "y": 22
+      },
+      {
+        "name": "Gemstone",
+        "emoji": "💎",
+        "x": 99,
+        "y": 99
+      }
+    ]
+  }
+}
