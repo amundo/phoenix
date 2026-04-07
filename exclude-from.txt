@@ -1,0 +1,9 @@
+secondary-sources/ilustrirte-zeitung/text
+deploy.sh
+secondary-sources/ilustrirte-zeitung/*.pdf
+.git/
+Flora_Brasiliensis_Volume_1_Part_1.pdf
+.file_cache.json
+internet-archive/node_modules/*
+residences/**/*.pdf
+**/venv/**

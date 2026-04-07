@@ -1,0 +1,243 @@
+<!doctype html>
+
+<title>Babble Generator</title>
+<style>
+  input[name="utterance"] {
+    width: 100%;
+    font-size: 1.25em;
+    padding: 0.5em;
+    margin-bottom: 1em;
+  }
+  fieldset {
+    display: inline-grid;
+
+  }
+</style>
+<!-- https://chatgpt.com/c/69d47739-e324-83e8-b662-9378230a336b -->
+<form>
+  <input name="utterance" placeholder="try typing something and pressing enter">
+  <fieldset>
+
+
+  <input name="rate" type="range" min="0.5" max="2" step="0.01" value="1.15">
+  <label for="rate">Rate</label>
+  <input name="volume" type="range" min="0.01" max="
+1" step="0.01" value="0.06">
+  <label for="volume">Volume</label>
+  <input name="pitchJitter" type="range" min="0" max="50" step="1" value="12">
+  <label for="pitchJitter">Pitch Jitter</label>
+  <select name="voiceType">
+    <option value="sine">Sine</option>
+    <option value="square" selected>Square</option>
+    <option value="triangle">Triangle</option>
+    <option value="sawtooth">Sawtooth</option>
+  </select>
+  <label for="voiceType">Voice Type</label>
+    </fieldset>
+
+</form>
+
+<script type=module>
+class BabbleSpeaker {
+  constructor() {
+    this.audioContext = null
+  }
+
+  async init() {
+    if (!this.audioContext) {
+      this.audioContext = new AudioContext()
+    }
+
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume()
+    }
+  }
+
+  vowelColor(letter) {
+    const map = {
+      a: { frequency: 900, q: 7 },
+      e: { frequency: 1700, q: 9 },
+      i: { frequency: 2200, q: 11 },
+      o: { frequency: 700, q: 6 },
+      u: { frequency: 500, q: 5 },
+      y: { frequency: 1400, q: 8 },
+    }
+
+    return map[letter] || { frequency: 1200, q: 8 }
+  }
+
+  isVowel(letter) {
+    return /[aeiouy]/i.test(letter)
+  }
+
+  splitIntoChunks(text) {
+    const cleaned = text.toLowerCase()
+    const words = cleaned.match(/[a-z]+|[.,!?;:]/g) || []
+
+    const chunks = []
+
+    for (const token of words) {
+      if (/^[.,!?;:]$/.test(token)) {
+        chunks.push({ type: "pause", duration: 0.09 })
+        continue
+      }
+
+      let current = ""
+
+      for (let i = 0; i < token.length; i++) {
+        const char = token[i]
+        current += char
+
+        const currentIsVowel = this.isVowel(char)
+        const next = token[i + 1]
+        const nextIsVowel = next ? this.isVowel(next) : false
+
+        if (
+          current.length >= 2 &&
+          (
+            (currentIsVowel && !nextIsVowel) ||
+            current.length >= 3
+          )
+        ) {
+          chunks.push({ type: "sound", text: current })
+          current = ""
+        }
+      }
+
+      if (current) {
+        chunks.push({ type: "sound", text: current })
+      }
+
+      chunks.push({ type: "pause", duration: 0.04 })
+    }
+
+    return chunks
+  }
+
+  basePitchFromChunk(chunk) {
+    let total = 0
+
+    for (const char of chunk) {
+      total += char.charCodeAt(0)
+    }
+
+    return 170 + (total % 140)
+  }
+
+  playChunk(chunk, startTime, options = {}) {
+    const {
+      volume = 0.05,
+      rate = 1,
+      pitchJitter = 10,
+      voiceType = "triangle",
+    } = options
+
+    const duration = Math.max(0.05, (0.08 + chunk.length * 0.015) / rate)
+    const basePitch = this.basePitchFromChunk(chunk)
+    const pitch = basePitch + (Math.random() * 2 - 1) * pitchJitter
+
+    const vowel = [...chunk].find(char => this.isVowel(char)) || "a"
+    const color = this.vowelColor(vowel)
+
+    const oscillator = this.audioContext.createOscillator()
+    const oscillator2 = this.audioContext.createOscillator()
+    const bandpass = this.audioContext.createBiquadFilter()
+    const lowpass = this.audioContext.createBiquadFilter()
+    const gain = this.audioContext.createGain()
+
+    oscillator.type = voiceType
+    oscillator2.type = "square"
+
+    oscillator.frequency.setValueAtTime(pitch, startTime)
+    oscillator.frequency.linearRampToValueAtTime(
+      pitch + (Math.random() * 16 - 8),
+      startTime + duration * 0.35
+    )
+    oscillator.frequency.linearRampToValueAtTime(
+      pitch - 10 + (Math.random() * 8),
+      startTime + duration
+    )
+
+    oscillator2.frequency.setValueAtTime(pitch * 2.01, startTime)
+
+    bandpass.type = "bandpass"
+    bandpass.frequency.setValueAtTime(
+      color.frequency + (Math.random() * 120 - 60),
+      startTime
+    )
+    bandpass.Q.setValueAtTime(color.q, startTime)
+
+    lowpass.type = "lowpass"
+    lowpass.frequency.setValueAtTime(2600, startTime)
+
+    gain.gain.setValueAtTime(0.0001, startTime)
+    gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.008)
+    gain.gain.exponentialRampToValueAtTime(volume * 0.65, startTime + duration * 0.45)
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration)
+
+    oscillator.connect(bandpass)
+    oscillator2.connect(bandpass)
+    bandpass.connect(lowpass)
+    lowpass.connect(gain)
+    gain.connect(this.audioContext.destination)
+
+    oscillator.start(startTime)
+    oscillator2.start(startTime)
+    oscillator.stop(startTime + duration)
+    oscillator2.stop(startTime + duration)
+
+    return duration
+  }
+
+  async speak(text, options = {}) {
+    await this.init()
+
+    const {
+      rate = 1,
+      volume = 0.05,
+      pitchJitter = 10,
+      voiceType = "triangle",
+    } = options
+
+    const chunks = this.splitIntoChunks(text)
+    let time = this.audioContext.currentTime
+
+    for (const chunk of chunks) {
+      if (chunk.type === "pause") {
+        time += chunk.duration / rate
+        continue
+      }
+
+      const duration = this.playChunk(chunk.text, time, {
+        rate,
+        volume,
+        pitchJitter,
+        voiceType,
+      })
+
+      time += duration * 0.7
+    }
+  }
+}
+
+const speaker = new BabbleSpeaker()
+
+const form = document.querySelector("form")
+form.addEventListener("submit", async event => {
+  event.preventDefault()
+
+  const formData = new FormData(form)
+  const utterance = formData.get("utterance")
+  const rate = parseFloat(formData.get("rate"))
+  const volume = parseFloat(formData.get("volume"))
+  const pitchJitter = parseFloat(formData.get("pitchJitter"))
+  const voiceType = formData.get("voiceType")
+
+  await speaker.speak(utterance, {
+    rate,
+    volume,
+    pitchJitter,
+    voiceType,
+  })  
+})
+</script>

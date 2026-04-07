@@ -20,7 +20,7 @@ body {
   overflow: hidden;
   padding: 2rem;
 
-  background-image: url(waves.png);
+  background-image: url(images/waves.png);
   background-color:#46a4b5;
 }
 
@@ -50,6 +50,7 @@ game-board {
       place-content: center;
       padding: 0;
       margin: 0;
+      font-size: 3rem;
       /* outline: 1px solid white; */
       height: 100%;
       width: 100%;
@@ -70,4 +71,22 @@ game-board {
       }
     }
   }
+}
+
+player-avatar {
+  anchor-scope: --avatar;
+}
+
+.avatar-emoji {
+  anchor-name: --avatar;
+}
+
+.speech-bubble {
+  position: absolute;
+  position-anchor: --avatar;
+  left: anchor(right);
+  background: white;
+  font-size: 2rem;
+  border-radius: .2rem;
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, .3);
 }

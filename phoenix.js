@@ -76,6 +76,10 @@ class BaseAvatar extends HTMLElement {
   constructor() {
     super()
     this.classList.add('avatar')
+    this.innerHTML = `
+      <span class="avatar-emoji"></span>
+      <span class="speech-bubble"></span>
+    `
   }
 
   set data(value) {
@@ -87,16 +91,27 @@ class BaseAvatar extends HTMLElement {
     return this.#data
   }
 
+  speak(message) {
+    const bubble = this.querySelector('.speech-bubble')
+    let messageLength = message.length
+    bubble.textContent = message
+    bubble.style.display = 'block'
+    setTimeout(() => {
+      bubble.style.display = 'none'
+    }, 1000 + messageLength * 2000)
+  }
+
   render() {
     if (!this.#data) return
-    this.textContent = this.#data.emoji
+    this.querySelector('.avatar-emoji').textContent = this.#data.emoji
   }
 }
 
-class PlayerAvatar extends BaseAvatar {}
-class EnemyAvatar extends BaseAvatar {}
-class ItemAvatar extends BaseAvatar {}
+class PlayerAvatar extends BaseAvatar { }
+class EnemyAvatar extends BaseAvatar { }
+class ItemAvatar extends BaseAvatar { }
 
+customElements.define('base-avatar', BaseAvatar)
 customElements.define('player-avatar', PlayerAvatar)
 customElements.define('enemy-avatar', EnemyAvatar)
 customElements.define('item-avatar', ItemAvatar)
@@ -145,6 +160,21 @@ class GameBoard extends HTMLElement {
 
   get data() {
     return this.#world
+  }
+
+  findAvatarForEntity(entity) {
+    return this.root.querySelectorAll('player-avatar, enemy-avatar, item-avatar')
+      .find?.(avatar => avatar.data === entity) ?? null
+  }
+
+  speak(entity, message) {
+    const avatars = this.root.querySelectorAll('player-avatar, enemy-avatar, item-avatar')
+    for (const avatar of avatars) {
+      if (avatar.data === entity) {
+        avatar.speak(message)
+        break
+      }
+    }
   }
 
   getCellElement(x, y) {
@@ -211,7 +241,7 @@ class GameBoard extends HTMLElement {
 
 customElements.define('game-board', GameBoard)
 
-class Game {
+class GameManager {
   #data = null
 
   constructor(gameData) {
@@ -271,21 +301,35 @@ class Game {
     const nextX = this.player.x + dx
     const nextY = this.player.y + dy
 
-    if (!this.world.isInside(nextX, nextY)) return
+    if (!this.world.isInside(nextX, nextY)) {
+      return { type: 'speech', actor: this.player, message: 'Edge of the world!' }
+    }
+
+    if (this.enemies.some(enemy => enemy.x === nextX && enemy.y === nextY)) {
+      return { type: 'speech', actor: this.player, message: 'Enemy ahead!' }
+    }
 
     this.player.moveTo({ x: nextX, y: nextY })
-    this.render()
+    return { type: 'render' }
   }
 
   handleInput(key) {
-    if (key === 'ArrowUp') this.movePlayerBy(0, -1)
-    if (key === 'ArrowDown') this.movePlayerBy(0, 1)
-    if (key === 'ArrowLeft') this.movePlayerBy(-1, 0)
-    if (key === 'ArrowRight') this.movePlayerBy(1, 0)
+    let effect = null
+
+    if (key === 'ArrowUp') effect = this.movePlayerBy(0, -1)
+    if (key === 'ArrowDown') effect = this.movePlayerBy(0, 1)
+    if (key === 'ArrowLeft') effect = this.movePlayerBy(-1, 0)
+    if (key === 'ArrowRight') effect = this.movePlayerBy(1, 0)
+
+    this.render()
+
+    if (effect?.type === 'speech') {
+      this.gameBoard.speak(effect.actor, effect.message)
+    }
   }
 }
 
 
 export {
-  Game,
+  GameManager,
 }
