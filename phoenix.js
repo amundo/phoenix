@@ -87,10 +87,10 @@ class BaseAvatar extends HTMLElement {
     const bubble = this.querySelector('.speech-bubble')
     const messageLength = message.length
     bubble.textContent = message
-    bubble.style.display = 'block'
+    bubble.hidden = false
     bubble.style.position = 'absolute'
     setTimeout(() => {
-      bubble.style.display = 'none'
+      bubble.hidden = true
     }, 1000 + messageLength * 10)
   }
 
@@ -234,7 +234,7 @@ class AvatarLayer extends BaseLayer {
     this.removeMissingEntities(entities)
   }
 
-  syncEntity(entity, camera) {
+  syncEntity(entity) {
     let avatar = this.avatarElements.get(entity)
 
     if (!avatar) {
@@ -249,7 +249,7 @@ class AvatarLayer extends BaseLayer {
     const localY = this.toLocalY(entity.y)
 
     avatar.placeAt(localX, localY)
-    avatar.hidden = !camera.contains(entity.x, entity.y)
+    avatar.hidden = !this.camera.contains(entity.x, entity.y)
   }
 
   speak(entity, message) {
