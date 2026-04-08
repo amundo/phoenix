@@ -1,0 +1,52 @@
+{
+  "workbench.colorTheme": "Default Light+",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#a9bda3",
+    "titleBar.activeForeground": "#2e372d",
+    "titleBar.inactiveBackground": "#eef4ed",
+    "titleBar.inactiveForeground": "#73806f",
+
+    "editor.background": "#fcfefb",
+    "editor.foreground": "#2e372d",
+    "editorLineNumber.foreground": "#8a9686",
+    "editorCursor.foreground": "#8faa84",
+    "editor.selectionBackground": "#a8bfa833",
+    "editor.selectionForeground": "#2e372d",
+    "editor.inactiveSelectionBackground": "#c8d7c666",
+    "editorLineNumber.activeForeground": "#5f6f5c",
+
+    "sideBar.background": "#f3f7f2",
+    "sideBar.foreground": "#2e372d",
+    "activityBar.background": "#a9bda3",
+    "activityBar.foreground": "#2e372d",
+    "statusBar.background": "#6f806b",
+    "statusBar.foreground": "#f7fbf6",
+    "panel.background": "#f8fbf7",
+
+    "tab.activeBackground": "#f8fbf7",
+    "tab.activeForeground": "#2e372d",
+    "tab.inactiveBackground": "#eaf1e8",
+    "tab.inactiveForeground": "#73806f",
+
+    "editor.lineHighlightBackground": "#9fb79a22",
+    "editorBracketMatch.background": "#9fb79a22",
+    "editorBracketMatch.border": "#6f806b",
+    "editorIndentGuide.background": "#8a968633",
+    "editorIndentGuide.activeBackground1": "#6f806b",
+
+    "diffEditor.insertedTextBackground": "#cfe8cf55",
+    "diffEditor.removedTextBackground": "#f0d6d655",
+    "editorGutter.addedBackground": "#8fb28f",
+    "editorGutter.deletedBackground": "#d49a9a",
+    "editorGutter.modifiedBackground": "#9bb7c9"
+  },
+  "editor.tokenColorCustomizations": {
+    "comments": "#7f8b7a",
+    "keywords": "#6f806b",
+    "strings": "#8faa84",
+    "functions": "#5f7461",
+    "variables": "#2e372d",
+    "numbers": "#a3876d",
+    "types": "#80937c"
+  }
+}

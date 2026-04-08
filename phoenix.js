@@ -353,30 +353,69 @@ class GameEngine {
     }
   }
 
-  handleInput(key) {
-    if (key === 'ArrowUp') this.movePlayerBy(0, -1)
-    if (key === 'ArrowDown') this.movePlayerBy(0, 1)
-    if (key === 'ArrowLeft') this.movePlayerBy(-1, 0)
-    if (key === 'ArrowRight') this.movePlayerBy(1, 0)
+  handleCommand(command) {
+    if (!command) {
+      return {
+        stateChanged: false,
+        effects: [],
+      }
+    }
+
+    let result = {
+      stateChanged: false,
+      effects: [],
+    }
+
+    if (command.type === 'move') {
+      result = this.movePlayerBy(command.dx, command.dy)
+    }
 
     this.camera.centerOn(this.player.x, this.player.y, this.world)
-    return effect
+    return result
   }
 
   movePlayerBy(dx, dy) {
+    const effects = []
+
     const nextX = this.player.x + dx
     const nextY = this.player.y + dy
 
     if (!this.world.contains(nextX, nextY)) {
-      return { 
-        type: 'speech', 
-        actor: this.player, 
-        message: 'Edge of the world!' 
+      effects.push({
+        type: 'speak',
+        actor: this.player,
+        message: 'Edge of the world!',
+      })
+
+      return {
+        stateChanged: false,
+        effects,
+      }
+    }
+
+    const enemy = this.enemies.find(enemy =>
+      enemy.x === nextX && enemy.y === nextY
+    )
+
+    if (enemy) {
+      effects.push({
+        type: 'speak',
+        actor: this.player,
+        message: `Look out! ${enemy.name}!`,
+      })
+
+      return {
+        stateChanged: false,
+        effects,
       }
     }
 
     this.player.moveTo({ x: nextX, y: nextY })
-    return null
+
+    return {
+      stateChanged: true,
+      effects,
+    }
   }
 }
 
@@ -395,18 +434,12 @@ class GameApp extends HTMLElement {
       <game-ui></game-ui>
     `
 
+    this.addEventListener('speak', speakEvent => this.handleSpeak(speakEvent))
+
     this.#gameBoard = this.querySelector('game-board')
     this.#ui = this.querySelector('game-ui')
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
-  }
-
-  static get observedAttributes() {
-    return ['src']
-  }
-
-  get src() {
-    return this.getAttribute('src')
   }
 
   connectedCallback() {
@@ -414,7 +447,10 @@ class GameApp extends HTMLElement {
       this.loadGameData(this.src)
     }
   }
-
+  
+  static get observedAttributes() {
+    return ['src']
+  }
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'src' && oldValue !== newValue && this.isConnected) {
       this.loadGameData(newValue)
@@ -451,13 +487,19 @@ class GameApp extends HTMLElement {
     const effect = this.#engine.handleInput(event.key)
     this.render()
 
-    if (effect?.type === 'speech') {
-      this.#gameBoard.speak(effect.actor, effect.message)
+    if (effect?.type === 'speak') {
+      this.dispatchEvent(new CustomEvent('speak', {
+        detail: effect,
+        bubbles: true,
+        composed: true,
+      }))
     }
   }
-}
 
+}
 customElements.define('game-app', GameApp)
+
+
 
 export {
   GameApp,
