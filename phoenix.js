@@ -70,6 +70,7 @@ class BaseAvatar extends HTMLElement {
     this.classList.add('avatar')
     this.innerHTML = `
       <span class="avatar-emoji"></span>
+      <span class="emotion-badge" hidden></span>
       <span class="speech-bubble"></span>
     `
   }
@@ -92,6 +93,21 @@ class BaseAvatar extends HTMLElement {
     setTimeout(() => {
       bubble.hidden = true
     }, 1000 + messageLength * 10)
+  }
+
+  emote(emotion) {
+    const badge = this.querySelector('.emotion-badge')
+
+    badge.textContent = typeof emotion === 'string'
+      ? emotion
+      : emotion.emoji
+
+    badge.hidden = false
+
+    clearTimeout(this.emoteTimeout)
+    this.emoteTimeout = setTimeout(() => {
+      badge.hidden = true
+    }, 1200)
   }
 
   placeAt(localX, localY) {
@@ -257,6 +273,11 @@ class AvatarLayer extends BaseLayer {
     if (avatar) avatar.speak(message)
   }
 
+  emote(entity, emotion) {
+    const avatar = this.avatarElements.get(entity)
+    if (avatar) avatar.emote(emotion)
+  }
+
   removeMissingEntities(liveEntities) {
     for (const [entity, avatar] of this.avatarElements) {
       if (!liveEntities.includes(entity)) {
@@ -317,12 +338,27 @@ class GameBoard extends HTMLElement {
     this.avatarLayer.speak(entity, message)
   }
 
+  emote(entity, emotion) {
+    this.avatarLayer.emote(entity, emotion)
+  }
+
   render({ world, camera, entities }) {
     this.style.setProperty('--column-count', camera.columnCount)
     this.style.setProperty('--row-count', camera.rowCount)
 
     this.terrainLayer.render({ world, camera, entities })
+
+    this.measureTileSize()
     this.avatarLayer.render({ world, camera, entities })
+  }
+
+  measureTileSize() {
+    const firstCell = this.querySelector('game-cell')
+    if (!firstCell) return
+
+    let tileSize = firstCell.getBoundingClientRect().width
+
+    this.style.setProperty('--tile-size', `${tileSize}px`)
   }
 }
 customElements.define('game-board', GameBoard)
@@ -387,6 +423,13 @@ class GameEngine {
         message: 'Edge of the world!',
       })
 
+
+    effects.push({
+      type: 'emote',
+      actor: this.player,
+      emotion: '😠',
+    })
+
       return {
         stateChanged: false,
         effects,
@@ -419,7 +462,7 @@ class GameEngine {
   }
 }
 
-class GameUI extends HTMLElement {}
+class GameUI extends HTMLElement { }
 customElements.define('game-ui', GameUI)
 
 class GameApp extends HTMLElement {
@@ -509,17 +552,30 @@ class GameApp extends HTMLElement {
   }
 
   handleEffects(effects = []) {
-  for (const effect of effects) {
-    if (effect.type === 'speak') {
-      this.#gameBoard.speak(effect.actor, effect.message)
+    for (const effect of effects) {
+      if (effect.type === 'speak') {
+        this.#gameBoard.speak(effect.actor, effect.message)
+      }
+
+      if (effect.type === 'emote') {
+        this.#gameBoard.emote(effect.actor, effect.emotion)
+      }
     }
   }
-}
+  
 }
 
 customElements.define('game-app', GameApp)
 
 
+Object.assign(
+  window,
+  {
+    GameApp,
+    GameBoard,
+
+  }
+)
 
 export {
   GameApp,
