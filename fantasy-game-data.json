@@ -6,8 +6,8 @@
   "camera": {
     "x": 0,
     "y": 0,
-    "columnCount": 13,
-    "rowCount": 10
+    "columnCount": 12,
+    "rowCount": 8
   },
   "entities": {
     "player": {
