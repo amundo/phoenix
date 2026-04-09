@@ -1,0 +1,14 @@
+[
+  {
+    "id": "villager",
+    "name": "Villager",
+    "emoji": "🙂",
+    "onInteract": ["say-hello"]
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "emoji": "👺",
+    "tags": ["hostile"]
+  }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": "grass", "emoji": "🟩", "walkable": true },
+  { "id": "water", "emoji": "🟦", "walkable": false },
+  { "id": "forest-floor", "emoji": "🟫", "walkable": true },
+  { "id": "tree", "emoji": "🌳", "walkable": false }
+]

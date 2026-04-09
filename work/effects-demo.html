@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Effects Mini Demo</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --accent: #2563eb;
+      --heal: #16a34a;
+      --damage: #dc2626;
+      --sparkle: #7c3aed;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    body {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 92%, #eef2ff);
+    }
+
+    header h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.2rem;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 1rem;
+    }
+
+    .controls {
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .controls h2,
+    .arena-header h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+    }
+
+    .control-group {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .control-group label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: white;
+      padding: 0.55rem 0.8rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .arena-wrap {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 0.75rem;
+      min-height: 0;
+    }
+
+    .arena-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .arena-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    effect-demo {
+      position: relative;
+      display: block;
+      min-height: 560px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.08), transparent 35%),
+        linear-gradient(180deg, #fefefe, #f5f7fb);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    entity-avatar {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 88px;
+      height: 88px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    entity-avatar .avatar {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(3px);
+    }
+
+    entity-avatar .emoji {
+      font-size: 56px;
+      line-height: 1;
+      transform-origin: center;
+    }
+
+    entity-avatar .name {
+      position: absolute;
+      top: calc(100% + 0.35rem);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 999px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    effect-sprite {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+
+    effect-sprite .effect-label {
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.55);
+    }
+
+    .effect-heal .effect-label {
+      color: var(--heal);
+      font-size: 1.4rem;
+    }
+
+    .effect-damage .effect-label {
+      color: var(--damage);
+      font-size: 1.6rem;
+    }
+
+    .effect-sparkle .effect-label {
+      color: var(--sparkle);
+      font-size: 1.2rem;
+    }
+
+    .log {
+      display: grid;
+      gap: 0.35rem;
+      max-height: 220px;
+      overflow: auto;
+      padding-right: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .log-entry {
+      padding: 0.5rem 0.6rem;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .entity-list {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .entity-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.55rem 0.65rem;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+
+    .entity-row strong {
+      display: block;
+    }
+
+    .entity-row span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    entity-avatar .emoji {
+      animation: bob 2.4s ease-in-out infinite;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      effect-demo {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Effects mini demo</h1>
+    <p>A single-page extraction of an entity + avatar + effect system, without a grid.</p>
+  </header>
+
+  <main>
+    <section class="panel controls">
+      <div>
+        <h2>Spawn effects</h2>
+        <div class="control-group">
+          <label for="entity-select">Target entity</label>
+          <select id="entity-select"></select>
+        </div>
+        <div class="button-row">
+          <button data-effect="heal">Heal</button>
+          <button data-effect="damage">Damage</button>
+          <button data-effect="sparkle">Sparkle</button>
+          <button id="random-demo" class="primary">Random demo</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Entities</h2>
+        <div id="entity-list" class="entity-list"></div>
+      </div>
+
+      <div>
+        <h2>Effect log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+
+    <section class="panel arena-wrap">
+      <div class="arena-header">
+        <div>
+          <h2>Arena</h2>
+          <p>Effects spawn at entity positions and animate independently.</p>
+        </div>
+      </div>
+      <effect-demo id="demo"></effect-demo>
+    </section>
+  </main>
+
+  <script>
+    class Entity {
+      constructor({ id, name, emoji, x, y, kind }) {
+        Object.assign(this, { id, name, emoji, x, y, kind })
+      }
+    }
+
+    class Avatar extends HTMLElement {
+      #entity = null
+
+      set data(entity) {
+        this.#entity = entity
+        this.sync()
+      }
+
+      get data() {
+        return this.#entity
+      }
+
+      connectedCallback() {
+        if (!this.innerHTML.trim()) {
+          this.innerHTML = `
+            <div class="avatar">
+              <div class="emoji"></div>
+              <div class="name"></div>
+            </div>
+          `
+        }
+        this.sync()
+      }
+
+      sync() {
+        if (!this.#entity || !this.isConnected) return
+        this.style.left = `${this.#entity.x}%`
+        this.style.top = `${this.#entity.y}%`
+        this.querySelector('.emoji').textContent = this.#entity.emoji
+        this.querySelector('.name').textContent = this.#entity.name
+      }
+    }
+    customElements.define('entity-avatar', Avatar)
+
+    class Effect {
+      constructor({ x, y, label, className = '', duration = 900, driftX = 0, driftY = -48, scaleFrom = 0.8, scaleTo = 1.15, fadeFrom = 1, fadeTo = 0 }) {
+        Object.assign(this, {
+          x,
+          y,
+          label,
+          className,
+          duration,
+          driftX,
+          driftY,
+          scaleFrom,
+          scaleTo,
+          fadeFrom,
+          fadeTo,
+        })
+      }
+    }
+
+    class EffectSprite extends HTMLElement {
+      #effect = null
+      #raf = 0
+      #start = 0
+
+      set data(effect) {
+        this.#effect = effect
+      }
+
+      connectedCallback() {
+        if (!this.#effect) return
+        this.className = this.#effect.className
+        this.innerHTML = `<div class="effect-label">${this.#effect.label}</div>`
+        this.style.left = `${this.#effect.x}%`
+        this.style.top = `${this.#effect.y}%`
+        this.#start = performance.now()
+        this.#tick = this.#tick.bind(this)
+        this.#raf = requestAnimationFrame(this.#tick)
+      }
+
+      disconnectedCallback() {
+        cancelAnimationFrame(this.#raf)
+      }
+
+      #tick(now) {
+        let elapsed = now - this.#start
+        let t = Math.min(elapsed / this.#effect.duration, 1)
+        let eased = 1 - Math.pow(1 - t, 3)
+
+        let x = this.#effect.driftX * eased
+        let y = this.#effect.driftY * eased
+        let scale = this.#effect.scaleFrom + (this.#effect.scaleTo - this.#effect.scaleFrom) * eased
+        let opacity = this.#effect.fadeFrom + (this.#effect.fadeTo - this.#effect.fadeFrom) * eased
+
+        this.style.opacity = opacity
+        this.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`
+
+        if (t < 1) {
+          this.#raf = requestAnimationFrame(this.#tick)
+        } else {
+          this.remove()
+        }
+      }
+    }
+    customElements.define('effect-sprite', EffectSprite)
+
+    class EffectLayer {
+      #host = null
+
+      constructor(host) {
+        this.#host = host
+      }
+
+      spawn(effect) {
+        let sprite = document.createElement('effect-sprite')
+        sprite.data = effect
+        this.#host.append(sprite)
+      }
+    }
+
+    class EffectDemo extends HTMLElement {
+      entities = []
+      avatars = new Map()
+      effects = null
+
+      connectedCallback() {
+        this.effects = new EffectLayer(this)
+      }
+
+      setEntities(entities) {
+        this.entities = entities
+        this.renderEntities()
+      }
+
+      renderEntities() {
+        let existingIds = new Set(this.entities.map(entity => entity.id))
+
+        for (let [id, avatar] of this.avatars) {
+          if (!existingIds.has(id)) {
+            avatar.remove()
+            this.avatars.delete(id)
+          }
+        }
+
+        for (let entity of this.entities) {
+          let avatar = this.avatars.get(entity.id)
+          if (!avatar) {
+            avatar = document.createElement('entity-avatar')
+            this.avatars.set(entity.id, avatar)
+            this.append(avatar)
+          }
+          avatar.data = entity
+        }
+      }
+
+      playEffect(effectName, entity) {
+        let effect = this.createEffect(effectName, entity)
+        this.effects.spawn(effect)
+      }
+
+      createEffect(effectName, entity) {
+        if (effectName === 'heal') {
+          return new Effect({
+            x: entity.x,
+            y: entity.y,
+            label: '+12',
+            className: 'effect-heal',
+            duration: 1000,
+            driftY: -64,
+            scaleFrom: 0.7,
+            scaleTo: 1.2,
+          })
+        }
+
+        if (effectName === 'damage') {
+          return new Effect({
+            x: entity.x,
+            y: entity.y,
+            label: '-8',
+            className: 'effect-damage',
+            duration: 850,
+            driftX: (Math.random() - 0.5) * 30,
+            driftY: -54,
+            scaleFrom: 0.9,
+            scaleTo: 1.25,
+          })
+        }
+
+        return new Effect({
+          x: entity.x,
+          y: entity.y,
+          label: '✦',
+          className: 'effect-sparkle',
+          duration: 1200,
+          driftX: (Math.random() - 0.5) * 40,
+          driftY: -72,
+          scaleFrom: 0.6,
+          scaleTo: 1.4,
+          fadeTo: 0,
+        })
+      }
+    }
+    customElements.define('effect-demo', EffectDemo)
+
+    let entities = [
+      new Entity({ id: 'player', name: 'Phoenix', emoji: '🧝', x: 28, y: 56, kind: 'player' }),
+      new Entity({ id: 'enemy-1', name: 'Tengu', emoji: '👺', x: 72, y: 36, kind: 'enemy' }),
+      new Entity({ id: 'enemy-2', name: 'Snake', emoji: '🐍', x: 58, y: 78, kind: 'enemy' }),
+      new Entity({ id: 'item-1', name: 'Scroll', emoji: '📜', x: 18, y: 24, kind: 'item' }),
+    ]
+
+    let demo = document.querySelector('#demo')
+    let entitySelect = document.querySelector('#entity-select')
+    let entityList = document.querySelector('#entity-list')
+    let log = document.querySelector('#log')
+
+    let addLog = message => {
+      let entry = document.createElement('div')
+      entry.className = 'log-entry'
+      entry.textContent = message
+      log.prepend(entry)
+      while (log.children.length > 8) {
+        log.lastElementChild.remove()
+      }
+    }
+
+    let renderEntityList = () => {
+      entitySelect.innerHTML = ''
+      entityList.innerHTML = ''
+
+      for (let entity of entities) {
+        let option = document.createElement('option')
+        option.value = entity.id
+        option.textContent = `${entity.emoji} ${entity.name}`
+        entitySelect.append(option)
+
+        let row = document.createElement('div')
+        row.className = 'entity-row'
+        row.innerHTML = `
+          <div>
+            <strong>${entity.emoji} ${entity.name}</strong>
+            <span>${entity.kind}</span>
+          </div>
+          <span>${entity.x}%, ${entity.y}%</span>
+        `
+        entityList.append(row)
+      }
+    }
+
+    let getSelectedEntity = () => {
+      return entities.find(entity => entity.id === entitySelect.value) || entities[0]
+    }
+
+    let play = effectName => {
+      let entity = getSelectedEntity()
+      demo.playEffect(effectName, entity)
+      addLog(`${effectName} on ${entity.name}`)
+    }
+
+    document.querySelectorAll('[data-effect]').forEach(button => {
+      button.addEventListener('click', () => play(button.dataset.effect))
+    })
+
+    document.querySelector('#random-demo').addEventListener('click', async () => {
+      let effectNames = ['heal', 'damage', 'sparkle']
+      for (let i = 0; i < 7; i++) {
+        let entity = entities[Math.floor(Math.random() * entities.length)]
+        let effectName = effectNames[Math.floor(Math.random() * effectNames.length)]
+        demo.playEffect(effectName, entity)
+        addLog(`${effectName} on ${entity.name}`)
+        await new Promise(resolve => setTimeout(resolve, 180))
+      }
+    })
+
+    demo.setEntities(entities)
+    renderEntityList()
+  </script>
+</body>
+</html>

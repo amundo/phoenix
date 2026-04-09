@@ -1,0 +1,13 @@
+[
+  {
+    "id": "red-mushroom",
+    "name": "Red Mushroom",
+    "emoji": "🍄",
+    "onTake": ["heal-small"]
+  },
+  {
+    "id": "coin",
+    "name": "Coin",
+    "emoji": "🪙"
+  }
+]

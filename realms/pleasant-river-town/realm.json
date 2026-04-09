@@ -1,0 +1,47 @@
+{
+  "id": "pleasant-river-town",
+  "name": "Pleasant River Town",
+  "width": 10,
+  "height": 10,
+
+  "terrainLegend": {
+    ".": "grass",
+    "~": "water"
+  },
+
+  "terrainRows": [
+    "..........",
+    "....~~....",
+    "....~~....",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    ".........."
+  ],
+
+  "actors": [
+    { "actorId": "villager", "x": 4, "y": 4 }
+  ],
+
+  "items": [
+    { "itemId": "coin", "x": 6, "y": 5 }
+  ],
+
+  "props": [
+    { "propId": "magic-mirror", "x": 2, "y": 2 },
+    { "propId": "signpost", "x": 8, "y": 1 }
+  ],
+
+  "exits": [
+    {
+      "type": "edge",
+      "edge": "north",
+      "toRealm": "dark-forest",
+      "toX": 5,
+      "toY": 9
+    }
+  ]
+}
