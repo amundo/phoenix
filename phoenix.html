@@ -12,14 +12,13 @@
 
 <body>
 
-  <game-app src="./fantasy-game-data.json"></game-app>
+  <game-app src="./data/"></game-app>
 
-  <script type=module>
-  import { GameApp } from './phoenix.js'
 
+  <script type="module" src="./phoenix.js"></script>
+<script type="module">
   window.app = document.querySelector('game-app')
-
-  </script>
+</script>
 </body>
 
 </html>

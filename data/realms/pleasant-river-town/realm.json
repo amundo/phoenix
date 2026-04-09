@@ -1,0 +1,48 @@
+{
+  "id": "pleasant-river-town",
+  "name": "Pleasant River Town",
+  "rowCount": 10,
+  "columnCount": 10,
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 10,
+    "columnCount": 10
+  },
+  "entities": {
+    "player": {
+      "name": "Phoenix",
+      "emoji": "🐦‍🔥",
+      "x": 1,
+      "y": 1
+    },
+    "enemies": [
+      {
+        "name": "Villager",
+        "emoji": "🙂",
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "items": [
+      {
+        "name": "Coin",
+        "emoji": "🪙",
+        "x": 6,
+        "y": 5
+      },
+      {
+        "name": "Magic Mirror",
+        "emoji": "🪞",
+        "x": 2,
+        "y": 2
+      },
+      {
+        "name": "Signpost",
+        "emoji": "🪧",
+        "x": 8,
+        "y": 1
+      }
+    ]
+  }
+}

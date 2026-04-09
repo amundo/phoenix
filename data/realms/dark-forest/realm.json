@@ -1,0 +1,36 @@
+{
+  "id": "dark-forest",
+  "name": "Dark Forest",
+  "rowCount": 10,
+  "columnCount": 10,
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 10,
+    "columnCount": 10
+  },
+  "entities": {
+    "player": {
+      "name": "Phoenix",
+      "emoji": "🐦‍🔥",
+      "x": 1,
+      "y": 1
+    },
+    "enemies": [
+      {
+        "name": "Goblin",
+        "emoji": "👺",
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "items": [
+      {
+        "name": "Red Mushroom",
+        "emoji": "🍄",
+        "x": 3,
+        "y": 6
+      }
+    ]
+  }
+}

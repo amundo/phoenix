@@ -468,6 +468,8 @@ customElements.define('game-ui', GameUI)
 class GameApp extends HTMLElement {
   #engine = null
   #gameBoard = null
+  #hasConnected = false
+  #isLoading = false
   #ui = null
 
   constructor() {
@@ -492,20 +494,40 @@ class GameApp extends HTMLElement {
   }
 
   connectedCallback() {
-    if (this.src && !this.#engine) {
+    this.#hasConnected = true
+    if (this.src && !this.#engine && !this.#isLoading) {
       this.loadGameData(this.src)
     }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'src' && oldValue !== newValue && this.isConnected) {
-      this.loadGameData(newValue)
+    if (name !== 'src' || oldValue === newValue) return
+    if (!this.#hasConnected) return
+    if (this.#isLoading) return
+
+    this.loadGameData(newValue)
+  }
+
+  async loadGameData(base) {
+    this.#isLoading = true
+    try {
+      let worldIndex = await this.fetchJSON(`${base}world.json`)
+      let realm = await this.fetchJSON(`${base}realms/${worldIndex.startRealm}/realm.json`)
+      this.start(this.hydrateRealmToLegacyGameData(realm))
+    } finally {
+      this.#isLoading = false
     }
   }
 
-  async loadGameData(url) {
-    const gameData = await this.fetchJSON(url)
-    this.start(gameData)
+  hydrateRealmToLegacyGameData(realm) {
+    return {
+      world: {
+        rowCount: realm.rowCount,
+        columnCount: realm.columnCount
+      },
+      camera: realm.camera,
+      entities: realm.entities
+    }
   }
 
   async fetchJSON(url) {
@@ -562,8 +584,8 @@ class GameApp extends HTMLElement {
       }
     }
   }
-  
 }
+
 
 customElements.define('game-app', GameApp)
 

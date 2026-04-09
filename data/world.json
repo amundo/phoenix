@@ -1,6 +1,6 @@
 {
-  "startRealm": "pleasant-river-town",
-  "realms": [
+  "startRealm": "overworld",
+  "realmsForLater": [
     "pleasant-river-town",
     "dark-forest"
   ]
