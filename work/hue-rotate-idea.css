@@ -1,0 +1,16 @@
+body {
+  --shadow: #333
+  font-size: 10rem;
+  display: grid;
+  height: 100vh;
+  place-content: center;
+  font-size: 4rem;
+  color: transparent;
+  text-shadow:
+    0 0 0 var(--shadow),
+    1px 0 0 var(--shadow),
+   -1px 0 0 var(--shadow),
+    0 1px 0 var(--shadow),
+    0 -1px 0 var(--shadow);
+}
+}

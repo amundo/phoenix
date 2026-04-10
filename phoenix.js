@@ -2,9 +2,6 @@ import { GameApp } from './ui/GameApp.js'
 import { Player, Enemy } from './entities/Entities.js'
 customElements.define('game-app', GameApp)
 
-/* DATA LAYER */
-
-
 
 /* UI LAYER */
 

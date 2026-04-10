@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>colored emojis</title>
+
+<head>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    body {
+      --shadow: #c3c3c3;
+      font-size: 10rem;
+      display: grid;
+      height: 100vh;
+      place-content: center;
+      font-size: 10rem;
+      /*   color: transparent; */
+      text-shadow:
+        0 0 0 var(--shadow),
+        1px 0 0 var(--shadow),
+        -1px 0 0 var(--shadow),
+        0 1px 0 var(--shadow),
+        0 -1px 0 var(--shadow);
+      filter:
+        sepia(60%) 
+        hue-rotate(240deg) 
+        saturate(180%) 
+        brightness(95%) 
+        drop-shadow(-4px 12px 0 black) 
+        drop-shadow(0 0 4.3rem rebeccapurple) 
+        drop-shadow(0 0 4.5rem mediumpurple);
+    }
+  </style>
+</head>
+
+<body>❤️💀👹👺👻👽👾🤖🧌</body>
+
+</html>
