@@ -1,7 +1,7 @@
 import { World } from './World.js'
 import { Camera } from './Camera.js'
-import { Player, Enemy, Item } from '../entities/Entities.js'
-
+import { Player, Enemy, Item } from './index.js'
+  
 class GameEngine {
   constructor(gameData) {
     this.initialize(gameData)

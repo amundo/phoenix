@@ -15,9 +15,10 @@
   <game-app src="./data/"></game-app>
 
 
-  <script type="module" src="./phoenix.js"></script>
 <script type="module">
-  window.app = document.querySelector('game-app')
+import { GameApp } from './ui/index.js'
+
+window.app = document.querySelector('game-app')
 </script>
 </body>
 

@@ -125,5 +125,8 @@ class GameApp extends HTMLElement {
   }
 }
 
+customElements.define('game-app', GameApp)
 
-export {GameApp}
+export {
+  GameApp
+}

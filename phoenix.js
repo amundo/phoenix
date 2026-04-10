@@ -1,5 +1,5 @@
 import { GameApp } from './ui/GameApp.js'
-import { Player, Enemy } from './entities/Entities.js'
+import { Player, Enemy } from './entities/index.js'
 customElements.define('game-app', GameApp)
 
 
@@ -269,7 +269,4 @@ class GameBoard extends HTMLElement {
   }
 }
 customElements.define('game-board', GameBoard)
-
-class GameUI extends HTMLElement { }
-customElements.define('game-ui', GameUI)
 
