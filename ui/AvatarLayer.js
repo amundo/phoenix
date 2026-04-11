@@ -1,8 +1,12 @@
 import { BaseLayer } from './BaseLayer.js'
+
 import { PlayerAvatar } from './PlayerAvatar.js'
 import { EnemyAvatar } from './EnemyAvatar.js'
 import { ItemAvatar } from './ItemAvatar.js'
-import { Player, Enemy } from '../entities/index.js'
+
+import { Player } from '../entities/index.js'
+import { Enemy } from '../entities/index.js'
+import { Item } from '../entities/index.js'
 
 class AvatarLayer extends BaseLayer {
   constructor() {

@@ -10,7 +10,7 @@ class GameEngine {
   }
 
   initialize(gameData) {
-    this.world = new World(gameData.world)
+    this.world = new World(gameData)
     this.camera = new Camera(gameData.camera)
 
     this.player = new Player(gameData.entities.player)

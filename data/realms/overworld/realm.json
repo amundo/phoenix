@@ -1,10 +1,8 @@
 {
-    "id": "overworld",
-    "name": "Overworld",
-
-    "rowCount": 30,
-    "columnCount": 40,
-
+  "id": "overworld",
+  "name": "Overworld",
+  "rowCount": 30,
+  "columnCount": 40,
   "camera": {
     "x": 0,
     "y": 0,
@@ -25,7 +23,7 @@
         "x": 2,
         "y": 3
       },
-            {
+      {
         "name": "Giant Troll",
         "emoji": "🧌",
         "x": 4,
@@ -185,5 +183,4 @@
       }
     ]
   }
-
 }

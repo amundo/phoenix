@@ -24,7 +24,6 @@ class GameApp extends HTMLElement {
     return ['src']
   }
 
-
   get src() {
     let value = this.getAttribute('src')
     if (!value) return null
@@ -38,43 +37,35 @@ class GameApp extends HTMLElement {
     }
   }
 
-
   attributeChangedCallback(name, oldValue, newValue) {
     if (name !== 'src' || oldValue === newValue) return
     if (!this.#hasConnected) return
     if (this.#isLoading) return
-
-    this.loadGameData(newValue)
+    this.loadGameData(this.src)
+    // this.loadGameData(newValue)
   }
 
   async loadGameData(base) {
     this.#isLoading = true
     try {
-      let worldIndex = await this.fetchJSON(`${base}world.json`)
-      let realm = await this.fetchJSON(`${base}realms/${worldIndex.startRealm}/realm.json`)
-      this.start(this.hydrateRealmToLegacyGameData(realm))
+      let worldJsonUrl = `${base}world.json`
+      let worldIndex = await this.fetchJSON(worldJsonUrl)
+      let startRealmUrl = `${base}realms/${worldIndex.startRealm}/realm.json`
+      console.log(`[DEV] Fetching starting realm from ${startRealmUrl}`)
+      let realm = await this.fetchJSON(startRealmUrl)
+      console.log(`[DEV] Loaded starting realm:`, realm)
+      this.start(realm)
     } finally {
       this.#isLoading = false
     }
   }
-
-  hydrateRealmToLegacyGameData(realm) {
-    return {
-      world: {
-        rowCount: realm.rowCount,
-        columnCount: realm.columnCount
-      },
-      camera: realm.camera,
-      entities: realm.entities
-    }
-  }
-
 
   async fetchJSON(url) {
     const response = await fetch(url)
     return await response.json()
     }
 
+    get engine(){ return this.#engine } // [DEV]
   start(gameData) {
     this.#engine = new GameEngine(gameData)
     this.render()

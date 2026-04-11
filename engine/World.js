@@ -1,13 +1,8 @@
-class Cell {
-  constructor({ x, y, terrain = 'grassland' }) {
-    this.x = x
-    this.y = y
-    this.terrain = terrain
-  }
-}
+import { Cell } from "./Cell.js"
 
 class World {
   constructor({ rowCount, columnCount }) {
+    console.log(`[DEV] Creating world with ${rowCount} rows and ${columnCount} columns`)  
     this.rowCount = rowCount
     this.columnCount = columnCount
     this.worldGrid = Array.from({ length: rowCount }, (_, y) =>
