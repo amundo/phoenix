@@ -1,0 +1,953 @@
+[
+  {
+    "emoji": "😍",
+    "name": "adoration",
+    "valence": 0.9,
+    "arousal": 0.7,
+    "tags": [
+      "aww",
+      "ooo"
+    ]
+  },
+  {
+    "emoji": "😊",
+    "name": "affection",
+    "valence": 0.9,
+    "arousal": 0.3,
+    "tags": [
+      "mm",
+      "aww"
+    ]
+  },
+  {
+    "emoji": "🥰",
+    "name": "affection",
+    "valence": 0.8,
+    "arousal": 0.5,
+    "tags": [
+      "aww",
+      "mmm"
+    ]
+  },
+  {
+    "emoji": "😘",
+    "name": "affectionate_kiss",
+    "valence": 0.85,
+    "arousal": 0.5,
+    "tags": [
+      "mwah"
+    ]
+  },
+  {
+    "emoji": "😲",
+    "name": "amazement",
+    "valence": 0.5,
+    "arousal": 0.8,
+    "tags": [
+      "whoa",
+      "oooh"
+    ]
+  },
+  {
+    "emoji": "😁",
+    "name": "amusement",
+    "valence": 0.9,
+    "arousal": 0.8,
+    "tags": [
+      "haha",
+      "hehe"
+    ]
+  },
+  {
+    "emoji": "😠",
+    "name": "anger",
+    "valence": -0.9,
+    "arousal": 0.8,
+    "tags": [
+      "grr"
+    ]
+  },
+  {
+    "emoji": "😤",
+    "name": "anger",
+    "valence": -0.8,
+    "arousal": 0.6,
+    "tags": [
+      "huff",
+      "hmph"
+    ]
+  },
+  {
+    "emoji": "😧",
+    "name": "anguish",
+    "valence": -0.7,
+    "arousal": 0.5,
+    "tags": [
+      "ugh",
+      "ahh"
+    ]
+  },
+  {
+    "emoji": "🙄",
+    "name": "annoyance",
+    "valence": -0.5,
+    "arousal": -0.3,
+    "tags": [
+      "ugh",
+      "tsk"
+    ]
+  },
+  {
+    "emoji": "😰",
+    "name": "anxiety",
+    "valence": -0.6,
+    "arousal": 0.8,
+    "tags": [
+      "eep",
+      "uhh"
+    ]
+  },
+  {
+    "emoji": "😐",
+    "name": "apathy",
+    "valence": -0.8,
+    "arousal": -0.7,
+    "tags": [
+      "meh"
+    ]
+  },
+  {
+    "emoji": "🥲",
+    "name": "bittersweet",
+    "valence": 0.5,
+    "arousal": 0.3,
+    "tags": [
+      "ahh",
+      "mm"
+    ]
+  },
+  {
+    "emoji": "😒",
+    "name": "boredom",
+    "valence": -0.4,
+    "arousal": -0.3,
+    "tags": [
+      "meh",
+      "sigh"
+    ]
+  },
+  {
+    "emoji": "😎",
+    "name": "calm",
+    "valence": 0.7,
+    "arousal": -0.3,
+    "tags": [
+      "mmm"
+    ]
+  },
+  {
+    "emoji": "😌",
+    "name": "calm",
+    "valence": 0.7,
+    "arousal": -0.7,
+    "tags": [
+      "ahh"
+    ]
+  },
+  {
+    "emoji": "🥳",
+    "name": "celebration",
+    "valence": 0.9,
+    "arousal": 0.8,
+    "tags": [
+      "yay",
+      "woo"
+    ]
+  },
+  {
+    "emoji": "😃",
+    "name": "cheerful",
+    "valence": 0.9,
+    "arousal": 0.7,
+    "tags": [
+      "yay"
+    ]
+  },
+  {
+    "emoji": "🤡",
+    "name": "clownish",
+    "valence": 0.4,
+    "arousal": 0.6,
+    "tags": [
+      "honk",
+      "boop"
+    ]
+  },
+  {
+    "emoji": "😦",
+    "name": "concern",
+    "valence": -0.6,
+    "arousal": 0.4,
+    "tags": [
+      "uh",
+      "oh"
+    ]
+  },
+  {
+    "emoji": "😕",
+    "name": "confusion",
+    "valence": -0.3,
+    "arousal": 0,
+    "tags": [
+      "huh"
+    ]
+  },
+  {
+    "emoji": "😶‍🌫️",
+    "name": "confusion",
+    "valence": -0.3,
+    "arousal": -0.4,
+    "tags": [
+      "uhh"
+    ]
+  },
+  {
+    "emoji": "😭",
+    "name": "crying",
+    "valence": -1,
+    "arousal": 0.6,
+    "tags": [
+      "waa",
+      "sob"
+    ]
+  },
+  {
+    "emoji": "🧐",
+    "name": "curiosity",
+    "valence": 0.4,
+    "arousal": 0.3,
+    "tags": [
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "🤥",
+    "name": "deception",
+    "valence": -0.6,
+    "arousal": 0.2,
+    "tags": [
+      "eh",
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "😔",
+    "name": "depression",
+    "valence": -0.9,
+    "arousal": -0.9,
+    "tags": [
+      "sigh"
+    ]
+  },
+  {
+    "emoji": "🤤",
+    "name": "desire",
+    "valence": 0.6,
+    "arousal": 0.4,
+    "tags": [
+      "mmm"
+    ]
+  },
+  {
+    "emoji": "😞",
+    "name": "despair",
+    "valence": -0.9,
+    "arousal": -0.8,
+    "tags": [
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "😣",
+    "name": "desperation",
+    "valence": -0.8,
+    "arousal": 0.7,
+    "tags": [
+      "ahh",
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "🫥",
+    "name": "disconnection",
+    "valence": -0.4,
+    "arousal": -0.6,
+    "tags": [
+      "..."
+    ]
+  },
+  {
+    "emoji": "🥸",
+    "name": "disguise",
+    "valence": 0.3,
+    "arousal": 0.4,
+    "tags": [
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "🤢",
+    "name": "disgust",
+    "valence": -0.8,
+    "arousal": 0.2,
+    "tags": [
+      "bleh",
+      "ew"
+    ]
+  },
+  {
+    "emoji": "😵",
+    "name": "disorientation",
+    "valence": -0.4,
+    "arousal": 0.6,
+    "tags": [
+      "uhh",
+      "woah"
+    ]
+  },
+  {
+    "emoji": "🙁",
+    "name": "displeasure",
+    "valence": -0.6,
+    "arousal": 0.4,
+    "tags": [
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "😵‍💫",
+    "name": "dizzi",
+    "valence": -0.5,
+    "arousal": 0.7,
+    "tags": [
+      "woah"
+    ]
+  },
+  {
+    "emoji": "🥴",
+    "name": "dizzi",
+    "valence": -0.5,
+    "arousal": 0.4,
+    "tags": [
+      "uhh"
+    ]
+  },
+  {
+    "emoji": "😪",
+    "name": "drowsi",
+    "valence": -0.2,
+    "arousal": -0.8,
+    "tags": [
+      "yawn"
+    ]
+  },
+  {
+    "emoji": "🫠",
+    "name": "embarrassment",
+    "valence": -0.3,
+    "arousal": -0.4,
+    "tags": [
+      "uh"
+    ]
+  },
+  {
+    "emoji": "😳",
+    "name": "embarrassment",
+    "valence": -0.3,
+    "arousal": 0.6,
+    "tags": [
+      "eep"
+    ]
+  },
+  {
+    "emoji": "👿",
+    "name": "evil",
+    "valence": -0.9,
+    "arousal": 0.8,
+    "tags": [
+      "mwahaha"
+    ]
+  },
+  {
+    "emoji": "🤩",
+    "name": "excitement",
+    "valence": 1,
+    "arousal": 0.9,
+    "tags": [
+      "wow",
+      "yaa"
+    ]
+  },
+  {
+    "emoji": "😫",
+    "name": "exhaustion",
+    "valence": -0.7,
+    "arousal": -0.9,
+    "tags": [
+      "ugh",
+      "sigh"
+    ]
+  },
+  {
+    "emoji": "😨",
+    "name": "fear",
+    "valence": -0.7,
+    "arousal": 0.9,
+    "tags": [
+      "eep",
+      "ah"
+    ]
+  },
+  {
+    "emoji": "🥶",
+    "name": "freezing",
+    "valence": -0.6,
+    "arousal": 0.5,
+    "tags": [
+      "brr"
+    ]
+  },
+  {
+    "emoji": "😖",
+    "name": "frustration",
+    "valence": -0.7,
+    "arousal": 0.6,
+    "tags": [
+      "grr",
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "🤬",
+    "name": "fury",
+    "valence": -1,
+    "arousal": 1,
+    "tags": [
+      "raa",
+      "grr"
+    ]
+  },
+  {
+    "emoji": "😝",
+    "name": "goofi",
+    "valence": 0.7,
+    "arousal": 0.7,
+    "tags": [
+      "bleh",
+      "hehe"
+    ]
+  },
+  {
+    "emoji": "🥹",
+    "name": "grateful_tears",
+    "valence": 0.5,
+    "arousal": 0.3,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "🤑",
+    "name": "greed",
+    "valence": 0.6,
+    "arousal": 0.5,
+    "tags": [
+      "cha-ching"
+    ]
+  },
+  {
+    "emoji": "😓",
+    "name": "guilt",
+    "valence": -0.7,
+    "arousal": 0.2,
+    "tags": [
+      "uh",
+      "sigh"
+    ]
+  },
+  {
+    "emoji": "😀",
+    "name": "happi",
+    "valence": 0.9,
+    "arousal": 0.6,
+    "tags": [
+      "yay"
+    ]
+  },
+  {
+    "emoji": "🤗",
+    "name": "happiness_in_hug",
+    "valence": 0.8,
+    "arousal": 0.4,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😂",
+    "name": "hilarity",
+    "valence": 0.9,
+    "arousal": 0.9,
+    "tags": [
+      "HAHA",
+      "lol"
+    ]
+  },
+  {
+    "emoji": "🤒",
+    "name": "ill",
+    "valence": -0.7,
+    "arousal": -0.4,
+    "tags": [
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "😑",
+    "name": "indifference",
+    "valence": -0.2,
+    "arousal": -0.2,
+    "tags": [
+      "meh"
+    ]
+  },
+  {
+    "emoji": "😇",
+    "name": "innocence",
+    "valence": 0.9,
+    "arousal": 0.3,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😄",
+    "name": "joy",
+    "valence": 0.95,
+    "arousal": 0.7,
+    "tags": [
+      "yay",
+      "haha"
+    ]
+  },
+  {
+    "emoji": "😆",
+    "name": "laughter",
+    "valence": 0.8,
+    "arousal": 0.8,
+    "tags": [
+      "haha",
+      "lol"
+    ]
+  },
+  {
+    "emoji": "😴",
+    "name": "lethargy",
+    "valence": -0.6,
+    "arousal": -0.8,
+    "tags": [
+      "zzz"
+    ]
+  },
+  {
+    "emoji": "🫤",
+    "name": "meh",
+    "valence": -0.2,
+    "arousal": 0,
+    "tags": [
+      "meh"
+    ]
+  },
+  {
+    "emoji": "🤯",
+    "name": "mind_blown",
+    "valence": 0.2,
+    "arousal": 1,
+    "tags": [
+      "boom"
+    ]
+  },
+  {
+    "emoji": "😈",
+    "name": "mischief",
+    "valence": -0.6,
+    "arousal": 0.6,
+    "tags": [
+      "heh"
+    ]
+  },
+  {
+    "emoji": "😜",
+    "name": "mischievous",
+    "valence": 0.8,
+    "arousal": 0.6,
+    "tags": [
+      "hehe"
+    ]
+  },
+  {
+    "emoji": "🤮",
+    "name": "nausea",
+    "valence": -0.9,
+    "arousal": 0.4,
+    "tags": [
+      "bleh"
+    ]
+  },
+  {
+    "emoji": "🤓",
+    "name": "nerdi",
+    "valence": 0.3,
+    "arousal": 0.2,
+    "tags": [
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "😬",
+    "name": "nervous",
+    "valence": -0.5,
+    "arousal": 0.7,
+    "tags": [
+      "eek"
+    ]
+  },
+  {
+    "emoji": "🤠",
+    "name": "optimism",
+    "valence": 0.8,
+    "arousal": 0.5,
+    "tags": [
+      "yee"
+    ]
+  },
+  {
+    "emoji": "🥵",
+    "name": "overheating",
+    "valence": -0.6,
+    "arousal": 0.6,
+    "tags": [
+      "pant"
+    ]
+  },
+  {
+    "emoji": "🤕",
+    "name": "pain",
+    "valence": -0.8,
+    "arousal": -0.3,
+    "tags": [
+      "ow"
+    ]
+  },
+  {
+    "emoji": "😛",
+    "name": "playful_teasing",
+    "valence": 0.7,
+    "arousal": 0.4,
+    "tags": [
+      "bleh"
+    ]
+  },
+  {
+    "emoji": "🙃",
+    "name": "playful",
+    "valence": 0.6,
+    "arousal": 0.4,
+    "tags": [
+      "hee"
+    ]
+  },
+  {
+    "emoji": "🥺",
+    "name": "pleading",
+    "valence": -0.2,
+    "arousal": 0.4,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😡",
+    "name": "rage",
+    "valence": -0.8,
+    "arousal": 0.9,
+    "tags": [
+      "grr"
+    ]
+  },
+  {
+    "emoji": "😅",
+    "name": "relief",
+    "valence": 0.7,
+    "arousal": 0.6,
+    "tags": [
+      "phew"
+    ]
+  },
+  {
+    "emoji": "😮‍💨",
+    "name": "relief_with_exhaustion",
+    "valence": 0.2,
+    "arousal": -0.5,
+    "tags": [
+      "phew"
+    ]
+  },
+  {
+    "emoji": "🫡",
+    "name": "respect",
+    "valence": 0.7,
+    "arousal": 0.3,
+    "tags": [
+      "hm"
+    ]
+  },
+  {
+    "emoji": "😢",
+    "name": "sad",
+    "valence": -0.8,
+    "arousal": -0.7,
+    "tags": [
+      "sob"
+    ]
+  },
+  {
+    "emoji": "☹️",
+    "name": "sad",
+    "valence": -0.7,
+    "arousal": 0.3,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😥",
+    "name": "sadness_with_relief",
+    "valence": -0.5,
+    "arousal": 0.4,
+    "tags": [
+      "phew"
+    ]
+  },
+  {
+    "emoji": "😏",
+    "name": "satisfaction",
+    "valence": 0.7,
+    "arousal": -0.4,
+    "tags": [
+      "hm"
+    ]
+  },
+  {
+    "emoji": "😋",
+    "name": "satisfaction",
+    "valence": 0.8,
+    "arousal": 0.5,
+    "tags": [
+      "mmm"
+    ]
+  },
+  {
+    "emoji": "🤫",
+    "name": "secretive",
+    "valence": 0.2,
+    "arousal": 0.1,
+    "tags": [
+      "shh"
+    ]
+  },
+  {
+    "emoji": "😯",
+    "name": "shock",
+    "valence": 0.3,
+    "arousal": 0.6,
+    "tags": [
+      "oh"
+    ]
+  },
+  {
+    "emoji": "🫨",
+    "name": "shock",
+    "valence": -0.2,
+    "arousal": 0.8,
+    "tags": [
+      "woah"
+    ]
+  },
+  {
+    "emoji": "🫣",
+    "name": "shy",
+    "valence": 0.1,
+    "arousal": 0.2,
+    "tags": [
+      "uh"
+    ]
+  },
+  {
+    "emoji": "😷",
+    "name": "sick",
+    "valence": -0.8,
+    "arousal": -0.5,
+    "tags": [
+      "ugh"
+    ]
+  },
+  {
+    "emoji": "🤐",
+    "name": "silence",
+    "valence": 0,
+    "arousal": -0.1,
+    "tags": [
+      "..."
+    ]
+  },
+  {
+    "emoji": "🤨",
+    "name": "skepticism",
+    "valence": -0.2,
+    "arousal": 0.3,
+    "tags": [
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "🥱",
+    "name": "sleepi",
+    "valence": -0.1,
+    "arousal": -0.8,
+    "tags": [
+      "yawn"
+    ]
+  },
+  {
+    "emoji": "😉",
+    "name": "sly",
+    "valence": 0.8,
+    "arousal": 0.4,
+    "tags": [
+      "heh"
+    ]
+  },
+  {
+    "emoji": "🤧",
+    "name": "sneezing",
+    "valence": -0.7,
+    "arousal": -0.2,
+    "tags": [
+      "achoo"
+    ]
+  },
+  {
+    "emoji": "😶",
+    "name": "speechless",
+    "valence": 0,
+    "arousal": -0.1,
+    "tags": [
+      "..."
+    ]
+  },
+  {
+    "emoji": "😮",
+    "name": "surprise",
+    "valence": 0.4,
+    "arousal": 0.7,
+    "tags": [
+      "oh",
+      "whoa"
+    ]
+  },
+  {
+    "emoji": "🫢",
+    "name": "surprise",
+    "valence": 0.1,
+    "arousal": 0.4,
+    "tags": [
+      "oh"
+    ]
+  },
+  {
+    "emoji": "🤭",
+    "name": "surprised_amusement",
+    "valence": 0.5,
+    "arousal": 0.3,
+    "tags": [
+      "hehe"
+    ]
+  },
+  {
+    "emoji": "😚",
+    "name": "sweet",
+    "valence": 0.7,
+    "arousal": 0.2,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😗",
+    "name": "tender",
+    "valence": 0.7,
+    "arousal": 0.2,
+    "tags": [
+      "mmm"
+    ]
+  },
+  {
+    "emoji": "😱",
+    "name": "terror",
+    "valence": -0.8,
+    "arousal": 1,
+    "tags": [
+      "aaa",
+      "eep"
+    ]
+  },
+  {
+    "emoji": "🤔",
+    "name": "thoughtful",
+    "valence": 0.2,
+    "arousal": 0.4,
+    "tags": [
+      "hmm"
+    ]
+  },
+  {
+    "emoji": "☺️",
+    "name": "warmth",
+    "valence": 0.6,
+    "arousal": 0.3,
+    "tags": [
+      "aww"
+    ]
+  },
+  {
+    "emoji": "😟",
+    "name": "worry",
+    "valence": -0.5,
+    "arousal": 0.4,
+    "tags": [
+      "eep",
+      "uh"
+    ]
+  },
+  {
+    "emoji": "🤪",
+    "name": "zani",
+    "valence": 0.8,
+    "arousal": 0.8,
+    "tags": [
+      "boing",
+      "whee"
+    ]
+  }
+]
