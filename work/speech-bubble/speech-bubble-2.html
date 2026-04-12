@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>speech bubble</title>
+  <style>
+    speech-bubble {
+      display: inline-block;
+      padding: 1rem 1.25rem;
+      border: 2px solid black;
+      border-radius: 1rem;
+      background: white;
+      font: 24px/1.3 sans-serif;
+    }
+
+    speech-bubble span {
+      display: inline-block;
+      white-space: pre;
+    }
+  </style>
+
+  <script type="module">
+    class SpeechBubble extends HTMLElement {
+      static get observedAttributes() {
+        return ['animation', 'stagger', 'duration', 'distance', 'easing', 'autoplay']
+      }
+
+      #animations = {}
+
+      constructor() {
+        super()
+      }
+
+      connectedCallback() {
+        if (!this.dataset.spanified) {
+          this.spanify()
+          this.dataset.spanified = 'true'
+        }
+
+        if (!Object.keys(this.#animations).length) {
+          this.animations = {
+            'float-down': ({ distance = 0.5 } = {}) => ({
+              keyframes: [
+                { transform: `translateY(-${distance}em)`, opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+              ],
+              options: {}
+            }),
+
+            'float-up': ({ distance = 0.5 } = {}) => ({
+              keyframes: [
+                { transform: `translateY(${distance}em)`, opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+              ],
+              options: {}
+            })
+          }
+        }
+
+        if (this.hasAttribute('autoplay')) {
+          this.play()
+        }
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue === newValue) return
+        if (!this.isConnected) return
+
+        if (['animation', 'stagger', 'duration', 'distance', 'easing'].includes(name)) {
+          if (this.hasAttribute('autoplay')) {
+            this.play()
+          }
+        }
+      }
+
+      spanify() {
+        const text = this.textContent
+        const fragment = document.createDocumentFragment()
+
+        for (const character of Array.from(text)) {
+          const span = document.createElement('span')
+          span.textContent = character === ' ' ? '\u00A0' : character
+          fragment.appendChild(span)
+        }
+
+        this.textContent = ''
+        this.append(fragment)
+      }
+
+      set animations(definitions) {
+        this.#animations = definitions
+      }
+
+      get animations() {
+        return this.#animations
+      }
+
+      get animationName() {
+        return this.getAttribute('animation') || 'float-down'
+      }
+
+      get stagger() {
+        return Number(this.getAttribute('stagger')) || 40
+      }
+
+      get duration() {
+        return Number(this.getAttribute('duration')) || 250
+      }
+
+      get distance() {
+        return Number(this.getAttribute('distance')) || 0.5
+      }
+
+      get easing() {
+        return this.getAttribute('easing') || 'ease-out'
+      }
+
+      play() {
+        const createAnimation = this.#animations[this.animationName]
+
+        if (!createAnimation) {
+          console.warn(`Animation "${this.animationName}" not found.`)
+          return
+        }
+
+        const { keyframes, options = {} } = createAnimation({
+          distance: this.distance
+        })
+
+        this.querySelectorAll('span').forEach((span, index) => {
+          span.getAnimations().forEach(animation => animation.cancel())
+
+          span.animate(keyframes, {
+            fill: 'both',
+            duration: this.duration,
+            easing: this.easing,
+            delay: index * this.stagger,
+            ...options
+          })
+        })
+      }
+    }
+
+    customElements.define('speech-bubble', SpeechBubble)
+  </script>
+</head>
+<body>
+  <speech-bubble
+    animation="float-down"
+    stagger="50"
+    duration="220"
+    distance="0.7"
+    easing="ease-out"
+    autoplay
+  >
+    this is some text
+  </speech-bubble>
+</body>
+</html>

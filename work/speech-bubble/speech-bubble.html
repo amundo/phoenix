@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>speech bubble</title>
+  <style>
+    speech-bubble {
+      display: inline-block;
+      padding: 1rem 1.25rem;
+      border: 2px solid black;
+      border-radius: 1rem;
+      font: 24px/1.3 sans-serif;
+      background: white;
+    }
+
+    speech-bubble span {
+      display: inline-block;
+      white-space: pre;
+    }
+  </style>
+
+  <script type="module">
+    class SpeechBubble extends HTMLElement {
+      #animations = {}
+
+      connectedCallback() {
+        if (!this.dataset.spanified) {
+          this.spanify()
+          this.dataset.spanified = 'true'
+        }
+      }
+
+      spanify() {
+        const text = this.textContent
+        const fragment = document.createDocumentFragment()
+
+        for (const character of Array.from(text)) {
+          const span = document.createElement('span')
+          span.textContent = character === ' ' ? '\u00A0' : character
+          fragment.appendChild(span)
+        }
+
+        this.textContent = ''
+        this.append(fragment)
+      }
+
+      set animations(definitions) {
+        this.#animations = {}
+
+        for (const [name, definition] of Object.entries(definitions)) {
+          const { keyframes, options = {} } = definition
+
+          this.#animations[name] = (stagger = 40) => {
+            this.querySelectorAll('span').forEach((span, index) => {
+              span.animate(keyframes, {
+                fill: 'both',
+                ...options,
+                delay: (options.delay || 0) + index * stagger
+              })
+            })
+          }
+        }
+      }
+
+      get animations() {
+        return this.#animations
+      }
+
+      runAnimation(name, stagger = 40) {
+        if (this.#animations[name]) {
+          this.#animations[name](stagger)
+        } else {
+          console.warn(`Animation "${name}" not found.`)
+        }
+      }
+    }
+
+    customElements.define('speech-bubble', SpeechBubble)
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const demo = document.getElementById('demo')
+
+      demo.animations = {
+        floatDown: {
+          keyframes: [
+            { transform: 'translateY(-0.7em)', opacity: 0 },
+            { transform: 'translateY(0)', opacity: 1 }
+          ],
+          options: {
+            duration: 300,
+            easing: 'ease-out'
+          }
+        }
+      }
+
+      demo.runAnimation('floatDown', 50)
+    })
+  </script>
+</head>
+<body>
+  <speech-bubble id="demo">this is some text</speech-bubble>
+</body>
+</html>
