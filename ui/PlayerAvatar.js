@@ -9,6 +9,7 @@ class PlayerAvatar extends BaseAvatar {
       <span class="emotion-badge" hidden>😠</span>
       <span class="speech-bubble" hidden>Look out! Giant Spider!</span>
     `;
+    this.id = 'player'
   }
 
   fadeOutBadge(badge) {

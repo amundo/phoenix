@@ -1,7 +1,7 @@
 import { World } from './World.js'
 import { Camera } from './Camera.js'
 import { Item } from '../entities/index.js'
-import { Player  } from '../entities/index.js'  
+import { Player } from '../entities/index.js'
 import { Enemy } from '../entities/index.js'
 
 class GameEngine {
@@ -23,6 +23,10 @@ class GameEngine {
 
   get entities() {
     return [this.player, ...this.enemies, ...this.items]
+  }
+
+  getEntitiesAt(x, y) {
+    return this.entities.filter(entity => entity.x === x && entity.y === y)
   }
 
   getState() {
@@ -55,6 +59,75 @@ class GameEngine {
     return result
   }
 
+  resolvePlayerTouch(x, y) {
+    const effects = []
+
+    const itemsHere = this.items.filter(item => item.x === x && item.y === y)
+
+    for (const item of itemsHere) {
+      if (item.kind === 'cactus') {
+        effects.push({
+          type: 'emote',
+          actor: this.player,
+          emotion: 'ouch',
+        })
+      }
+
+      if (item.kind === 'key') {
+        if (!this.player.inventory) {
+          this.player.inventory = []
+        }
+
+        if (!this.player.inventory.includes('key')) {
+          this.player.inventory.push('key')
+        }
+
+        this.items = this.items.filter(it => it !== item)
+
+        effects.push({
+          type: 'pickup',
+          actor: this.player,
+          item,
+        })
+
+        effects.push({
+          type: 'emote',
+          actor: this.player,
+          emotion: 'happy',
+        })
+      }
+
+      if (item.kind === 'door') {
+        const hasKey = this.player.inventory?.includes('key')
+
+        if (hasKey) {
+          effects.push({
+            type: 'change-realm',
+            actor: this.player,
+            realm: item.to,
+          })
+        } else {
+          effects.push({
+            type: 'speak',
+            actor: this.player,
+            message: 'It is locked.',
+          })
+
+          effects.push({
+            type: 'emote',
+            actor: this.player,
+            emotion: 'confused',
+          })
+        }
+      }
+    }
+
+    return {
+      stateChanged: false,
+      effects,
+    }
+  }
+
   movePlayerBy(dx, dy) {
     const effects = []
 
@@ -68,12 +141,11 @@ class GameEngine {
         message: 'Oof!',
       })
 
-
-    effects.push({
-      type: 'emote',
-      actor: this.player,
-      emotion: '', // happy
-    })
+      effects.push({
+        type: 'emote',
+        actor: this.player,
+        emotion: 'ouch',
+      })
 
       return {
         stateChanged: false,
@@ -99,6 +171,9 @@ class GameEngine {
     }
 
     this.player.moveTo({ x: nextX, y: nextY })
+
+    const touchResult = this.resolvePlayerTouch(nextX, nextY)
+    effects.push(...touchResult.effects)
 
     return {
       stateChanged: true,

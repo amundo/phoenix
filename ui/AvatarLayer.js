@@ -61,7 +61,7 @@ class AvatarLayer extends BaseLayer {
   createAvatar(entity) {
     if (entity instanceof Player) return new PlayerAvatar()
     if (entity instanceof Enemy) return new EnemyAvatar()
-    return new ItemAvatar()
+    if (entity instanceof Item) return new ItemAvatar()
   }
 }
 customElements.define('avatar-layer', AvatarLayer)
