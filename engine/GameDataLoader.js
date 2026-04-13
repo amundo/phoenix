@@ -45,9 +45,11 @@ class GameDataLoader {
       entries.map(([, path]) => this.fetchJSON(path))
     )
 
-    return Object.fromEntries(
+    let catalogMap = Object.fromEntries(
       entries.map(([name], i) => [name, this.makeCatalog(results[i])])
     )
+console.log(`items: ${catalogMap.items.list.length}`)
+    return catalogMap
   }
 
   async loadWorld() {
@@ -87,21 +89,12 @@ class GameDataLoader {
 
     const realm = await this.loadRealm(realmName)
 
-    return {
+    const data = {
       ...sharedData,
       realm,
     }
-  }
 
-  async _loadGameData() {
-    const sharedData = await this.loadSharedData()
-
-    const realm = await this.loadRealm(sharedData.world.startRealm)
-
-    return {
-      ...sharedData,
-      realm,
-    }
+    return data
   }
 }
 

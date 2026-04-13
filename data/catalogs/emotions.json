@@ -326,7 +326,7 @@
   },
   {
     "emoji": "😵‍💫",
-    "name": "dizzi",
+    "name": "dizzy",
     "valence": -0.5,
     "arousal": 0.7,
     "tags": [
@@ -334,17 +334,8 @@
     ]
   },
   {
-    "emoji": "🥴",
-    "name": "dizzi",
-    "valence": -0.5,
-    "arousal": 0.4,
-    "tags": [
-      "uhh"
-    ]
-  },
-  {
     "emoji": "😪",
-    "name": "drowsi",
+    "name": "drowsy",
     "valence": -0.2,
     "arousal": -0.8,
     "tags": [
@@ -439,7 +430,7 @@
   },
   {
     "emoji": "😝",
-    "name": "goofi",
+    "name": "goofy",
     "valence": 0.7,
     "arousal": 0.7,
     "tags": [
@@ -477,7 +468,7 @@
   },
   {
     "emoji": "😀",
-    "name": "happi",
+    "name": "happy",
     "valence": 0.9,
     "arousal": 0.6,
     "tags": [
@@ -606,7 +597,7 @@
   },
   {
     "emoji": "🤓",
-    "name": "nerdi",
+    "name": "nerdy",
     "valence": 0.3,
     "arousal": 0.2,
     "tags": [
@@ -822,7 +813,7 @@
   },
   {
     "emoji": "🥱",
-    "name": "sleepi",
+    "name": "sleepy",
     "valence": -0.1,
     "arousal": -0.8,
     "tags": [

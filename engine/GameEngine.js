@@ -10,12 +10,12 @@ class GameEngine {
   }
 
   initialize(gameData) {
-    this.world = new World(gameData)
-    this.camera = new Camera(gameData.camera)
+    this.world = new World(gameData.realm)
+    this.camera = new Camera(gameData.realm.camera)
 
-    this.player = new Player(gameData.entities.player)
-    this.enemies = gameData.entities.enemies.map(enemy => new Enemy(enemy))
-    this.items = gameData.entities.items.map(item => new Item(item))
+    this.player = new Player(gameData.realm.entities.player)
+    this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
+    this.items = gameData.realm.entities.items.map(item => new Item(item))
   }
 
   get entities() {
@@ -68,7 +68,7 @@ class GameEngine {
     effects.push({
       type: 'emote',
       actor: this.player,
-      emotion: '😠',
+      emotion: '', // happy
     })
 
       return {

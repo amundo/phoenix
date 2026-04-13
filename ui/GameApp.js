@@ -1,4 +1,5 @@
 import { GameEngine } from '../engine/GameEngine.js'
+import { GameDataLoader } from '../engine/GameDataLoader.js'
 
 class GameApp extends HTMLElement {
   #engine = null
@@ -25,13 +26,14 @@ class GameApp extends HTMLElement {
   }
 
   get src() {
-    let value = this.getAttribute('src')
+    const value = this.getAttribute('src')
     if (!value) return null
     return new URL(value, document.baseURI).href
   }
 
   connectedCallback() {
     this.#hasConnected = true
+
     if (this.src && !this.#engine && !this.#isLoading) {
       this.loadGameData(this.src)
     }
@@ -41,34 +43,29 @@ class GameApp extends HTMLElement {
     if (name !== 'src' || oldValue === newValue) return
     if (!this.#hasConnected) return
     if (this.#isLoading) return
+
     this.loadGameData(this.src)
-    // this.loadGameData(newValue)
   }
 
-  async loadGameData(base) {
+  async loadGameData(dataRoot) {
     this.#isLoading = true
+
     try {
-      let worldJsonUrl = `${base}world.json`
-      let worldIndex = await this.fetchJSON(worldJsonUrl)
-      let startRealmUrl = `${base}realms/${worldIndex.startRealm}/realm.json`
-      console.log(`[DEV] Fetching starting realm from ${startRealmUrl}`)
-      let realm = await this.fetchJSON(startRealmUrl)
-      console.log(`[DEV] Loaded starting realm:`, realm)
-      this.start(realm)
+      const loader = new GameDataLoader(dataRoot)
+
+      const gameData = await loader.loadGameData()
+      this.start(gameData)
+    } catch (error) {
+      console.error('[GameApp] Failed to load game data:', error)
     } finally {
       this.#isLoading = false
     }
   }
 
-  async fetchJSON(url) {
-    const response = await fetch(url)
-    return await response.json()
+  get engine() {
+    return this.#engine
   }
 
-  get engine() { 
-    return this.#engine 
-  } // [DEV]
-  
   start(gameData) {
     this.#engine = new GameEngine(gameData)
     this.render()

@@ -9,5 +9,10 @@
     "id": "coin",
     "name": "Coin",
     "emoji": "🪙"
+  },
+  {
+    "id": "key",
+    "name": "Key",
+    "emoji": "🗝️"
   }
 ]

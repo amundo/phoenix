@@ -54,6 +54,7 @@ class PlayerAvatar extends BaseAvatar {
   }
 
   emote(emotion) {
+    console.log(this.#emotions)
     const badge = this.querySelector('.emotion-badge');
     badge.textContent = this.emotions[emotion] || '❓';
     badge.hidden = false;
@@ -62,8 +63,6 @@ class PlayerAvatar extends BaseAvatar {
 
   async connectedCallback() {
     try {
-      this.emotions = await super.loadEmotions();
-      // console.log(this.#emotions)
       this.emote('angry');
     } catch (error) {
       console.error(error);
@@ -72,7 +71,6 @@ class PlayerAvatar extends BaseAvatar {
         happy: '😀',
         sad: '😢',
       };
-      this.emote('angry'); 
     }
   }
 }
