@@ -28,7 +28,7 @@ class GameApp extends HTMLElement {
     let value = this.getAttribute('src')
     if (!value) return null
     return new URL(value, document.baseURI).href
-    }
+  }
 
   connectedCallback() {
     this.#hasConnected = true
@@ -63,9 +63,12 @@ class GameApp extends HTMLElement {
   async fetchJSON(url) {
     const response = await fetch(url)
     return await response.json()
-    }
+  }
 
-    get engine(){ return this.#engine } // [DEV]
+  get engine() { 
+    return this.#engine 
+  } // [DEV]
+  
   start(gameData) {
     this.#engine = new GameEngine(gameData)
     this.render()

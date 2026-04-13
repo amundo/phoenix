@@ -1,5 +1,7 @@
 class BaseAvatar extends HTMLElement {
   #data = null
+  #emotions = {}
+  static #emotionsPromise = null;
 
   constructor() {
     super()
@@ -11,13 +13,65 @@ class BaseAvatar extends HTMLElement {
     `
   }
 
+  get data() {
+    return this.#data
+  }
+
   set data(entityData) {
     this.#data = entityData
     this.render()
   }
 
-  get data() {
-    return this.#data
+  get emotions() {
+    return this.#emotions;
+  }
+
+  set emotions(mapping) {
+    this.#emotions = mapping;
+  }
+
+  static async loadEmotions() {
+    if (!BaseAvatar.#emotionsPromise) {
+      BaseAvatar.#emotionsPromise = fetch(
+        new URL('../data/catalogs/emotions.json', import.meta.url)
+      )
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to load emoji-emotions.json');
+          }
+          return response.json();
+        })
+        .then(data =>
+          Object.fromEntries(data.map(e => [e.name, e.emoji]))
+        );
+    }
+
+    return BaseAvatar.#emotionsPromise;
+  }
+
+  async ensureEmotionsLoaded() {
+    if (Object.keys(this.emotions).length) return this.emotions;
+
+    try {
+      this.emotions = await BaseAvatar.loadEmotions();
+    } catch (error) {
+      console.error(error);
+      this.emotions = {
+        angry: '😠',
+        happy: '😀',
+        sad: '😢',
+        surprised: '😲',
+        confused: '😕',
+        grimace: '😬',
+        zany: '🤪',
+      };
+    }
+
+    return this.emotions;
+  }
+
+  async connectedCallback() {
+    await this.ensureEmotionsLoaded();
   }
 
   speak(message) {
@@ -31,19 +85,47 @@ class BaseAvatar extends HTMLElement {
     }, 1000 + messageLength * 10)
   }
 
-  emote(emotion) {
-    const badge = this.querySelector('.emotion-badge')
+  fadeOutBadge(badge) {
+    badge.getAnimations().forEach(animation => animation.cancel());
 
-    badge.textContent = typeof emotion === 'string'
-      ? emotion
-      : emotion.emoji
+    badge.style.opacity = '1';
 
-    badge.hidden = false
+    const animation = badge.animate(
+      [
+        {
+          opacity: 1,
+          translate: '0 0',
+          scale: '1',
+        },
+        {
+          opacity: 0,
+          translate: '-0.8em -0.8em',
+          scale: '1.8',
+        }
+      ],
+      {
+        duration: 800,
+        iterations: 3,
+        easing: 'ease-out',
+        fill: 'forwards',
+      }
+    );
 
-    clearTimeout(this.emoteTimeout)
-    this.emoteTimeout = setTimeout(() => {
-      badge.hidden = true
-    }, 1200)
+    animation.onfinish = () => {
+      badge.hidden = true;
+      badge.style.opacity = '';
+    };
+  }
+
+  async emote(emotion) {
+    await this.ensureEmotionsLoaded();
+
+    const badge = this.querySelector('.emotion-badge');
+    if (!badge) return;
+
+    badge.textContent = this.emotions[emotion] || '❓';
+    badge.hidden = false;
+    this.fadeOutBadge(badge);
   }
 
   placeAt(localX, localY) {
@@ -52,9 +134,14 @@ class BaseAvatar extends HTMLElement {
   }
 
   render() {
-    if (!this.#data) return
-    this.querySelector('.avatar-emoji').textContent = this.#data.emoji
+    if (!this.data) return;
+
+    const avatarEmoji = this.querySelector('.avatar-emoji');
+    if (avatarEmoji) {
+      avatarEmoji.textContent = this.data.emoji ?? '🙂';
+    }
   }
+
 }
 
 customElements.define('base-avatar', BaseAvatar)

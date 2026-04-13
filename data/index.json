@@ -1,0 +1,17 @@
+{
+  "world": "world.json",
+  "catalogs": {
+    "actors": "catalogs/actors.json",
+    "effects": "catalogs/effects.json",
+    "animations": "catalogs/animations.json",
+    "emotions": "catalogs/emotions.json",
+    "items": "catalogs/items.json",
+    "props": "catalogs/props.json",
+    "terrain": "catalogs/terrain.json"
+  },
+  "realms": {
+    "overworld": "realms/overworld/realm.json",
+    "dark-forest": "realms/dark-forest/realm.json",
+    "pleasant-river-town": "realms/pleasant-river-town/realm.json"
+  }
+}

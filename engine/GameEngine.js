@@ -61,7 +61,7 @@ class GameEngine {
       effects.push({
         type: 'speak',
         actor: this.player,
-        message: 'Edge of the world!',
+        message: 'I have found the edge of the world!',
       })
 
 
