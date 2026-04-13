@@ -48,7 +48,6 @@ class GameDataLoader {
     let catalogMap = Object.fromEntries(
       entries.map(([name], i) => [name, this.makeCatalog(results[i])])
     )
-console.log(`items: ${catalogMap.items.list.length}`)
     return catalogMap
   }
 

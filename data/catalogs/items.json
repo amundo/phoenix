@@ -14,5 +14,17 @@
     "id": "key",
     "name": "Key",
     "emoji": "🗝️"
+  },
+  {
+    "id": "magic-mirror",
+    "name": "Magic Mirror",
+    "emoji": "🪞",
+    "onInteract": ["mirror-teleport"]
+  },
+  {
+    "id": "signpost",
+    "name": "Signpost",
+    "emoji": "🪧",
+    "onInteract": ["read-sign"]
   }
 ]

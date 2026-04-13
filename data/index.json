@@ -6,7 +6,6 @@
     "animations": "catalogs/animations.json",
     "emotions": "catalogs/emotions.json",
     "items": "catalogs/items.json",
-    "props": "catalogs/props.json",
     "terrain": "catalogs/terrain.json"
   },
   "realms": {

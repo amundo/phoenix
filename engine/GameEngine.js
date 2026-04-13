@@ -16,6 +16,9 @@ class GameEngine {
     this.player = new Player(gameData.realm.entities.player)
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
     this.items = gameData.realm.entities.items.map(item => new Item(item))
+    this.emotions = gameData.catalogs.emotions
+    this.animations = gameData.catalogs.animations
+
   }
 
   get entities() {
@@ -27,6 +30,7 @@ class GameEngine {
       world: this.world,
       camera: this.camera,
       entities: this.entities,
+      catalogs: this.catalogs,
     }
   }
 
@@ -61,7 +65,7 @@ class GameEngine {
       effects.push({
         type: 'speak',
         actor: this.player,
-        message: 'I have found the edge of the world!',
+        message: 'Oof!',
       })
 
 

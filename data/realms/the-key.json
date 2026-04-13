@@ -1,0 +1,60 @@
+{
+  "world": {
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "entities": {
+    "player": {
+      "kind": "player",
+      "name": "Phoenix",
+      "emoji": "🧒",
+      "x": 1,
+      "y": 1,
+      "inventory": []
+    },
+    "enemies": [],
+    "items": [
+      {
+        "id": "cactus-1",
+        "kind": "cactus",
+        "emoji": "🌵",
+        "x": 4,
+        "y": 3,
+        "solid": false,
+        "onTouch": {
+          "emote": "ouch"
+        }
+      },
+      {
+        "id": "key-1",
+        "kind": "key",
+        "emoji": "🗝️",
+        "x": 2,
+        "y": 5,
+        "solid": false,
+        "onTouch": {
+          "pickup": "key"
+        }
+      },
+      {
+        "id": "door-1",
+        "kind": "door",
+        "emoji": "🚪",
+        "x": 8,
+        "y": 2,
+        "solid": false,
+        "onTouch": {
+          "requires": "key",
+          "goToRealm": "realm-2",
+          "lockedEmote": "locked"
+        }
+      }
+    ]
+  }
+}

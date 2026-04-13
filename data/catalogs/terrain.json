@@ -1,6 +1,6 @@
 [
-  { "id": "grass", "emoji": "🟩", "walkable": true },
-  { "id": "water", "emoji": "🟦", "walkable": false },
-  { "id": "forest-floor", "emoji": "🟫", "walkable": true },
-  { "id": "tree", "emoji": "🌳", "walkable": false }
+  { "id": "grass", "color": "var(--color-grass)", "walkable": true },
+  { "id": "water", "color": "var(--color-water)", "walkable": false },
+  { "id": "forest-floor", "color": "var(--color-forest-floor)", "walkable": true },
+  { "id": "tree", "color": "var(--color-tree)", "walkable": false }
 ]

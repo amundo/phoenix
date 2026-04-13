@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tileset Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --ink: #1e1f24;
+      --muted: #666b75;
+      --line: #d7d9df;
+      --accent: #3d6ae0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    main {
+      width: min(1100px, calc(100vw - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+    header { margin-bottom: 2rem; }
+    h1, h2, h3 { line-height: 1.15; margin: 0; }
+    h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: .5rem; }
+    h2 { font-size: 1.35rem; margin-bottom: .75rem; }
+    p { margin: 0 0 1rem; }
+    .lede { color: var(--muted); font-size: 1.05rem; max-width: 70ch; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.25rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+      margin-bottom: 1.25rem;
+    }
+    .overview { overflow-x: auto; }
+    .overview svg {
+      display: block;
+      width: max(100%, 800px);
+      height: auto;
+      background: #fafafa;
+    }
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .75rem;
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .tile-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .tile-preview-wrap {
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(#fcfcfc, #f1f3f7);
+      display: grid;
+      place-items: center;
+    }
+    .tile-preview {
+      width: 120px;
+      height: 120px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .tile-body { padding: 1rem; }
+    .tile-body h3 { font-size: 1.05rem; margin-bottom: .55rem; }
+    .tile-body p { font-size: .96rem; }
+    .meta { color: var(--muted); font-size: .87rem; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f2f4f8;
+      padding: .12rem .35rem;
+      border-radius: .35rem;
+    }
+    nav a { color: var(--accent); text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Tileset Documentation</h1>
+      <p class="lede">A standalone reference page for the terrain-transition tileset. The original SVG is embedded below, followed by one card for each named cell in the strip.</p>
+    </header>
+
+    <section class="panel overview">
+      <h2>Full tileset</h2>
+      <svg
+   viewBox="-150 -150 799.875 52.125"
+   id="svg7192"
+   version="1.1"
+   width="799.875"
+   height="52.125"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata7408">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs7406" />
+  <g
+     id="layer3"
+     style="display:inline"
+     transform="translate(-2.5,-2.5)">
+    <g
+       id="center">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="center__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="97"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="cap-s">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="cap-s__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="47"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#b2b2b2;stroke-width:2.33229;stop-color:#000000"
+         id="cap-s__part2"
+         d="M 80.333302,97 A 33.333302,33.333302 0 0 1 47,130.3333 V 97 Z"
+         transform="scale(-1)" />
+    </g>
+    <g
+       id="edge-s">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="edge-s__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="-3"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#b2b2b2;stroke-width:2.33229;stop-color:#000000"
+         id="edge-s__part2"
+         d="M 130.3333,-47 A 33.333302,33.333302 0 0 1 97,-13.666698 V -47 Z"
+         transform="rotate(-90)" />
+    </g>
+    <g
+       id="corner-nw-outer">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="corner-nw-outer__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="-53"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#b2b2b2;stroke-width:2.33229;stop-color:#000000"
+         id="corner-nw-outer__part2"
+         d="M 86.333302,-147 A 33.333302,33.333302 0 0 1 53,-113.6667 V -147 Z" />
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.0252;stop-color:#000000"
+         id="corner-nw-outer__part3"
+         width="33.333"
+         height="50"
+         x="-130.33301"
+         y="-53"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="cap-w">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="cap-w__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="-103"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="cap-w__part2"
+         d="M 113.66665,103 A 16.666651,16.666651 0 0 1 97,119.66665 V 103 Z"
+         transform="rotate(-90)" />
+    </g>
+    <g
+       id="diagonal-ne-sw">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="diagonal-ne-sw__part1"
+         width="50"
+         height="50"
+         x="-147"
+         y="-153"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="corner-ne-inner">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="corner-ne-inner__part1"
+         width="50"
+         height="50"
+         x="-146.75"
+         y="-202.75"
+         transform="rotate(90)" />
+      <rect
+         style="fill:#b2b2b2;stroke-width:4.0252;stop-color:#000000"
+         id="corner-ne-inner__part2"
+         width="33.333"
+         height="50"
+         x="152.75"
+         y="-146.75" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="corner-ne-inner__part3"
+         d="M -130.33335,-153 A 16.666651,16.666651 0 0 1 -147,-136.33335 V -153 Z"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="notch-ne">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="notch-ne__part1"
+         width="50"
+         height="50"
+         x="-146.625"
+         y="-252.625"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="notch-ne__part2"
+         d="m -129.95835,-252.625 a 16.666651,16.666651 0 0 1 -16.66665,16.66665 V -252.625 Z"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="corner-ne-outer">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="corner-ne-outer__part1"
+         width="50"
+         height="50"
+         x="-146.625"
+         y="-302.625"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#b2b2b2;stroke-width:2.33229;stop-color:#000000"
+         id="corner-ne-outer__part2"
+         d="m -113.2917,-302.625 a 33.333302,33.333302 0 0 1 -33.3333,33.3333 v -33.3333 z"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="edge-w">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="edge-w__part1"
+         width="50"
+         height="50"
+         x="-146.625"
+         y="-352.625"
+         transform="rotate(90)" />
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.0252;stop-color:#000000"
+         id="edge-w__part2"
+         width="33.333"
+         height="50"
+         x="319.29199"
+         y="-146.625" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="edge-w__part3"
+         d="M 369.04165,-146.375 A 16.666651,16.666651 0 0 1 352.375,-129.70835 V -146.375 Z" />
+    </g>
+    <g
+       id="diagonal-nw-se">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="diagonal-nw-se__part1"
+         width="50"
+         height="50"
+         x="-146.375"
+         y="-402.375"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="diagonal-nw-se__part2"
+         d="M 418.91665,-146.25 A 16.666651,16.666651 0 0 1 402.25,-129.58335 V -146.25 Z" />
+    </g>
+    <g
+       id="corner-nw-inner">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="corner-nw-inner__part1"
+         width="50"
+         height="50"
+         x="-146.25"
+         y="-452.25"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="corner-nw-inner__part2"
+         d="M -385.70835,96.375 A 16.666651,16.666651 0 0 1 -402.375,113.04165 V 96.375 Z"
+         transform="scale(-1)" />
+    </g>
+    <g
+       id="edge-n">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.92987;stop-color:#000000"
+         id="edge-n__part1"
+         width="50"
+         height="50"
+         x="-146.25"
+         y="-502.25"
+         transform="rotate(90)" />
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.0252;stop-color:#000000"
+         id="edge-n__part2"
+         width="33.333"
+         height="50"
+         x="-146.25"
+         y="-502.25"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="edge-n__part3"
+         d="M 112.91664,502.25 A 16.666651,16.666651 0 0 1 96.249992,518.91665 V 502.25 Z"
+         transform="rotate(-90)" />
+    </g>
+    <g
+       id="cap-n">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="cap-n__part1"
+         width="50"
+         height="50"
+         x="-146.25"
+         y="-552.25"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="solid">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="solid__part1"
+         width="50"
+         height="50"
+         x="-146"
+         y="-602"
+         transform="rotate(90)" />
+    </g>
+    <g
+       id="corner-sw-inner">
+      <rect
+         style="display:inline;fill:#b2b2b2;stroke-width:4.92987;stop-color:#000000"
+         id="corner-sw-inner__part1"
+         width="50"
+         height="50"
+         x="-145.875"
+         y="-651.875"
+         transform="rotate(90)" />
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:1.16615;stop-color:#000000"
+         id="corner-sw-inner__part2"
+         d="M -585.33335,96 A 16.666651,16.666651 0 0 1 -602,112.66665 V 96 Z"
+         transform="scale(-1)" />
+    </g>
+  </g>
+  <g
+     id="layer1"
+     style="display:inline"
+     transform="translate(-2.5,-2.5)">
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="53"
+       id="rect7208-3" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="-147"
+       id="rect7208" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.625"
+       x="252.625"
+       id="rect7208-3-3" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.25"
+       x="452.25"
+       id="rect7208-3-1" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="103"
+       id="rect7256-2" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="-97"
+       id="rect7256" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.625"
+       x="302.625"
+       id="rect7256-2-99" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.25"
+       x="502.25"
+       id="rect7256-2-3" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="-47"
+       id="rect7256-6" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.75"
+       x="152.75"
+       id="rect7256-2-9" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.375"
+       x="352.375"
+       id="rect7256-2-9-9" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146"
+       x="552"
+       id="rect7256-2-9-5" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-147"
+       x="3"
+       id="rect7256-6-9" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.625"
+       x="202.625"
+       id="rect7256-2-9-0" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-146.25"
+       x="402.25"
+       id="rect7256-2-9-0-9" />
+    <rect
+       height="50"
+       style="display:inline;fill:none;stroke:#808080"
+       width="50"
+       y="-145.875"
+       x="601.875"
+       id="rect7256-2-9-0-6" />
+  </g>
+</svg>
+
+      <div class="legend">
+        <div><strong>White</strong> represents the base tile area.</div>
+        <div><strong>Gray</strong> represents the filled terrain shape.</div>
+        <div>Each named <code>&lt;g id="..."&gt;</code> corresponds to one reusable tile.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tile reference</h2>
+      <nav class="panel">
+        <a href="#doc-center">center</a> ·
+        <a href="#doc-cap-s">cap-s</a> ·
+        <a href="#doc-edge-s">edge-s</a> ·
+        <a href="#doc-corner-nw-outer">corner-nw-outer</a> ·
+        <a href="#doc-cap-w">cap-w</a> ·
+        <a href="#doc-diagonal-ne-sw">diagonal-ne-sw</a> ·
+        <a href="#doc-corner-ne-inner">corner-ne-inner</a> ·
+        <a href="#doc-notch-ne">notch-ne</a> ·
+        <a href="#doc-corner-ne-outer">corner-ne-outer</a> ·
+        <a href="#doc-edge-w">edge-w</a> ·
+        <a href="#doc-diagonal-nw-se">diagonal-nw-se</a> ·
+        <a href="#doc-corner-nw-inner">corner-nw-inner</a> ·
+        <a href="#doc-edge-n">edge-n</a> ·
+        <a href="#doc-cap-n">cap-n</a> ·
+        <a href="#doc-solid">solid</a> ·
+        <a href="#doc-corner-sw-inner">corner-sw-inner</a>
+      </nav>
+      <div class="tile-grid">
+
+      <article class="tile-card" id="doc-center">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="-150 -150 50 50" aria-labelledby="label-center" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-center">center</h3>
+          <p>Center fill tile. Use when the terrain continues on all relevant sides and no exposed boundary is needed.</p>
+          <p class="meta"><code>center</code> · column x = -150</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-cap-s">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="-100 -150 50 50" aria-labelledby="label-cap-s" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-cap-s">cap-s</h3>
+          <p>South cap. A one-sided termination with the curved transition opening toward the south.</p>
+          <p class="meta"><code>cap-s</code> · column x = -100</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-edge-s">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="-50 -150 50 50" aria-labelledby="label-edge-s" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-edge-s">edge-s</h3>
+          <p>South edge. Straight boundary tile for a southern exposed side.</p>
+          <p class="meta"><code>edge-s</code> · column x = -50</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-corner-nw-outer">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="0 -150 50 50" aria-labelledby="label-corner-nw-outer" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-corner-nw-outer">corner-nw-outer</h3>
+          <p>Northwest outer corner. Convex corner where the terrain turns around the northwest outside edge.</p>
+          <p class="meta"><code>corner-nw-outer</code> · column x = 0</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-cap-w">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="50 -150 50 50" aria-labelledby="label-cap-w" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-cap-w">cap-w</h3>
+          <p>West cap. A one-sided termination opening toward the west.</p>
+          <p class="meta"><code>cap-w</code> · column x = 50</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-diagonal-ne-sw">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="100 -150 50 50" aria-labelledby="label-diagonal-ne-sw" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-diagonal-ne-sw">diagonal-ne-sw</h3>
+          <p>Diagonal fill variant along the northeast to southwest axis.</p>
+          <p class="meta"><code>diagonal-ne-sw</code> · column x = 100</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-corner-ne-inner">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="150 -150 50 50" aria-labelledby="label-corner-ne-inner" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-corner-ne-inner">corner-ne-inner</h3>
+          <p>Northeast inner corner. Concave corner cut into the terrain at the northeast.</p>
+          <p class="meta"><code>corner-ne-inner</code> · column x = 150</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-notch-ne">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="200 -150 50 50" aria-labelledby="label-notch-ne" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-notch-ne">notch-ne</h3>
+          <p>Northeast notch. A small inward bite removed from an otherwise filled tile.</p>
+          <p class="meta"><code>notch-ne</code> · column x = 200</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-corner-ne-outer">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="250 -150 50 50" aria-labelledby="label-corner-ne-outer" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-corner-ne-outer">corner-ne-outer</h3>
+          <p>Northeast outer corner. Convex corner at the northeast outside edge.</p>
+          <p class="meta"><code>corner-ne-outer</code> · column x = 250</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-edge-w">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="300 -150 50 50" aria-labelledby="label-edge-w" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-edge-w">edge-w</h3>
+          <p>West edge. Straight boundary tile for a western exposed side.</p>
+          <p class="meta"><code>edge-w</code> · column x = 300</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-diagonal-nw-se">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="350 -150 50 50" aria-labelledby="label-diagonal-nw-se" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-diagonal-nw-se">diagonal-nw-se</h3>
+          <p>Diagonal fill variant along the northwest to southeast axis.</p>
+          <p class="meta"><code>diagonal-nw-se</code> · column x = 350</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-corner-nw-inner">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="400 -150 50 50" aria-labelledby="label-corner-nw-inner" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-corner-nw-inner">corner-nw-inner</h3>
+          <p>Northwest inner corner. Concave corner cut into the terrain at the northwest.</p>
+          <p class="meta"><code>corner-nw-inner</code> · column x = 400</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-edge-n">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="450 -150 50 50" aria-labelledby="label-edge-n" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-edge-n">edge-n</h3>
+          <p>North edge. Straight boundary tile for a northern exposed side.</p>
+          <p class="meta"><code>edge-n</code> · column x = 450</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-cap-n">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="500 -150 50 50" aria-labelledby="label-cap-n" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-cap-n">cap-n</h3>
+          <p>North cap. A one-sided termination opening toward the north.</p>
+          <p class="meta"><code>cap-n</code> · column x = 500</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-solid">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="550 -150 50 50" aria-labelledby="label-solid" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-solid">solid</h3>
+          <p>Solid fill tile. Full terrain coverage with no cutout.</p>
+          <p class="meta"><code>solid</code> · column x = 550</p>
+        </div>
+      </article>
+
+      <article class="tile-card" id="doc-corner-sw-inner">
+        <div class="tile-preview-wrap">
+          <svg class="tile-preview" viewBox="600 -150 50 50" aria-labelledby="label-corner-sw-inner" role="img">
+            <use href="#layer3"></use>
+            <use href="#layer1"></use>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <h3 id="label-corner-sw-inner">corner-sw-inner</h3>
+          <p>Southwest inner corner. Concave corner cut into the terrain at the southwest.</p>
+          <p class="meta"><code>corner-sw-inner</code> · column x = 600</p>
+        </div>
+      </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
