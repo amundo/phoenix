@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+
+
+
+
+
+
+body {
+  display: grid;
+  place-content: center;
+  height: 100vh;
+}
+
+player-avatar {
+  display: grid;
+  font-size: 1rem;
+  grid-template: repeat(5,1fr)/repeat(5,1fr);
+  aspect-ratio: 1;
+  .avatar-emoji {
+    grid-area: 2/2/5/5;
+    font-size: 3rem;
+    display: grid;
+    place-content: center;
+  }
+  .emotion-badge {
+    grid-area: 1/1/4/4;
+    font-size: 2rem;
+    rotate: -12deg;
+    left: -.4em;
+    position: relative;
+    /* place-content: center;
+    display: inline-grid; */
+  }
+}
+  </style>
+</head>
+<body>
+  
+<player-avatar id=demo class="avatar" style="grid-area: 3 / 6;"></player-avatar>
+
+<script type="module">
+class PlayerAvatar extends HTMLElement {
+  constructor() {
+    super()
+    this.innerHTML = `
+        <span class="avatar-emoji">🧝</span>
+        <span class="emotion-badge">😠</span>
+        <span class="speech-bubble" hidden>Look out! Giant Spider!</span>
+    `
+    this.emotions = {
+      happy: '😀',
+      sad: '😢',
+      angry: '😠',
+      surprised: '😲',
+      confused: '😕',
+      grimace: '😬',
+      zany: '🤪',
+    }
+  }
+  // js animation to fade out the emotion badge after showing it
+  fadeOutBadge(badge) {
+    badge.animate([
+      { opacity: 1, top: "auto", left: "auto", scale: 1 },
+      { opacity: 0, top: "-1em", left: "-1em", scale: 2 }
+    ], {
+      duration: 2000,
+      delay: 1000,
+      easing: 'ease-out',
+      fill: 'forwards'
+    })
+    setTimeout(() => {
+      badge.hidden = true
+      badge.style.opacity = '1'
+    }, 2000)
+  }
+
+  emote(emotion) {
+    const badge = this.querySelector('.emotion-badge')
+    badge.textContent = this.emotions[emotion] || '❓'
+    badge.hidden = false
+    this.fadeOutBadge(badge)
+  }
+}
+customElements.define('player-avatar', PlayerAvatar)
+</script>
+    </body>
+</html> 

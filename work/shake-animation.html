@@ -1,0 +1,33 @@
+<button id="shake-btn">Shake</button>
+<div class="card">Hello</div>
+
+<style>
+  .card {
+    display: inline-block;
+    padding: 1rem 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+  }
+</style>
+
+<script>
+  const button = document.querySelector('#shake-btn')
+  const card = document.querySelector('.card')
+
+  button.addEventListener('click', () => {
+    card.animate(
+      [
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-8px)' },
+        { transform: 'translateX(8px)' },
+        { transform: 'translateX(-6px)' },
+        { transform: 'translateX(6px)' },
+        { transform: 'translateX(0)' }
+      ],
+      {
+        duration: 300,
+        easing: 'ease-out'
+      }
+    )
+  })
+</script>

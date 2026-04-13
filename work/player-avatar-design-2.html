@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>player avatar design</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'48'%20height%3D'48'%20viewBox%3D'0%200%2016%2016'%3E%3Ctext%20x%3D'0'%20y%3D'14'%3E%F0%9F%93%90%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    body {
+      display: grid;
+      place-content: center;
+      height: 100vh;
+    }
+
+    player-avatar {
+      display: grid;
+      font-size: 1rem;
+      grid-template: repeat(5, 1fr) / repeat(5, 1fr);
+      aspect-ratio: 1;
+    }
+
+    player-avatar .avatar-emoji {
+      grid-area: 2 / 2 / 5 / 5;
+      font-size: 3rem;
+      display: grid;
+      place-content: center;
+    }
+
+    player-avatar .emotion-badge {
+      grid-area: 1 / 1 / 4 / 4;
+      font-size: 2rem;
+      rotate: -12deg;
+      position: relative;
+      left: -.4em;
+      display: grid;
+      place-content: center;
+      transform-origin: center;
+    }
+  </style>
+</head>
+<body>
+  
+  <player-avatar id="demo" class="avatar" style="grid-area: 3 / 6;"></player-avatar>
+
+  <script type="module">
+    class PlayerAvatar extends HTMLElement {
+      #emotions = {} 
+      constructor() {
+        super();
+        this.innerHTML = `
+          <span class="avatar-emoji">🧝</span>
+          <span class="emotion-badge" hidden>😠</span>
+          <span class="speech-bubble" hidden>Look out! Giant Spider!</span>
+        `;
+
+        this.emotions = {
+          happy: '😀',
+          sad: '😢',
+          angry: '😠',
+          surprised: '😲',
+          confused: '😕',
+          grimace: '😬',
+          zany: '🤪',
+        };
+      }
+
+      get emotions(){
+        return this.#emotions;
+      }
+
+      set emotions(mapping) {
+        this.#emotions = mapping;
+      }
+
+      fadeOutBadge(badge) {
+        badge.getAnimations().forEach(animation => animation.cancel());
+
+        badge.style.opacity = '1';
+        badge.style.transform = 'translate(0, 0) scale(1)';
+
+        const animation = badge.animate(
+          [
+            {
+              opacity: 1,
+              translate: "0 0",
+              scale: "1"
+            },
+            {
+              opacity: 0,
+              scale: "1.8",
+              translate: "-0.8em -0.8em",
+            }
+          ],
+          {
+            duration: 800,
+            iterations: 3,
+            delay: -500,
+            easing: 'ease-out',
+            // the possible easing values are: 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'linear', 'step-start', 'step-end', or a custom cubic-bezier function like 'cubic-bezier(0.4, 0, 0.2, 1)'
+            fill: 'forwards'
+          }
+        );
+
+        animation.onfinish = () => {
+          badge.hidden = true;
+          badge.style.opacity = '';
+          badge.style.transform = '';
+        };
+      }
+
+      emote(emotion) {
+        const badge = this.querySelector('.emotion-badge');
+        badge.textContent = this.emotions[emotion] || '❓';
+        badge.hidden = false;
+        this.fadeOutBadge(badge);
+      }
+
+      connectedCallback() {
+        this.emote('angry');
+      }
+    }
+
+    customElements.define('player-avatar', PlayerAvatar);
+
+    let response = await fetch('../data/emoji-emotions.json');
+    let emotions = await response.json();
+
+    emotions = emotions.map(e => [e.name, e.emoji])
+    emotions = Object.fromEntries(emotions)
+    demo.emotions = emotions;
+    console.table(emotions)
+  </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,6 +63,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="controls">
@@ -109,19 +111,12 @@
     <button id="replay">Replay</button>
   </div>
 
-  <speech-bubble
-    id="demo"
-    animation="float-down"
-    stagger="50"
-    duration="220"
-    distance="0.7"
-    easing="ease-out"
-  >
+  <speech-bubble id="demo" animation="float-down" stagger="50" duration="220" distance="0.7" easing="ease-out">
     this is some text
   </speech-bubble>
 
   <button id="copy-html">Copy HTML</button>
-<textarea id="html-output" rows="4" style="width:100%"></textarea>
+  <textarea id="html-output" rows="4" style="width:100%"></textarea>
 
   <script type="module">
     class SpeechBubble extends HTMLElement {
@@ -152,10 +147,6 @@
 
         this.spanify()
       }
-      connectedCallback() {
-  this.spanify()
-  this.play()
-}
 
       attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue === newValue) return
@@ -280,38 +271,39 @@
     syncBubble()
 
     const copyBtn = document.getElementById('copy-html')
-const output = document.getElementById('html-output')
+    const output = document.getElementById('html-output')
 
-function generateHTML() {
-  const attrs = [
-    `animation="${demo.getAttribute('animation')}"`,
-    `stagger="${demo.getAttribute('stagger')}"`,
-    `duration="${demo.getAttribute('duration')}"`,
-    `distance="${demo.getAttribute('distance')}"`,
-    `easing="${demo.getAttribute('easing')}"`
-  ]
+    function generateHTML() {
+      const attrs = [
+        `animation="${demo.getAttribute('animation')}"`,
+        `stagger="${demo.getAttribute('stagger')}"`,
+        `duration="${demo.getAttribute('duration')}"`,
+        `distance="${demo.getAttribute('distance')}"`,
+        `easing="${demo.getAttribute('easing')}"`
+      ]
 
-  const text = controls.text.value
+      const text = controls.text.value
 
-  return `<speech-bubble ${attrs.join(' ')}>
+      return `<speech-bubble ${attrs.join(' ')}>
   ${text}
 </speech-bubble>`
-}
+    }
 
-copyBtn.addEventListener('click', async () => {
-  const html = generateHTML()
-  output.value = html
+    copyBtn.addEventListener('click', async () => {
+      const html = generateHTML()
+      output.value = html
 
-  try {
-    await navigator.clipboard.writeText(html)
-    copyBtn.textContent = 'Copied!'
-    setTimeout(() => (copyBtn.textContent = 'Copy HTML'), 1000)
-  } catch {
-    copyBtn.textContent = 'Copy failed'
-  }
-})
+      try {
+        await navigator.clipboard.writeText(html)
+        copyBtn.textContent = 'Copied!'
+        setTimeout(() => (copyBtn.textContent = 'Copy HTML'), 1000)
+      } catch {
+        copyBtn.textContent = 'Copy failed'
+      }
+    })
 
-window.SpeechBubble = SpeechBubble
+    window.SpeechBubble = SpeechBubble
   </script>
 </body>
+
 </html>

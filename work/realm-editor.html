@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realm Live Preview</title>
+  <style>
+    :root {
+      --page-bg: #f7f7f7;
+      --panel-bg: white;
+      --border: #d0d0d0;
+      --text: #222;
+      --muted: #666;
+      --tile-size: 48px;
+      --grid-columns: 12;
+      --grid-rows: 8;
+      --ground-color: #dff2d8;
+      --sky-color: #d9ecff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: var(--page-bg);
+      color: var(--text);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    textarea {
+      width: 100%;
+      height: 75vh;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font: 14px/1.4 monospace;
+      background: #fff;
+      color: #111;
+    }
+
+    .preview-wrap {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .realm-name {
+      font-weight: bold;
+    }
+
+    .realm {
+      position: relative;
+      width: calc(var(--grid-columns) * var(--tile-size));
+      height: calc(var(--grid-rows) * var(--tile-size));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background:
+        linear-gradient(to bottom, var(--sky-color) 0 35%, var(--ground-color) 35% 100%);
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-columns), var(--tile-size));
+      grid-template-rows: repeat(var(--grid-rows), var(--tile-size));
+      pointer-events: none;
+    }
+
+    .cell {
+      border-right: 1px solid rgba(0,0,0,0.08);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .entity {
+      position: absolute;
+      width: var(--tile-size);
+      height: var(--tile-size);
+      display: grid;
+      place-items: center;
+      font-size: calc(var(--tile-size) * 0.65);
+      line-height: 1;
+      transform: translate(-50%, -50%);
+      user-select: none;
+    }
+
+    .entity-label {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 2px;
+      font-size: 11px;
+      white-space: nowrap;
+      background: rgba(255,255,255,0.85);
+      padding: 1px 4px;
+      border-radius: 999px;
+    }
+
+    .error-box {
+      min-height: 2.5rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: #fff4f4;
+      color: #8a1f1f;
+      border: 1px solid #efcaca;
+      font-size: 14px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <h2>Realm HTML <a href="https://chatgpt.com/c/69da75a6-aaac-83e8-88f3-166f52c17485" target="_blank">🤖</a></h2>
+      <p class="hint">Edit the realm and watch the preview update.</p>
+      <textarea id="source"><realm name="Phoenix Land">
+  <bot type="me" x="2" y="2" name="Phoenix" image="🧝"></bot>
+  <bot type="zombie" x="8" y="3" name="Zog" image="🧟"></bot>
+  <thing type="tree" x="5" y="4" image="🌳"></thing>
+  <thing type="rock" x="9" y="6" image="🪨"></thing>
+  <portal x="11" y="2" to="bork-realm" image="🌀"></portal>
+</realm></textarea>
+    </section>
+
+    <section class="panel preview-wrap">
+      <div>
+        <h2>Preview</h2>
+        <div class="realm-name" id="realmName">Realm</div>
+      </div>
+
+      <div class="realm" id="realmPreview">
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <div class="error-box" id="errors">No errors.</div>
+    </section>
+  </div>
+
+  <script type="module">
+    const source = document.querySelector('#source')
+    const realmName = document.querySelector('#realmName')
+    const realmPreview = document.querySelector('#realmPreview')
+    const errors = document.querySelector('#errors')
+    const grid = document.querySelector('#grid')
+
+    const GRID_COLUMNS = 12
+    const GRID_ROWS = 8
+    const TILE_SIZE = 48
+
+    buildGrid()
+
+    source.addEventListener('input', renderFromSource)
+    renderFromSource()
+
+    function buildGrid() {
+      grid.replaceChildren()
+      for (let i = 0; i < GRID_COLUMNS * GRID_ROWS; i++) {
+        const cell = document.createElement('div')
+        cell.className = 'cell'
+        grid.append(cell)
+      }
+    }
+
+    function renderFromSource() {
+      clearEntities()
+
+      try {
+        const realmData = parseRealm(source.value)
+        realmName.textContent = realmData.name || 'Untitled Realm'
+        renderRealm(realmData)
+        errors.textContent = 'No errors.'
+      } catch (error) {
+        realmName.textContent = 'Preview error'
+        errors.textContent = error.message
+      }
+    }
+
+    function parseRealm(text) {
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const realmEl = doc.querySelector('realm')
+
+      if (!realmEl) {
+        throw new Error('Your HTML needs a <realm> element.')
+      }
+
+      const bots = [...realmEl.querySelectorAll(':scope > bot')].map(parseBot)
+      const things = [...realmEl.querySelectorAll(':scope > thing')].map(parseThing)
+      const portals = [...realmEl.querySelectorAll(':scope > portal')].map(parsePortal)
+
+      const meBots = bots.filter(bot => bot.type === 'me')
+      if (meBots.length > 1) {
+        throw new Error('You can only have one <bot type="me">.')
+      }
+
+      return {
+        name: realmEl.getAttribute('name') || '',
+        bots,
+        things,
+        portals,
+      }
+    }
+
+    function parseBot(el) {
+      return {
+        tag: 'bot',
+        type: el.getAttribute('type') || 'bot',
+        x: readNumber(el, 'x'),
+        y: readNumber(el, 'y'),
+        name: el.getAttribute('name') || '',
+        image: el.getAttribute('image') || defaultImageFor(el.getAttribute('type') || 'bot'),
+      }
+    }
+
+    function parseThing(el) {
+      return {
+        tag: 'thing',
+        type: el.getAttribute('type') || 'thing',
+        x: readNumber(el, 'x'),
+        y: readNumber(el, 'y'),
+        name: el.getAttribute('name') || '',
+        image: el.getAttribute('image') || defaultImageFor(el.getAttribute('type') || 'thing'),
+      }
+    }
+
+    function parsePortal(el) {
+      return {
+        tag: 'portal',
+        type: 'portal',
+        x: readNumber(el, 'x'),
+        y: readNumber(el, 'y'),
+        to: el.getAttribute('to') || '',
+        image: el.getAttribute('image') || '🌀',
+      }
+    }
+
+    function readNumber(el, name) {
+      const value = Number(el.getAttribute(name))
+      if (Number.isNaN(value)) {
+        throw new Error(`<${el.tagName.toLowerCase()}> is missing a valid "${name}" number.`)
+      }
+      return value
+    }
+
+    function defaultImageFor(type) {
+      const defaults = {
+        me: '🙂',
+        zombie: '🧟',
+        tree: '🌳',
+        rock: '🪨',
+        thing: '📦',
+        bot: '🤖',
+        portal: '🌀',
+      }
+      return defaults[type] || '❓'
+    }
+
+    function renderRealm(realmData) {
+      const entities = [
+        ...realmData.bots,
+        ...realmData.things,
+        ...realmData.portals,
+      ]
+
+      for (const entity of entities) {
+        if (!isInBounds(entity.x, entity.y)) continue
+        realmPreview.append(renderEntity(entity))
+      }
+    }
+
+    function renderEntity(entity) {
+      const el = document.createElement('div')
+      el.className = 'entity'
+      el.style.left = `${entity.x * TILE_SIZE - TILE_SIZE / 2}px`
+      el.style.top = `${entity.y * TILE_SIZE - TILE_SIZE / 2}px`
+      el.textContent = displayValue(entity.image)
+
+      const label = document.createElement('div')
+      label.className = 'entity-label'
+      label.textContent =
+        entity.name ||
+        entity.to ||
+        entity.type
+
+      el.append(label)
+      return el
+    }
+
+    function displayValue(image) {
+      if (looksLikeImageFile(image)) {
+        return '🖼️'
+      }
+      return image
+    }
+
+    function looksLikeImageFile(value) {
+      return /\\.(png|jpg|jpeg|gif|webp|svg)$/i.test(value)
+    }
+
+    function clearEntities() {
+      realmPreview.querySelectorAll('.entity').forEach(el => el.remove())
+    }
+
+    function isInBounds(x, y) {
+      return x >= 1 && x <= GRID_COLUMNS && y >= 1 && y <= GRID_ROWS
+    }
+  </script>
+</body>
+</html>
