@@ -54,7 +54,6 @@ class PlayerAvatar extends BaseAvatar {
   }
 
   emote(emotion) {
-    console.log(this.#emotions)
     const badge = this.querySelector('.emotion-badge');
     badge.textContent = this.emotions[emotion] || '❓';
     badge.hidden = false;

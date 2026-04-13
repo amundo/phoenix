@@ -30,48 +30,8 @@ class BaseAvatar extends HTMLElement {
     this.#emotions = mapping;
   }
 
-  static async loadEmotions() {
-    if (!BaseAvatar.#emotionsPromise) {
-      BaseAvatar.#emotionsPromise = fetch(
-        new URL('../data/catalogs/emotions.json', import.meta.url)
-      )
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to load emoji-emotions.json');
-          }
-          return response.json();
-        })
-        .then(data =>
-          Object.fromEntries(data.map(e => [e.name, e.emoji]))
-        );
-    }
-
-    return BaseAvatar.#emotionsPromise;
-  }
-
-  async ensureEmotionsLoaded() {
-    if (Object.keys(this.emotions).length) return this.emotions;
-
-    try {
-      this.emotions = await BaseAvatar.loadEmotions();
-    } catch (error) {
-      console.error(error);
-      this.emotions = {
-        angry: '😠',
-        happy: '😀',
-        sad: '😢',
-        surprised: '😲',
-        confused: '😕',
-        grimace: '😬',
-        zany: '🤪',
-      };
-    }
-
-    return this.emotions;
-  }
 
   async connectedCallback() {
-    await this.ensureEmotionsLoaded();
   }
 
   speak(message) {

@@ -1,4 +1,4 @@
-class Character {
+class Entity {
   constructor({ name, emoji, x, y }) {
     this.name = name
     this.emoji = emoji
@@ -12,4 +12,4 @@ class Character {
   }
 }
 
-export { Character }
+export { Entity }

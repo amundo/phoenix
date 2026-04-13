@@ -1,5 +1,5 @@
-import { Character } from './Character.js'
+import { Entity } from './Entity.js'
 
-class Enemy extends Character { }
+class Enemy extends Entity { }
 
 export { Enemy }

@@ -6,11 +6,7 @@ class Avatar {
   }
 
   async init() {
-    console.log(`[${this.name}] requesting emoji data...`)
-
     const data = await loadEmojiData()
-
-    console.log(`[${this.name}] received data:`, Object.keys(data))
   }
 }
 
