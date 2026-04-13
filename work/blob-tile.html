@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autotile Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      padding: 2rem;
+    }
+
+    .map {
+      display: grid;
+      grid-template-columns: repeat(12, 48px);
+      grid-auto-rows: 48px;
+      gap: 0;
+      width: max-content;
+      border: 1px solid #ccc;
+      background: #9ec3df;
+    }
+
+    .tile {
+      width: 48px;
+      height: 48px;
+      box-sizing: border-box;
+    }
+
+    .water {
+      background: #9ec3df;
+    }
+
+    .sand {
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* center */
+    .sand.mask-15 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<rect width='48' height='48' rx='8' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* isolated */
+    .sand.mask-0 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<rect width='48' height='48' fill='none'/>\
+<rect x='8' y='8' width='32' height='32' rx='12' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* north only */
+    .sand.mask-1 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M8 8h32v20q0 12-16 12T8 28Z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* east only */
+    .sand.mask-2 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M8 8h20q12 0 12 16T28 40H8Z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* south only */
+    .sand.mask-4 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M8 40h32V20q0-12-16-12T8 20Z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* west only */
+    .sand.mask-8 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M40 8H20Q8 8 8 24t12 16h20Z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* horizontal */
+    .sand.mask-10 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M0 12q0-8 8-8h32q8 0 8 8v24q0 8-8 8H8q-8 0-8-8z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* vertical */
+    .sand.mask-5 {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<path d='M12 0q-8 0-8 8v32q0 8 8 8h24q8 0 8-8V8q0-8-8-8z' fill='%23eadc9b'/>\
+</svg>");
+    }
+
+    /* fallback for unimplemented masks */
+    .sand:not(.mask-0):not(.mask-1):not(.mask-2):not(.mask-4):not(.mask-5):not(.mask-8):not(.mask-10):not(.mask-15) {
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>\
+<rect width='48' height='48' rx='10' fill='%23eadc9b'/>\
+<rect x='1' y='1' width='46' height='46' rx='10' fill='none' stroke='%23c9bb7f'/>\
+</svg>");
+    }
+  </style>
+</head>
+<body>
+  <div class="map" id="map"></div>
+
+  <script>
+    const grid = [
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+      ['water','water','water','water','sand' ,'sand' ,'sand' ,'water','water','water','water','water'],
+      ['water','water','water','sand' ,'sand' ,'sand' ,'sand' ,'sand' ,'water','water','water','water'],
+      ['water','water','water','sand' ,'sand' ,'sand' ,'sand' ,'sand' ,'water','water','water','water'],
+      ['water','water','water','water','water','sand' ,'sand' ,'water','water','water','water','water'],
+      ['water','water','water','water','water','water','sand' ,'water','water','water','water','water'],
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+    ];
+
+    function terrainAt(x, y) {
+      return grid[y]?.[x] ?? null;
+    }
+
+    function getMask(x, y, terrain) {
+      let mask = 0;
+      if (terrainAt(x, y - 1) === terrain) mask |= 1; // N
+      if (terrainAt(x + 1, y) === terrain) mask |= 2; // E
+      if (terrainAt(x, y + 1) === terrain) mask |= 4; // S
+      if (terrainAt(x - 1, y) === terrain) mask |= 8; // W
+      return mask;
+    }
+
+    const map = document.getElementById('map');
+
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[0].length; x++) {
+        const terrain = grid[y][x];
+        const tile = document.createElement('div');
+        tile.className = `tile ${terrain}`;
+
+        if (terrain === 'sand') {
+          const mask = getMask(x, y, 'sand');
+          tile.classList.add(`mask-${mask}`);
+        }
+
+        map.append(tile);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -43,3 +43,13 @@ Notes on Project Phoenix development. These are mostly for my own reference.
 **Nintendo-style footer speech bubble**
 
 <https://gameuidatabase.com/index.php?scrn=162&autoload=4151>
+
+## Terrain auto tiling
+
+**Blob tiling**
+
+<https://gameuidatabase.com/index.php?&scrn=91&set=1&tag=24,25&autoload=40909>
+
+<https://gameuidatabase.com/index.php?&scrn=91&set=1&tag=24,25&autoload=67535>
+
+Neat angled map.

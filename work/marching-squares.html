@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SVG Region Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      padding: 2rem;
+    }
+
+    svg {
+      display: block;
+      background: #9ec3df;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <svg id="scene" width="576" height="384" viewBox="0 0 576 384"></svg>
+
+  <script>
+    const grid = [
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+      ['water','water','water','water','sand' ,'sand' ,'sand' ,'water','water','water','water','water'],
+      ['water','water','water','sand' ,'sand' ,'sand' ,'sand' ,'sand' ,'water','water','water','water'],
+      ['water','water','water','sand' ,'sand' ,'sand' ,'sand' ,'sand' ,'water','water','water','water'],
+      ['water','water','water','water','water','sand' ,'sand' ,'water','water','water','water','water'],
+      ['water','water','water','water','water','water','sand' ,'water','water','water','water','water'],
+      ['water','water','water','water','water','water','water','water','water','water','water','water'],
+    ];
+
+    const tileSize = 48;
+    const svg = document.getElementById('scene');
+    const ns = 'http://www.w3.org/2000/svg';
+
+    function make(tag, attrs = {}) {
+      const el = document.createElementNS(ns, tag);
+      for (const [key, value] of Object.entries(attrs)) {
+        el.setAttribute(key, value);
+      }
+      return el;
+    }
+
+    // water background
+    svg.append(
+      make('rect', {
+        x: 0,
+        y: 0,
+        width: grid[0].length * tileSize,
+        height: grid.length * tileSize,
+        fill: '#9ec3df'
+      })
+    );
+
+    // group for sand blobs
+    const landGroup = make('g');
+    svg.append(landGroup);
+
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[0].length; x++) {
+        if (grid[y][x] !== 'sand') continue;
+
+        // overlap slightly to visually merge cells
+        const rect = make('rect', {
+          x: x * tileSize - 6,
+          y: y * tileSize - 6,
+          width: tileSize + 12,
+          height: tileSize + 12,
+          rx: 18,
+          ry: 18,
+          fill: '#eadc9b'
+        });
+
+        landGroup.append(rect);
+      }
+    }
+
+    // optional soft outline pass
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[0].length; x++) {
+        if (grid[y][x] !== 'sand') continue;
+
+        const outline = make('rect', {
+          x: x * tileSize - 6,
+          y: y * tileSize - 6,
+          width: tileSize + 12,p
+          height: tileSize + 12,
+          rx: 18,
+          ry: 18,
+          fill: 'none',
+          stroke: '#c9bb7f',
+          'stroke-width': 1.5
+        });
+
+        landGroup.append(outline);
+      }
+    }
+  </script>
+</body>
+</html>
