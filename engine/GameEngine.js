@@ -128,12 +128,39 @@ class GameEngine {
     }
   }
 
+  collectItemAt(x, y) {
+    const effects = []
+
+    const item = this.items.find(item => item.x === x && item.y === y)
+    if (!item) return effects
+
+    if (item.inventoryKey) {
+      this.player.take(item.inventoryKey)
+      this.items = this.items.filter(i => i !== item)
+
+      effects.push({
+        type: 'pickup',
+        actor: this.player,
+        item,
+      })
+
+      effects.push({
+        type: 'speak',
+        actor: this.player,
+        message: `I found ${item.name || 'something'}!`,
+      })
+    }
+
+    return effects
+  }
+
   movePlayerBy(dx, dy) {
     const effects = []
 
     const nextX = this.player.x + dx
     const nextY = this.player.y + dy
 
+    // Check whether the player hit the world bounds
     if (!this.world.contains(nextX, nextY)) {
       effects.push({
         type: 'speak',
@@ -171,6 +198,9 @@ class GameEngine {
     }
 
     this.player.moveTo({ x: nextX, y: nextY })
+
+    const collectEffects = this.collectItemAt(nextX, nextY)
+    effects.push(...collectEffects)
 
     const touchResult = this.resolvePlayerTouch(nextX, nextY)
     effects.push(...touchResult.effects)

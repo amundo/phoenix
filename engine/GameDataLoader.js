@@ -21,8 +21,9 @@ class GameDataLoader {
     if (this.#index) {
       return this.#index
     }
-
-    this.#index = await this.fetchJSON('index.json')
+console.log(this.#dataRoot.href)
+    let url = new URL('index.json', this.#dataRoot)
+    this.#index = await this.fetchJSON(url)
     return this.#index
   }
 
