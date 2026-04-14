@@ -50,6 +50,7 @@ game-board {
   max-width: 100%;
   max-height: 100%;
   background: var(--grassland-green);
+    position: relative;
 }
 
 .tile-layer,
@@ -61,6 +62,12 @@ game-board {
   grid-template-rows: subgrid;
   width: 100%;
   height: 100%;
+}
+
+effect-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 game-cell {

@@ -155,7 +155,7 @@
         "portable": true,
         "on": {
           "pickup": {
-            "message": "📖 You found a spell book!",
+            "message": "📖 I found a spell book!",
             "emotion": "happy"
           }
         }

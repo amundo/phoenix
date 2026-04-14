@@ -34,7 +34,7 @@
         "on": {
           "touch": {
             "message": "Ow!",
-            "emotion": "ouch"
+            "emotion": "pain"
           }
         }
       },
@@ -48,7 +48,7 @@
         "portable": true,
         "on": {
           "pickup": {
-            "message": "🗝️ You found a shiny bronze key!",
+            "message": "🗝️ I found a shiny bronze key!",
             "emotion": "happy"
           }
         }

@@ -12,13 +12,13 @@ class AvatarLayer extends BaseLayer {
   constructor() {
     super()
     this.avatarElements = new Map()
-    this.emotions = {}
+    this.emotionCatalog = {}
   }
 
   render(gameState) {
-    const { world, camera, entities, emotions } = gameState
+    const { world, camera, entities, catalogs } = gameState
     this.setContext({ world, camera })
-    this.emotions = emotions
+    this.emotionCatalog = catalogs?.emotions ?? {}
 
     entities.forEach(entity => this.syncEntity(entity))
     this.removeMissingEntities(entities)
@@ -54,8 +54,8 @@ class AvatarLayer extends BaseLayer {
     if (!avatar) return
 
     const emotion = this.emotionCatalog?.byName?.[emotionName]
+console.log(emotion)
     if (!emotion) return
-
     const animation =
       this.animationCatalog?.byName?.[emotion.animation ?? 'burst'] ?? null
 
