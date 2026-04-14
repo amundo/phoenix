@@ -50,7 +50,6 @@ class AvatarLayer extends BaseLayer {
   }
 
   emote(entity, emotionName) {
-    console.log({ entity, emotionName })
     const avatar = this.avatarElements.get(entity)
     if (!avatar) return
 

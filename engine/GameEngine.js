@@ -147,7 +147,7 @@ class GameEngine {
     for (const item of items) {
       if (!item.requires) continue
 
-      const ok = this.playerHasItem(item.requires)
+      const ok = this.meetsRequirement(item.requires)
 
       if (!ok) {
         const blocked = item.on?.blocked
@@ -197,6 +197,19 @@ class GameEngine {
     return effects
   }
 
+  meetsRequirement(requirement) {
+    if (!requirement) return true
+
+    if (requirement.id) {
+      return this.player.hasItemId(requirement.id)
+    }
+
+    if (requirement.kind) {
+      return this.player.hasKind(requirement.kind)
+    }
+
+    return true
+  }
   playerHasItem(kind) {
     return this.player.inventory.some(item => item.kind === kind)
   }

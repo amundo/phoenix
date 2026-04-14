@@ -6,7 +6,7 @@
 
 * {
   box-sizing: border-box;
-  margin:0;
+  margin: 0;
   padding: 0;
 }
 
@@ -30,11 +30,13 @@ body {
 
 game-board {
   --tile-size: 3rem;
-  font-size: clamp(
-    1rem, /* min */
-    calc(var(--tile-size) * 0.5), /* preferred */
-    calc(var(--tile-size) * 0.7) /* max */
-  );
+  font-size: clamp(1rem,
+      /* min */
+      calc(var(--tile-size) * 0.5),
+      /* preferred */
+      calc(var(--tile-size) * 0.7)
+      /* max */
+    );
   /* line-height: 1; */
 
   display: grid;
@@ -42,10 +44,8 @@ game-board {
   grid-template-rows: repeat(var(--row-count), 1fr);
   aspect-ratio: var(--column-count) / var(--row-count);
 
-  width: min(
-      calc(100dvw - 4rem),
-      calc((100dvh - 4rem) * (var(--column-count) / var(--row-count)))
-  );
+  width: min(calc(100dvw - 4rem),
+      calc((100dvh - 4rem) * (var(--column-count) / var(--row-count))));
   height: 100%;
   max-width: 100%;
   max-height: 100%;
@@ -96,37 +96,38 @@ game-cell[terrain="grassland"] {
 }
 
 
-    player-avatar {
-      display: grid;
-      font-size: 1rem;
-      grid-template: repeat(5, 1fr) / repeat(5, 1fr);
-      aspect-ratio: 1;
-    }
+player-avatar {
+  display: grid;
+  font-size: 1rem;
+  grid-template: repeat(5, 1fr) / repeat(5, 1fr);
+  aspect-ratio: 1;
+  z-index: 2;
+}
 
-    player-avatar .avatar-emoji {
-      grid-area: 2 / 2 / 5 / 5;
-      font-size: 3rem;
-      display: grid;
-      place-content: center;
-    }
+player-avatar .avatar-emoji {
+  grid-area: 2 / 2 / 5 / 5;
+  font-size: 3rem;
+  display: grid;
+  place-content: center;
+}
 
-    player-avatar .emotion-badge {
-      grid-area: 1 / 1 / 4 / 4;
-      font-size: 2rem;
-      rotate: -12deg;
-      position: relative;
-      left: -.4em;
-      display: grid;
-      place-content: center;
-      transform-origin: center;
-    }
+player-avatar .emotion-badge {
+  grid-area: 1 / 1 / 4 / 4;
+  font-size: 2rem;
+  rotate: -12deg;
+  position: relative;
+  left: -.4em;
+  display: grid;
+  place-content: center;
+  transform-origin: center;
+}
 
 
 .speech-bubble:empty {
   display: none;
 }
 
-  .speech-bubble {
+.speech-bubble {
   position: absolute;
   top: -2.5rem;
   left: 50%;

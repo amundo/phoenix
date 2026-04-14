@@ -39,16 +39,16 @@
         }
       },
       {
-        "id": "key-1",
+        "id": "bronze-key-1",
         "kind": "key",
         "emoji": "🗝️",
-        "name": "a magical key",
+        "name": "Bronze key",
         "x": 2,
         "y": 5,
         "portable": true,
         "on": {
           "pickup": {
-            "message": "Got the key!",
+            "message": "🗝️ You found a shiny bronze key!",
             "emotion": "happy"
           }
         }
@@ -61,7 +61,9 @@
         "x": 8,
         "y": 1,
         "solid": true,
-        "requires": "key",
+        "requires": {
+          "id": "bronze-key-1"
+        },
         "on": {
           "blocked": {
             "message": "Locked!",
@@ -69,6 +71,7 @@
           },
           "success": {
             "message": "The key unlocks the door.",
+            "emotion": "happy",
             "set": {
               "solid": false
             }
