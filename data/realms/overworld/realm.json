@@ -98,22 +98,10 @@
     ],
     "items": [
       {
-        "name": "Sword",
-        "emoji": "🗡",
-        "x": 4,
-        "y": 6
-      },
-      {
-        "name": "Shield",
-        "emoji": "🛡",
-        "x": 8,
-        "y": 5
-      },
-      {
         "name": "Health Potion",
         "emoji": "🧪",
-        "x": 10,
-        "y": 1
+        "x": 0,
+        "y": 0
       },
       {
         "name": "Scroll",

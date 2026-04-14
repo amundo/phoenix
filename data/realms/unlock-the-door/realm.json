@@ -1,4 +1,8 @@
 {
+  "id": "unlock-the-door",
+  "name": "Unlock the Door",
+  "rowCount": 8,
+  "columnCount": 10,
   "world": {
     "rowCount": 8,
     "columnCount": 10
@@ -14,7 +18,7 @@
       "kind": "player",
       "name": "Phoenix",
       "emoji": "🧒",
-      "x": 1,
+      "x": 2,
       "y": 1,
       "inventory": []
     },

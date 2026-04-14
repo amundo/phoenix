@@ -10,6 +10,7 @@
   },
   "realms": {
     "overworld": "realms/overworld/realm.json",
+    "unlock-the-door": "realms/unlock-the-door/realm.json",
     "dark-forest": "realms/dark-forest/realm.json",
     "pleasant-river-town": "realms/pleasant-river-town/realm.json"
   }
