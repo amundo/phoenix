@@ -30,10 +30,9 @@
         "emoji": "🌵",
         "x": 4,
         "y": 3,
-        "solid": false,
-        "onTouch": {
-          "emote": "ouch"
-        }
+        "solid": true,
+        "touchMessage": "Ow!",
+        "touchEmotion": "ouch"
       },
       {
         "id": "key-1",
@@ -52,7 +51,7 @@
         "emoji": "🚪",
         "x": 8,
         "y": 2,
-        "solid": false,
+        "solid": true,
         "onTouch": {
           "requires": "key",
           "goToRealm": "realm-2",

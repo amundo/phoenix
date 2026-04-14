@@ -1,11 +1,8 @@
-
-
 class Item {
-  constructor({ name, emoji, x, y }) {
-    this.name = name
-    this.emoji = emoji
-    this.x = x
-    this.y = y
+  constructor(data) {
+    Object.assign(this, data)
+    this.x = Number(this.x)
+    this.y = Number(this.y)
   }
 }
 

@@ -1,6 +1,8 @@
 {
   "startRealm": "unlock-the-door",
   "realmsForLater": [
+    "unlock-the-door",
+    "overworld",
     "pleasant-river-town",
     "dark-forest"
   ]

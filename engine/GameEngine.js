@@ -161,6 +161,102 @@ class GameEngine {
   }
 
   movePlayerBy(dx, dy) {
+    const nextX = this.player.x + dx
+    const nextY = this.player.y + dy
+
+    if (!this.world.contains(nextX, nextY)) {
+      return {
+        stateChanged: false,
+        effects: this.getBlockedByWorldEffects(),
+      }
+    }
+
+    const itemsHere = this.getItemsAt(nextX, nextY)
+    const effects = this.getTouchEffects(itemsHere)
+
+    if (this.hasSolidItem(itemsHere)) {
+      return {
+        stateChanged: false,
+        effects,
+      }
+    }
+
+    this.player.moveTo({ x: nextX, y: nextY })
+
+    const pickedUpItems = this.pickUpPortableItems(itemsHere)
+    effects.push(...this.getPickupEffects(pickedUpItems))
+
+    return {
+      stateChanged: true,
+      effects,
+    }
+  }
+
+  getItemsAt(x,y){
+    return this.items.filter(item => item.x === x && item.y === y)
+  }
+  
+  hasSolidItem(items) {
+    return items.some(item => item.solid)
+  }
+
+  pickUpPortableItems(items) {
+    const portableItems = items.filter(item => item.portable)
+
+    for (const item of portableItems) {
+      this.player.take(item)
+      this.items = this.items.filter(other => other !== item)
+    }
+
+    return portableItems
+  }
+
+  getPickupEffects(items) {
+    const effects = []
+
+    for (const item of items) {
+      effects.push({
+        type: 'speak',
+        actor: this.player,
+        message: `Got ${item.name}!`,
+      })
+    }
+
+    return effects
+  }
+
+  getBlockedByWorldEffects() {
+    return [
+      { type: 'speak', actor: this.player, message: 'Oof!' },
+      { type: 'emote', actor: this.player, emotion: 'ouch' },
+    ]
+  }
+
+  getTouchEffects(items) {
+    const effects = []
+
+    for (const item of items) {
+      if (item.touchMessage) {
+        effects.push({
+          type: 'speak',
+          actor: this.player,
+          message: item.touchMessage,
+        })
+      }
+
+      if (item.touchEmotion) {
+        effects.push({
+          type: 'emote',
+          actor: this.player,
+          emotion: item.touchEmotion,
+        })
+      }
+    }
+
+    return effects
+  }
+
+  _movePlayerBy(dx, dy) {
     const effects = []
 
     const nextX = this.player.x + dx

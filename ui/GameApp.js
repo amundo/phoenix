@@ -89,7 +89,6 @@ class GameApp extends HTMLElement {
     if (!this.#engine) return
 
     const result = this.#engine.handleCommand(command)
-    console.table(result.effects)
     this.render()
     this.handleEffects(result.effects)
   }
