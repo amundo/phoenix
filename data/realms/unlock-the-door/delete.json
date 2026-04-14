@@ -1,0 +1,31 @@
+[
+  {
+    "id": "key-1",
+    "kind": "key",
+    "emoji": "🗝️",
+    "name": "a magical key",
+    "x": 2,
+    "y": 5,
+    "solid": false,
+    "portable": true,
+    "pickupMessage": "Got the key!",
+    "onTouch": {
+      "pickup": "key"
+    }
+  },
+  {
+    "id": "key-1",
+    "kind": "key",
+    "emoji": "🗝️",
+    "name": "a magical key",
+    "x": 2,
+    "y": 5,
+    "solid": false,
+    "portable": true,
+    "on": {
+      "pickup": {
+        "message": "Got the key!"
+      }
+    }
+  }
+]

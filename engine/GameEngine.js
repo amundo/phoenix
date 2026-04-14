@@ -12,19 +12,16 @@ class GameEngine {
   initialize(gameData) {
     this.world = new World(gameData.realm)
     this.camera = new Camera(gameData.realm.camera)
-    
-    this.emotions = gameData.catalogs.emotions
 
+    this.emotions = gameData.catalogs.emotions
     this.catalogs = gameData.catalogs
-    
+    this.animations = gameData.catalogs.animations
+
     this.player = new Player(gameData.realm.entities.player)
     this.player.emotions = gameData.catalogs.emotions
 
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
-    
     this.items = gameData.realm.entities.items.map(item => new Item(item))
-    
-    this.animations = gameData.catalogs.animations
   }
 
   get entities() {
@@ -65,101 +62,6 @@ class GameEngine {
     return result
   }
 
-  resolvePlayerTouch(x, y) {
-    const effects = []
-
-    const itemsHere = this.items.filter(item => item.x === x && item.y === y)
-
-    for (const item of itemsHere) {
-      if (item.kind === 'cactus') {
-        effects.push({
-          type: 'emote',
-          actor: this.player,
-          emotion: 'ouch',
-        })
-      }
-
-      if (item.kind === 'key') {
-        if (!this.player.inventory) {
-          this.player.inventory = []
-        }
-
-        if (!this.player.inventory.includes('key')) {
-          this.player.inventory.push('key')
-        }
-
-        this.items = this.items.filter(it => it !== item)
-
-        effects.push({
-          type: 'pickup',
-          actor: this.player,
-          item,
-        })
-
-        effects.push({
-          type: 'emote',
-          actor: this.player,
-          emotion: 'happy',
-        })
-      }
-
-      if (item.kind === 'door') {
-        const hasKey = this.player.inventory?.includes('key')
-
-        if (hasKey) {
-          effects.push({
-            type: 'change-realm',
-            actor: this.player,
-            realm: item.to,
-          })
-        } else {
-          effects.push({
-            type: 'speak',
-            actor: this.player,
-            message: 'It is locked.',
-          })
-
-          effects.push({
-            type: 'emote',
-            actor: this.player,
-            emotion: 'confused',
-          })
-        }
-      }
-    }
-
-    return {
-      stateChanged: false,
-      effects,
-    }
-  }
-
-  collectItemAt(x, y) {
-    const effects = []
-
-    const item = this.items.find(item => item.x === x && item.y === y)
-    if (!item) return effects
-
-    if (item.inventoryKey) {
-      this.player.take(item.inventoryKey)
-      this.items = this.items.filter(i => i !== item)
-
-      effects.push({
-        type: 'pickup',
-        actor: this.player,
-        item,
-      })
-
-      effects.push({
-        type: 'speak',
-        actor: this.player,
-        message: `I found ${item.name || 'something'}!`,
-      })
-    }
-
-    return effects
-  }
-
   movePlayerBy(dx, dy) {
     const nextX = this.player.x + dx
     const nextY = this.player.y + dy
@@ -171,8 +73,28 @@ class GameEngine {
       }
     }
 
+    const enemy = this.enemies.find(enemy =>
+      enemy.x === nextX && enemy.y === nextY
+    )
+
+    if (enemy) {
+      return {
+        stateChanged: false,
+        effects: [
+          {
+            type: 'speak',
+            actor: this.player,
+            message: `Look out! ${enemy.name}!`,
+          },
+        ],
+      }
+    }
+
     const itemsHere = this.getItemsAt(nextX, nextY)
-    const effects = this.getTouchEffects(itemsHere)
+
+    const effects = []
+    effects.push(...this.tryActivateItems(itemsHere))
+    effects.push(...this.getTouchEffects(itemsHere))
 
     if (this.hasSolidItem(itemsHere)) {
       return {
@@ -192,10 +114,10 @@ class GameEngine {
     }
   }
 
-  getItemsAt(x,y){
+  getItemsAt(x, y) {
     return this.items.filter(item => item.x === x && item.y === y)
   }
-  
+
   hasSolidItem(items) {
     return items.some(item => item.solid)
   }
@@ -212,22 +134,76 @@ class GameEngine {
   }
 
   getPickupEffects(items) {
+    return items.map(item => ({
+      type: 'speak',
+      actor: this.player,
+      message: item.on?.pickup?.message ?? `Got ${item.name}!`,
+    }))
+  }
+
+  tryActivateItems(items) {
     const effects = []
 
     for (const item of items) {
-      effects.push({
-        type: 'speak',
-        actor: this.player,
-        message: `Got ${item.name}!`,
-      })
+      if (!item.requires) continue
+
+      const ok = this.playerHasItem(item.requires)
+
+      if (!ok) {
+        const blocked = item.on?.blocked
+
+        if (blocked?.message) {
+          effects.push({
+            type: 'speak',
+            actor: this.player,
+            message: blocked.message,
+          })
+        }
+
+        if (blocked?.emotion) {
+          effects.push({
+            type: 'emote',
+            actor: this.player,
+            emotion: blocked.emotion,
+          })
+        }
+
+        continue
+      }
+
+      const success = item.on?.success
+
+      if (success?.set) {
+        Object.assign(item, success.set)
+      }
+
+      if (success?.message) {
+        effects.push({
+          type: 'speak',
+          actor: this.player,
+          message: success.message,
+        })
+      }
+
+      if (success?.emotion) {
+        effects.push({
+          type: 'emote',
+          actor: this.player,
+          emotion: success.emotion,
+        })
+      }
     }
 
     return effects
   }
 
+  playerHasItem(kind) {
+    return this.player.inventory.some(item => item.kind === kind)
+  }
+
   getBlockedByWorldEffects() {
     return [
-      { type: 'speak', actor: this.player, message: 'Oof!' },
+      { type: 'speak', actor: this.player, message: 'D’oh!' },
       { type: 'emote', actor: this.player, emotion: 'ouch' },
     ]
   }
@@ -236,81 +212,27 @@ class GameEngine {
     const effects = []
 
     for (const item of items) {
-      if (item.touchMessage) {
+      const touch = item.on?.touch
+      if (!touch) continue
+
+      if (touch.message) {
         effects.push({
           type: 'speak',
           actor: this.player,
-          message: item.touchMessage,
+          message: touch.message,
         })
       }
 
-      if (item.touchEmotion) {
+      if (touch.emotion) {
         effects.push({
           type: 'emote',
           actor: this.player,
-          emotion: item.touchEmotion,
+          emotion: touch.emotion,
         })
       }
     }
 
     return effects
-  }
-
-  _movePlayerBy(dx, dy) {
-    const effects = []
-
-    const nextX = this.player.x + dx
-    const nextY = this.player.y + dy
-
-    // Check whether the player hit the world bounds
-    if (!this.world.contains(nextX, nextY)) {
-      effects.push({
-        type: 'speak',
-        actor: this.player,
-        message: 'Oof!',
-      })
-
-      effects.push({
-        type: 'emote',
-        actor: this.player,
-        emotion: 'ouch',
-      })
-
-      return {
-        stateChanged: false,
-        effects,
-      }
-    }
-
-    const enemy = this.enemies.find(enemy =>
-      enemy.x === nextX && enemy.y === nextY
-    )
-
-    if (enemy) {
-      effects.push({
-        type: 'speak',
-        actor: this.player,
-        message: `Look out! ${enemy.name}!`,
-      })
-
-      return {
-        stateChanged: false,
-        effects,
-      }
-    }
-
-    this.player.moveTo({ x: nextX, y: nextY })
-
-    const collectEffects = this.collectItemAt(nextX, nextY)
-    effects.push(...collectEffects)
-
-    const touchResult = this.resolvePlayerTouch(nextX, nextY)
-    effects.push(...touchResult.effects)
-
-    return {
-      stateChanged: true,
-      effects,
-    }
   }
 }
 

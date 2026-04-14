@@ -31,31 +31,48 @@
         "x": 4,
         "y": 3,
         "solid": true,
-        "touchMessage": "Ow!",
-        "touchEmotion": "ouch"
+        "on": {
+          "touch": {
+            "message": "Ow!",
+            "emotion": "ouch"
+          }
+        }
       },
       {
         "id": "key-1",
         "kind": "key",
         "emoji": "🗝️",
+        "name": "a magical key",
         "x": 2,
         "y": 5,
-        "solid": false,
-        "onTouch": {
-          "pickup": "key"
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Got the key!",
+            "emotion": "happy"
+          }
         }
       },
       {
         "id": "door-1",
         "kind": "door",
         "emoji": "🚪",
+        "name": "a wooden door",
         "x": 8,
-        "y": 2,
+        "y": 1,
         "solid": true,
-        "onTouch": {
-          "requires": "key",
-          "goToRealm": "realm-2",
-          "lockedEmote": "locked"
+        "requires": "key",
+        "on": {
+          "blocked": {
+            "message": "Locked!",
+            "emotion": "confused"
+          },
+          "success": {
+            "message": "The key unlocks the door.",
+            "set": {
+              "solid": false
+            }
+          }
         }
       }
     ]
