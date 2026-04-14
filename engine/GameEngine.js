@@ -93,7 +93,7 @@ class GameEngine {
     const itemsHere = this.getItemsAt(nextX, nextY)
 
     const effects = []
-    effects.push(...this.tryActivateItems(itemsHere))
+    effects.push(...this.resolveItemInteractions(itemsHere))
     effects.push(...this.getTouchEffects(itemsHere))
 
     if (this.hasSolidItem(itemsHere)) {
@@ -141,7 +141,7 @@ class GameEngine {
     }))
   }
 
-  tryActivateItems(items) {
+  resolveItemInteractions(items) {
     const effects = []
 
     for (const item of items) {
@@ -210,9 +210,9 @@ class GameEngine {
 
     return true
   }
-  playerHasItem(kind) {
-    return this.player.inventory.some(item => item.kind === kind)
-  }
+  // playerHasItem(kind) {
+  //   return this.player.inventory.some(item => item.kind === kind)
+  // }
 
   getBlockedByWorldEffects() {
     return [

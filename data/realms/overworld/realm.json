@@ -48,12 +48,6 @@
         "y": 0
       },
       {
-        "name": "Zombie",
-        "emoji": "🧟",
-        "x": 13,
-        "y": 2
-      },
-      {
         "name": "Ghost",
         "emoji": "👻",
         "x": 3,
@@ -101,73 +95,91 @@
         "name": "Health Potion",
         "emoji": "🧪",
         "x": 0,
-        "y": 0
+        "y": 0,
+        "solid": true
       },
       {
         "name": "Scroll",
         "emoji": "📜",
         "x": 12,
-        "y": 9
+        "y": 9,
+        "solid": true
       },
       {
-        "name": "Bow",
-        "emoji": "🏹",
-        "x": 13,
-        "y": 5
-      },
-      {
+        "id": "magic-ring-1",
         "name": "Magic Ring",
         "emoji": "💍",
         "x": 6,
-        "y": 10
+        "y": 10,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "💍 Ooh, a shiny ring!",
+            "emotion": "happy"
+          }
+        }
       },
       {
         "name": "Gold Coins",
         "emoji": "🪙",
         "x": 18,
-        "y": 2
+        "y": 2,
+        "solid": true
       },
       {
         "name": "Treasure Chest",
         "emoji": "🧰",
         "x": 2,
-        "y": 14
+        "y": 14,
+        "solid": true
       },
       {
         "name": "Torch",
         "emoji": "🔥",
         "x": 30,
-        "y": 8
+        "y": 8,
+        "solid": true
       },
       {
         "name": "Key",
         "emoji": "🗝",
         "x": 5,
-        "y": 30
+        "y": 30,
+        "solid": true
       },
       {
         "name": "Spell Book",
         "emoji": "📖",
         "x": 13,
-        "y": 5
+        "y": 5,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "📖 You found a spell book!",
+            "emotion": "happy"
+          }
+        }
       },
       {
         "name": "Helmet",
         "emoji": "🪖",
         "x": 1,
-        "y": 40
+        "y": 40,
+        "solid": true
       },
       {
         "name": "Boots",
         "emoji": "🥾",
         "x": 22,
-        "y": 22
+        "y": 22,
+        "solid": true
       },
       {
         "name": "Gemstone",
         "emoji": "💎",
         "x": 99,
-        "y": 99
+        "y": 99,
+        "solid": true
       }
     ]
   }
