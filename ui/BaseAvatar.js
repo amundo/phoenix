@@ -1,7 +1,6 @@
 class BaseAvatar extends HTMLElement {
   #data = null
   #emotions = {}
-  static #emotionsPromise = null;
 
   constructor() {
     super()
@@ -9,7 +8,7 @@ class BaseAvatar extends HTMLElement {
     this.innerHTML = `
       <span class="avatar-emoji"></span>
       <span class="emotion-badge" hidden></span>
-      <span class="speech-bubble"></span>
+      <span class="speech-bubble" hidden></span>
     `
   }
 
@@ -23,32 +22,36 @@ class BaseAvatar extends HTMLElement {
   }
 
   get emotions() {
-    return this.#emotions;
+    return this.#emotions
   }
 
   set emotions(mapping) {
-    this.#emotions = mapping;
+    this.#emotions = mapping ?? {}
   }
 
-
-  async connectedCallback() {
+  connectedCallback() {
+    this.render()
   }
 
   speak(message) {
     const bubble = this.querySelector('.speech-bubble')
-    const messageLength = message.length
+    if (!bubble) return
+
     bubble.textContent = message
     bubble.hidden = false
     bubble.style.position = 'absolute'
+
+    const messageLength = message.length
     setTimeout(() => {
       bubble.hidden = true
     }, 1000 + messageLength * 10)
   }
 
   fadeOutBadge(badge) {
-    badge.getAnimations().forEach(animation => animation.cancel());
+    badge.getAnimations().forEach(animation => animation.cancel())
 
-    badge.style.opacity = '1';
+    badge.style.opacity = '1'
+    badge.style.transform = 'translate(0, 0) scale(1)'
 
     const animation = badge.animate(
       [
@@ -69,23 +72,37 @@ class BaseAvatar extends HTMLElement {
         easing: 'ease-out',
         fill: 'forwards',
       }
-    );
+    )
 
     animation.onfinish = () => {
-      badge.hidden = true;
-      badge.style.opacity = '';
-    };
+      badge.hidden = true
+      badge.style.opacity = ''
+      badge.style.transform = ''
+    }
   }
 
-  async emote(emotion) {
-    await this.ensureEmotionsLoaded();
+  emote({ emotion, animation }) {
+    const badge = this.querySelector('.emotion-badge')
+    if (!badge) return
 
-    const badge = this.querySelector('.emotion-badge');
-    if (!badge) return;
+    badge.textContent = emotion.emoji ?? '❓'
+    badge.hidden = false
 
-    badge.textContent = this.emotions[emotion] || '❓';
-    badge.hidden = false;
-    this.fadeOutBadge(badge);
+    if (animation) {
+      this.playBadgeAnimation(badge, animation)
+    }
+  }
+
+  showEmotion({ emotion, animation }) {
+    const badge = this.querySelector('.emotion-badge')
+    if (!badge) return
+
+    badge.textContent = emotion.emoji ?? '❓'
+    badge.hidden = false
+
+    if (animation) {
+      this.playAnimation(badge, animation)
+    }
   }
 
   placeAt(localX, localY) {
@@ -94,15 +111,15 @@ class BaseAvatar extends HTMLElement {
   }
 
   render() {
-    if (!this.data) return;
+    if (!this.data) return
 
-    const avatarEmoji = this.querySelector('.avatar-emoji');
+    const avatarEmoji = this.querySelector('.avatar-emoji')
     if (avatarEmoji) {
-      avatarEmoji.textContent = this.data.emoji ?? '🙂';
+      avatarEmoji.textContent = this.data.emoji ?? '🙂'
     }
   }
-
 }
 
 customElements.define('base-avatar', BaseAvatar)
+
 export { BaseAvatar }

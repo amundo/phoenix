@@ -21,7 +21,7 @@ class GameDataLoader {
     if (this.#index) {
       return this.#index
     }
-console.log(this.#dataRoot.href)
+
     let url = new URL('index.json', this.#dataRoot)
     this.#index = await this.fetchJSON(url)
     return this.#index
@@ -43,7 +43,7 @@ console.log(this.#dataRoot.href)
     const entries = Object.entries(index.catalogs)
 
     const results = await Promise.all(
-      entries.map(([, path]) => this.fetchJSON(path))
+      entries.map(([_, path]) => this.fetchJSON(path))
     )
 
     let catalogMap = Object.fromEntries(
@@ -88,7 +88,7 @@ console.log(this.#dataRoot.href)
     }
 
     const realm = await this.loadRealm(realmName)
-
+console.log(realm)
     const data = {
       ...sharedData,
       realm,

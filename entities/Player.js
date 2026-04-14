@@ -15,7 +15,7 @@ class Player extends Entity {
     if (!this.has(item)) {
       this.inventory.push(item)
     }
-  }s
+  }
 }
 
 

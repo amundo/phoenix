@@ -1,5 +1,6 @@
-
 class GameBoard extends HTMLElement {
+  #emotions = {}
+
   constructor() {
     super()
     this.innerHTML = `
@@ -11,6 +12,14 @@ class GameBoard extends HTMLElement {
     this.avatarLayer = this.querySelector('avatar-layer')
   }
 
+  get emotions() {
+    return this.#emotions
+  }
+
+  set emotions(emotions) {
+    this.#emotions = emotions ?? {}
+  }
+
   speak(entity, message) {
     this.avatarLayer.speak(entity, message)
   }
@@ -19,26 +28,25 @@ class GameBoard extends HTMLElement {
     this.avatarLayer.emote(entity, emotion)
   }
 
-  render({ world, camera, entities }) {
+  render(gameState) {
+    const { camera, catalogs } = gameState
     this.style.setProperty('--column-count', camera.columnCount)
     this.style.setProperty('--row-count', camera.rowCount)
 
-    this.terrainLayer.render({ world, camera, entities })
-
+    this.terrainLayer.render(gameState)
     this.measureTileSize()
-    this.avatarLayer.render({ world, camera, entities })
+
+    this.avatarLayer.render(gameState)
   }
 
   measureTileSize() {
     const firstCell = this.querySelector('game-cell')
     if (!firstCell) return
 
-    let tileSize = firstCell.getBoundingClientRect().width
-
+    const tileSize = firstCell.getBoundingClientRect().width
     this.style.setProperty('--tile-size', `${tileSize}px`)
   }
 }
 
 customElements.define('game-board', GameBoard)
-
 export { GameBoard }

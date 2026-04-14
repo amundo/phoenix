@@ -12,12 +12,15 @@ class AvatarLayer extends BaseLayer {
   constructor() {
     super()
     this.avatarElements = new Map()
+    this.emotions = {}
   }
 
-  render({ world, camera, entities = [] }) {
+  render(gameState) {
+    const { world, camera, entities, emotions } = gameState
     this.setContext({ world, camera })
+    this.emotions = emotions
 
-    entities.forEach(entity => this.syncEntity(entity, camera))
+    entities.forEach(entity => this.syncEntity(entity))
     this.removeMissingEntities(entities)
   }
 
@@ -26,10 +29,12 @@ class AvatarLayer extends BaseLayer {
 
     if (!avatar) {
       avatar = this.createAvatar(entity)
+      avatar.emotions = this.emotions
       this.avatarElements.set(entity, avatar)
       this.append(avatar)
     }
 
+    avatar.emotions = this.emotions
     avatar.data = entity
 
     const localX = this.toLocalX(entity.x)
@@ -44,9 +49,18 @@ class AvatarLayer extends BaseLayer {
     if (avatar) avatar.speak(message)
   }
 
-  emote(entity, emotion) {
+  emote(entity, emotionName) {
+    console.log({ entity, emotionName })
     const avatar = this.avatarElements.get(entity)
-    if (avatar) avatar.emote(emotion)
+    if (!avatar) return
+
+    const emotion = this.emotionCatalog?.byName?.[emotionName]
+    if (!emotion) return
+
+    const animation =
+      this.animationCatalog?.byName?.[emotion.animation ?? 'burst'] ?? null
+
+    avatar.showEmotion({ emotion, animation })
   }
 
   removeMissingEntities(liveEntities) {
@@ -62,8 +76,9 @@ class AvatarLayer extends BaseLayer {
     if (entity instanceof Player) return new PlayerAvatar()
     if (entity instanceof Enemy) return new EnemyAvatar()
     if (entity instanceof Item) return new ItemAvatar()
+    throw new Error(`No avatar class for entity: ${entity?.constructor?.name}`)
   }
 }
-customElements.define('avatar-layer', AvatarLayer)
 
+customElements.define('avatar-layer', AvatarLayer)
 export { AvatarLayer }

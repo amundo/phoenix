@@ -1,5 +1,7 @@
 import { GameEngine } from '../engine/GameEngine.js'
 import { GameDataLoader } from '../engine/GameDataLoader.js'
+import { GameBoard } from './GameBoard.js'
+import { GameUI } from './GameUI.js'
 
 class GameApp extends HTMLElement {
   #engine = null
@@ -10,19 +12,17 @@ class GameApp extends HTMLElement {
 
   constructor() {
     super()
-    this.innerHTML = `
-      <game-board></game-board>
-      <game-ui></game-ui>
-    `
-
-    this.#gameBoard = this.querySelector('game-board')
-    this.#ui = this.querySelector('game-ui')
-
+    this.initializeLayout()
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
-  static get observedAttributes() {
-    return ['src']
+  initializeLayout() {
+    this.replaceChildren()
+
+    this.#gameBoard = new GameBoard()
+    this.#ui = new GameUI()
+
+    this.append(this.#gameBoard, this.#ui)
   }
 
   get src() {
@@ -39,20 +39,11 @@ class GameApp extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name !== 'src' || oldValue === newValue) return
-    if (!this.#hasConnected) return
-    if (this.#isLoading) return
-
-    this.loadGameData(this.src)
-  }
-
   async loadGameData(dataRoot) {
     this.#isLoading = true
 
     try {
       const loader = new GameDataLoader(dataRoot)
-
       const gameData = await loader.loadGameData()
       this.start(gameData)
     } catch (error) {
@@ -62,7 +53,7 @@ class GameApp extends HTMLElement {
     }
   }
 
-  get engine() {
+  get engine() { // debugging helper
     return this.#engine
   }
 
@@ -70,7 +61,8 @@ class GameApp extends HTMLElement {
     this.#engine = new GameEngine(gameData)
     this.render()
 
-    removeEventListener('keydown', this.handleKeyDown)
+    // if we are restarting, remove old listener first
+    removeEventListener('keydown', this.handleKeyDown) 
     addEventListener('keydown', this.handleKeyDown)
   }
 
@@ -79,26 +71,25 @@ class GameApp extends HTMLElement {
     this.#gameBoard.render(this.#engine.getState())
   }
 
-  handleKeyDown(event) {
-    const command = this.keyToCommand(event.key)
-    if (!command) return
-
-    this.runCommand(command)
-  }
-
   keyToCommand(key) {
     if (key === 'ArrowUp') return { type: 'move', dx: 0, dy: -1 }
     if (key === 'ArrowDown') return { type: 'move', dx: 0, dy: 1 }
     if (key === 'ArrowLeft') return { type: 'move', dx: -1, dy: 0 }
     if (key === 'ArrowRight') return { type: 'move', dx: 1, dy: 0 }
-
     return null
+  }
+
+  handleKeyDown(event) {
+    const command = this.keyToCommand(event.key)
+    if (!command) return
+    this.runCommand(command)
   }
 
   runCommand(command) {
     if (!this.#engine) return
 
     const result = this.#engine.handleCommand(command)
+    console.table(result.effects)
     this.render()
     this.handleEffects(result.effects)
   }
@@ -118,6 +109,4 @@ class GameApp extends HTMLElement {
 
 customElements.define('game-app', GameApp)
 
-export {
-  GameApp
-}
+export { GameApp }

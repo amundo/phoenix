@@ -12,13 +12,19 @@ class GameEngine {
   initialize(gameData) {
     this.world = new World(gameData.realm)
     this.camera = new Camera(gameData.realm.camera)
-
-    this.player = new Player(gameData.realm.entities.player)
-    this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
-    this.items = gameData.realm.entities.items.map(item => new Item(item))
+    
     this.emotions = gameData.catalogs.emotions
-    this.animations = gameData.catalogs.animations
 
+    this.catalogs = gameData.catalogs
+    
+    this.player = new Player(gameData.realm.entities.player)
+    this.player.emotions = gameData.catalogs.emotions
+
+    this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
+    
+    this.items = gameData.realm.entities.items.map(item => new Item(item))
+    
+    this.animations = gameData.catalogs.animations
   }
 
   get entities() {
