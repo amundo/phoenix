@@ -42,6 +42,7 @@ class GameEngine {
   }
 
   handleCommand(command) {
+    console.log(command)
     if (!command) {
       return {
         stateChanged: false,
@@ -85,6 +86,11 @@ class GameEngine {
             type: 'speak',
             actor: this.player,
             message: `Look out! ${enemy.name}!`,
+          },
+          {
+            type: 'emote',
+            actor: this.player,
+            emotion: 'pain',
           },
         ],
       }
@@ -217,7 +223,7 @@ class GameEngine {
   getBlockedByWorldEffects() {
     return [
       { type: 'speak', actor: this.player, message: 'D’oh!' },
-      { type: 'emote', actor: this.player, emotion: 'ouch' },
+      { type: 'emote', actor: this.player, emotion: 'pain' },
     ]
   }
 

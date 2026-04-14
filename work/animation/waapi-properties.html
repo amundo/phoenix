@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test waapi properties</title>
+    <style>
+        body {
+            font-size: 10rem;
+            height: 100vh;
+            display: grid;
+            place-content: center;
+        }
+    </style>
+</head>
+<body>
+    
+
+<script>
+const el = document.createElement('div')
+el.textContent = '😖'
+document.body.appendChild(el)
+
+el.animate([
+  { translate: '0 -100px' },
+  { translate: '0 100px'  }
+], { duration: 1000, fill: "forwards", easing: "ease-in-out" })
+</script>
+</body>
+</html>

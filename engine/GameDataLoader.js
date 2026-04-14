@@ -1,3 +1,5 @@
+import { Catalog } from '../data/Catalog.js'
+
 class GameDataLoader {
   #dataRoot = null
   #index = null
@@ -32,10 +34,7 @@ class GameDataLoader {
   }
 
   makeCatalog(list) {
-    return {
-      list,
-      byName: this.indexByName(list),
-    }
+    return new Catalog(list)
   }
 
   async loadCatalogs() {

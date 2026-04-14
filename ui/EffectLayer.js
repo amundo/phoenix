@@ -1,37 +1,48 @@
 class EffectLayer extends HTMLElement {
-  showEmote(entity, emotion, context) {
+  #context = null
+
+  get context() {
+    return this.#context
+  }
+
+  set context(value) {
+    this.#context = value
+  }
+
+  showEmote(entity, emotion, animation) {
+    console.log(`showing emote ${emotion.name} with animation ${animation.name} for entity ${entity.id}`)
+    if (!this.#context) return
+
     if (emotion.animation === 'burst') {
-      this.showBurst(entity, emotion, { ...context, count: 4 })
+      this.showBurst(entity, emotion, animation, 4)
       return
     }
 
-    this.spawnParticle(entity, emotion, context)
+    this.spawnParticle(entity, emotion, animation)
   }
 
-  showBurst(entity, emotion, { camera, tileSize, animation, count = 4 }) {
+  showBurst(entity, emotion, animation, count = 4) {
     for (let i = 0; i < count; i++) {
-      this.spawnParticle(entity, emotion, {
-        camera,
-        tileSize,
-        animation,
-        delay: i * 60,
-      })
+      this.spawnParticle(entity, emotion, animation, i * 60)
     }
   }
 
-  spawnParticle(entity, emotion, { camera, tileSize, animation, delay = 0 }) {
+  spawnParticle(entity, emotion, animation, delay = 0) {
+    if (!this.#context) return
+
+    const { camera, tileSize } = this.#context
+
     const el = document.createElement('div')
     el.className = 'emote-effect'
     el.textContent = emotion.emoji ?? emotion
 
-    const baseX = (entity.x - camera.x) * tileSize + tileSize / 2
-    const baseY = (entity.y - camera.y) * tileSize + tileSize / 2
+    const { x, y } = this.getEffectAnchor(entity, camera, tileSize)
 
     const jitterX = (Math.random() - 0.5) * tileSize * 0.4
     const jitterY = (Math.random() - 0.5) * tileSize * 0.2
 
-    el.style.left = `${baseX + jitterX}px`
-    el.style.top = `${baseY + jitterY}px`
+    el.style.left = `${x + jitterX}px`
+    el.style.top = `${y + jitterY}px`
 
     this.appendChild(el)
 
@@ -45,8 +56,14 @@ class EffectLayer extends HTMLElement {
     const anim = el.animate(animation.keyframes, options)
     anim.onfinish = () => el.remove()
   }
+
+  getEffectAnchor(entity, camera, tileSize) {
+    return {
+      x: (entity.x - camera.x) * tileSize + tileSize / 2,
+      y: (entity.y - camera.y) * tileSize + tileSize / 2,
+    }
+  }
 }
 
 customElements.define('effect-layer', EffectLayer)
-
 export { EffectLayer }

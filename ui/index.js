@@ -9,4 +9,4 @@ export { GameUI } from './GameUI.js'
 export { ItemAvatar } from './ItemAvatar.js'
 export { PlayerAvatar } from './PlayerAvatar.js'
 export { TerrainLayer } from './TerrainLayer.js'
-
+export { EffectLayer } from './EffectLayer.js'

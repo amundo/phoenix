@@ -100,6 +100,7 @@ class GameApp extends HTMLElement {
       }
 
       if (effect.type === 'emote') {
+        console.log(`GameApp.handleEffects: ${effect.actor.id} -> ${effect.emotion}`)
         this.#gameBoard.emote(effect.actor, effect.emotion)
       }
     }

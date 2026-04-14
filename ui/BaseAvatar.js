@@ -81,18 +81,6 @@ class BaseAvatar extends HTMLElement {
     }
   }
 
-  emote({ emotion, animation }) {
-    const badge = this.querySelector('.emotion-badge')
-    if (!badge) return
-
-    badge.textContent = emotion.emoji ?? '❓'
-    badge.hidden = false
-
-    if (animation) {
-      this.playBadgeAnimation(badge, animation)
-    }
-  }
-
   showEmotion({ emotion, animation }) {
     const badge = this.querySelector('.emotion-badge')
     if (!badge) return

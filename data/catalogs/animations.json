@@ -7,7 +7,6 @@
     ],
     "options": {
       "duration": 800,
-      "iterations": 3,
       "easing": "ease-out",
       "fill": "forwards"
     }
@@ -20,7 +19,6 @@
     ],
     "options": {
       "duration": 1000,
-      "iterations": 1,
       "easing": "ease-out",
       "fill": "forwards"
     }

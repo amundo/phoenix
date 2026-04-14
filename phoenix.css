@@ -70,6 +70,12 @@ effect-layer {
   pointer-events: none;
 }
 
+.emote-effect {
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+
 game-cell {
   aspect-ratio: 1;
   display: grid;
