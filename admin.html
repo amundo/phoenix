@@ -32,6 +32,71 @@
       font-size: 0.95rem;
     }
 
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: monospace;
+      font-size: 0.92rem;
+      background: white;
+    }
+
+    th,
+    td {
+      padding: 0.45rem 0.6rem;
+      border: 1px solid #d6dde6;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef3f8;
+      position: sticky;
+      top: 0;
+    }
+
+    .catalogs {
+      margin-bottom: 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-button {
+      border: 1px solid #c7ced6;
+      border-radius: 999px;
+      background: #fff;
+      color: #234;
+      padding: 0.45rem 0.8rem;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .tab-button[aria-selected="true"] {
+      background: #234;
+      color: #fff;
+      border-color: #234;
+    }
+
+    .tab-panel {
+      border: 1px solid #d6dde6;
+      border-radius: 0.75rem;
+      background: #fbfcfe;
+      padding: 1rem;
+    }
+
+    .catalog-summary {
+      color: #5a6573;
+      margin-bottom: 0.75rem;
+    }
+
     details {
       margin-left: 1rem;
     }
@@ -75,6 +140,15 @@
   <h1>Admin</h1>
 
   <div class="status" id="status">Loading…</div>
+  <section class="catalogs" id="catalogs" hidden>
+    <h2>Catalogs</h2>
+    <div class="tabs" id="catalog-tabs" role="tablist" aria-label="Catalogs"></div>
+    <div class="tab-panel">
+      <div class="catalog-summary" id="catalog-summary"></div>
+      <div class="tree" id="catalog-tree"></div>
+    </div>
+  </section>
+  <h2>Game Data</h2>
   <div class="tree" id="tree"></div>
 
   <script type="module">
@@ -82,6 +156,10 @@
 
     const status = document.querySelector('#status');
     const tree = document.querySelector('#tree');
+    const catalogsSection = document.querySelector('#catalogs');
+    const catalogTabs = document.querySelector('#catalog-tabs');
+    const catalogSummary = document.querySelector('#catalog-summary');
+    const catalogTree = document.querySelector('#catalog-tree');
 
     function formatPrimitive(value) {
       if (value === null) {
@@ -146,6 +224,25 @@
         return div;
       }
 
+      if (shouldRenderAsTable(value)) {
+        const details = document.createElement('details');
+        details.open = true;
+
+        const summary = document.createElement('summary');
+
+        const keySpan = document.createElement('span');
+        keySpan.className = 'key';
+        keySpan.textContent = key;
+
+        const typeSpan = document.createElement('span');
+        typeSpan.className = 'type';
+        typeSpan.textContent = ` — ${describeValue(value)}`;
+
+        summary.append(keySpan, typeSpan);
+        details.append(summary, makeTable(value));
+        return details;
+      }
+
       const details = document.createElement('details');
       details.open = key === 'gameData';
 
@@ -175,6 +272,127 @@
       return details;
     }
 
+    function isPlainObject(value) {
+      return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    function shouldRenderAsTable(value) {
+      if (!Array.isArray(value) || value.length === 0) return false;
+      if (!value.every(isPlainObject)) return false;
+
+      const keys = getSharedKeys(value);
+      return keys.length > 0;
+    }
+
+    function getSharedKeys(rows) {
+      const keys = new Set();
+      rows.forEach(row => {
+        Object.keys(row).forEach(key => keys.add(key));
+      });
+
+      return [...keys];
+    }
+
+    function formatCellValue(value) {
+      if (value === null) return 'null';
+      if (Array.isArray(value) || isPlainObject(value)) {
+        return JSON.stringify(value);
+      }
+
+      return String(value);
+    }
+
+    function makeTable(rows) {
+      const columns = getSharedKeys(rows);
+      const wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const tbody = document.createElement('tbody');
+      const headRow = document.createElement('tr');
+
+      const indexHead = document.createElement('th');
+      indexHead.textContent = '(index)';
+      headRow.append(indexHead);
+
+      columns.forEach(column => {
+        const th = document.createElement('th');
+        th.textContent = column;
+        headRow.append(th);
+      });
+
+      thead.append(headRow);
+
+      rows.forEach((row, index) => {
+        const tr = document.createElement('tr');
+
+        const indexCell = document.createElement('td');
+        indexCell.textContent = String(index);
+        tr.append(indexCell);
+
+        columns.forEach(column => {
+          const td = document.createElement('td');
+          td.textContent = formatCellValue(row[column]);
+          tr.append(td);
+        });
+
+        tbody.append(tr);
+      });
+
+      table.append(thead, tbody);
+      wrap.append(table);
+      return wrap;
+    }
+
+    function getCatalogItems(catalog) {
+      if (!catalog) return [];
+      if (typeof catalog.values === 'function') {
+        return catalog.values();
+      }
+
+      return Array.from(catalog);
+    }
+
+    function renderCatalogTabs(catalogs) {
+      const entries = Object.entries(catalogs ?? {});
+      if (!entries.length) return;
+
+      catalogsSection.hidden = false;
+      catalogTabs.replaceChildren();
+
+      const panelsByName = new Map(entries);
+
+      function selectTab(name) {
+        const catalog = panelsByName.get(name);
+        if (!catalog) return;
+
+        for (const button of catalogTabs.querySelectorAll('.tab-button')) {
+          button.setAttribute('aria-selected', String(button.dataset.catalog === name));
+        }
+
+        const items = getCatalogItems(catalog);
+        catalogSummary.textContent = `${name} catalog · ${items.length} item${items.length === 1 ? '' : 's'}`;
+        catalogTree.replaceChildren(makeNode(name, items));
+      }
+
+      entries.forEach(([name], index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'tab-button';
+        button.dataset.catalog = name;
+        button.setAttribute('role', 'tab');
+        button.setAttribute('aria-selected', 'false');
+        button.textContent = name;
+        button.addEventListener('click', () => selectTab(name));
+        catalogTabs.append(button);
+
+        if (index === 0) {
+          selectTab(name);
+        }
+      });
+    }
+
     async function main() {
       try {
         const dataRoot = new URL('./data/', import.meta.url);
@@ -184,10 +402,11 @@
         status.textContent = [
           'Loaded successfully.',
           `Title: ${gameData.world?.title ?? '(no title)'}`,
-          `Starting realm: ${gameData.world?.startingRealm ?? '(none)'}`,
+          `Starting realm: ${gameData.world?.startRealm ?? '(none)'}`,
           `Catalogs: ${Object.keys(gameData.catalogs ?? {}).join(', ')}`
         ].join('\n');
 
+        renderCatalogTabs(gameData.catalogs);
         tree.replaceChildren(makeNode('gameData', gameData));
       } catch (error) {
         console.error(error);

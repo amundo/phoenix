@@ -156,19 +156,19 @@ class GameBoard extends HTMLElement {
       const boardHeight = this.clientHeight
 
       const anchorCenterX = (entity.x - this.camera.x + 0.5) * this.tileSize
-      const anchorTopY = (entity.y - this.camera.y) * this.tileSize
       const anchorBottomY = (entity.y - this.camera.y + 1) * this.tileSize
+      const anchorTopY = (entity.y - this.camera.y) * this.tileSize
 
       const minLeft = margin + bubbleWidth / 2
       const maxLeft = boardWidth - margin - bubbleWidth / 2
       const left = Math.max(minLeft, Math.min(anchorCenterX, maxLeft))
 
-      let top = anchorTopY - bubbleHeight - 10
-      let placement = 'top'
+      let top = anchorBottomY + 10
+      let placement = 'bottom'
 
-      if (top < margin) {
-        top = Math.min(anchorBottomY + 10, boardHeight - bubbleHeight - margin)
-        placement = 'bottom'
+      if (top + bubbleHeight > boardHeight - margin) {
+        top = Math.max(margin, anchorTopY - bubbleHeight - 10)
+        placement = 'top'
       }
 
       bubble.dataset.placement = placement

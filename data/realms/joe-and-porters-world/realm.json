@@ -46,7 +46,7 @@
         "on": {
           "pickup": {
             "message": "💩 Ok this is gross but I guess I have to pick it up",
-            "emotion": "disgusted"
+            "emotion": "disgust"
           }
         }
       },
