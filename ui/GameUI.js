@@ -1,26 +1,55 @@
-class GameUI extends HTMLElement { 
-    constructor(){
-        super()
-        this.innerHTML = `
-            <section id=inventory>
-                <h2>Inventory</h2>
-                <div id=inventory-items></div>
-            </section>
-        `
-    }
+import { AdminDialog } from './AdminDialog.js'
 
-    setInventory(items){
-        const container = this.querySelector('#inventory-items')
-        container.replaceChildren()
+class GameUI extends HTMLElement {
+  onRealmChange = null
 
-        items.forEach(item => {
-            const element = document.createElement('div')
-            element.className = 'inventory-item'
-            element.textContent = `${item.emoji} ${item.name}`
-            container.append(element)
-        })
-    }
+  constructor() {
+    super()
+    this.innerHTML = `
+      <section id="inventory">
+        <h2>Inventory</h2>
+        <div class="current-realm"></div>
+        <div id="inventory-items"></div>
+      </section>
+      <button type="button" class="admin-launch">Admin</button>
+      <admin-dialog></admin-dialog>
+    `
 
+    this.adminDialog = this.querySelector('admin-dialog')
+    this.querySelector('.admin-launch')?.addEventListener('click', () => {
+      this.adminDialog?.open()
+    })
+
+    this.adminDialog?.addEventListener('realmchange', event => {
+      this.onRealmChange?.(event.detail?.realmName)
+      this.dispatchEvent(new CustomEvent('realmchange', {
+        bubbles: true,
+        detail: event.detail,
+      }))
+    })
+  }
+
+  setInventory(items) {
+    const container = this.querySelector('#inventory-items')
+    container.replaceChildren()
+
+    items.forEach(item => {
+      const element = document.createElement('div')
+      element.className = 'inventory-item'
+      element.textContent = `${item.emoji} ${item.name}`
+      container.append(element)
+    })
+  }
+
+  setCurrentRealm(realmName) {
+    const label = this.querySelector('.current-realm')
+    if (!label) return
+    label.textContent = realmName ? `Realm: ${realmName}` : ''
+  }
+
+  setAdminData(data) {
+    this.adminDialog?.setData(data)
+  }
 }
 customElements.define('game-ui', GameUI)
 

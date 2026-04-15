@@ -38,6 +38,9 @@ game-app {
 
 game-ui {
   grid-area: left;
+  display: grid;
+  align-content: start;
+  gap: 1rem;
 }
 
 game-board {
@@ -90,6 +93,21 @@ effect-layer {
 }
 
 game-cell {
+  --terrain-base-lightness-1: 62%;
+  --terrain-base-lightness-2: 54%;
+  --terrain-base-chroma-1: 0.13;
+  --terrain-base-chroma-2: 0.11;
+  --terrain-base-hue-1: 132deg;
+  --terrain-base-hue-2: 128deg;
+  --terrain-lightness-delta: 0%;
+  --terrain-chroma-delta: 0;
+  --terrain-hue-delta: 0deg;
+  background-color:
+    oklch(
+      calc(var(--terrain-base-lightness-1) + var(--terrain-lightness-delta))
+      calc(var(--terrain-base-chroma-1) + var(--terrain-chroma-delta))
+      calc(var(--terrain-base-hue-1) + var(--terrain-hue-delta))
+    );
   aspect-ratio: 1;
   display: grid;
   place-content: center;
@@ -98,23 +116,6 @@ game-cell {
   height: 100%;
   min-height: 0;
   min-height: 0;
-}
-
-game-cell[terrain="water"] {
-  background-color: var(--deep-blue);
-}
-
-game-cell[terrain="grassland"],
-game-cell[terrain="grass"] {
-  background-image: radial-gradient(circle, var(--grassland-green), var(--dark-grassland-green));
-}
-
-game-cell[terrain="forest-floor"] {
-  background-image: radial-gradient(circle, #5e4b2f, #4a3b26);
-}
-
-game-cell[terrain="tree"] {
-  background-image: radial-gradient(circle, #2f6a2f, #214b21);
 }
 
 .avatar {
@@ -219,4 +220,178 @@ speech-bubble.avatar-speech-bubble .word {
 
 speech-bubble.avatar-speech-bubble .letter {
   display: inline-block;
+}
+
+.admin-launch {
+  justify-self: start;
+  border: 1px solid rgb(0 0 0 / 0.2);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  color: #123;
+  padding: 0.55rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-dialog {
+  width: min(72rem, calc(100vw - 3rem));
+  max-height: min(85dvh, 52rem);
+  border: none;
+  border-radius: 1rem;
+  padding: 0;
+  background: #f8fbfd;
+  color: #123;
+  box-shadow: 0 1.4rem 4rem rgb(0 0 0 / 0.28);
+}
+
+.admin-dialog::backdrop {
+  background: rgb(0 0 0 / 0.3);
+}
+
+.admin-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-close {
+  border: 1px solid rgb(0 0 0 / 0.16);
+  border-radius: 999px;
+  background: white;
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+}
+
+.admin-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-field span {
+  font-weight: 600;
+}
+
+.admin-field select {
+  width: fit-content;
+  min-width: 16rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #c7ced6;
+  border-radius: 0.5rem;
+  background: white;
+  font: inherit;
+}
+
+.admin-catalogs {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-tab {
+  border: 1px solid #c7ced6;
+  border-radius: 999px;
+  background: #fff;
+  color: #234;
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-tab[aria-selected="true"] {
+  background: #234;
+  color: #fff;
+  border-color: #234;
+}
+
+.admin-panel,
+.admin-data {
+  border: 1px solid #d6dde6;
+  border-radius: 0.75rem;
+  background: #fbfcfe;
+  padding: 1rem;
+}
+
+.admin-summary {
+  color: #5a6573;
+  margin-bottom: 0.75rem;
+}
+
+.tree {
+  font-family: monospace;
+  font-size: 0.95rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: monospace;
+  font-size: 0.92rem;
+  background: white;
+}
+
+th,
+td {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d6dde6;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eef3f8;
+  position: sticky;
+  top: 0;
+}
+
+details {
+  margin-left: 1rem;
+}
+
+summary {
+  cursor: pointer;
+}
+
+.leaf {
+  margin-left: 2rem;
+  padding: 0.1rem 0;
+}
+
+.key {
+  font-weight: bold;
+}
+
+.type {
+  color: #666;
+}
+
+.string {
+  color: #0a5;
+}
+
+.number {
+  color: #06c;
+}
+
+.boolean {
+  color: #a50;
+}
+
+.null {
+  color: #999;
+  font-style: italic;
 }

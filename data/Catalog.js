@@ -4,9 +4,17 @@ class Catalog {
 
   constructor(items = []) {
     this.#items = items
-    this.#byName = Object.fromEntries(
-      items.map(item => [item.name, item])
-    )
+    this.#byName = {}
+
+    for (const item of items) {
+      if (item.name) {
+        this.#byName[item.name] = item
+      }
+
+      if (item.id) {
+        this.#byName[item.id] = item
+      }
+    }
   }
 
   get(name) {

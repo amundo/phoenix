@@ -1,6 +1,66 @@
 [
-  { "id": "grass", "color": "var(--color-grass)", "walkable": true },
-  { "id": "water", "color": "var(--color-water)", "walkable": false },
-  { "id": "forest-floor", "color": "var(--color-forest-floor)", "walkable": true },
-  { "id": "tree", "color": "var(--color-tree)", "walkable": false }
+  {
+    "id": "grass",
+    "color": "var(--color-grass)",
+    "walkable": true,
+    "palette": {
+      "lightness1": 62,
+      "lightness2": 54,
+      "chroma1": 0.13,
+      "chroma2": 0.11,
+      "hue1": 132,
+      "hue2": 128,
+      "lightnessVariance": 5,
+      "chromaVariance": 0.016,
+      "hueVariance": 10
+    }
+  },
+  {
+    "id": "water",
+    "color": "var(--color-water)",
+    "walkable": false,
+    "palette": {
+      "lightness1": 54,
+      "lightness2": 42,
+      "chroma1": 0.19,
+      "chroma2": 0.17,
+      "hue1": 268,
+      "hue2": 258,
+      "lightnessVariance": 4,
+      "chromaVariance": 0.012,
+      "hueVariance": 6
+    }
+  },
+  {
+    "id": "forest-floor",
+    "color": "var(--color-forest-floor)",
+    "walkable": true,
+    "palette": {
+      "lightness1": 46,
+      "lightness2": 34,
+      "chroma1": 0.11,
+      "chroma2": 0.09,
+      "hue1": 136,
+      "hue2": 128,
+      "lightnessVariance": 4,
+      "chromaVariance": 0.014,
+      "hueVariance": 8
+    }
+  },
+  {
+    "id": "tree",
+    "color": "var(--color-tree)",
+    "walkable": false,
+    "palette": {
+      "lightness1": 42,
+      "lightness2": 30,
+      "chroma1": 0.1,
+      "chroma2": 0.08,
+      "hue1": 134,
+      "hue2": 126,
+      "lightnessVariance": 4,
+      "chromaVariance": 0.012,
+      "hueVariance": 8
+    }
+  }
 ]

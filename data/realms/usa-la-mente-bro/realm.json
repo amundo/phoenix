@@ -47,8 +47,8 @@
         "solid": true,
         "on": {
           "touch": {
-            "message": "Boom!",
-            "emotion": "surprised"
+            "message": "ZZzzzhuuup! You portaled!",
+            "emotion": "zany"
           }
         }
       },

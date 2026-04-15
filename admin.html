@@ -62,6 +62,25 @@
       margin-bottom: 1.5rem;
     }
 
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .toolbar label {
+      font-weight: 600;
+    }
+
+    .toolbar select {
+      font: inherit;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid #c7ced6;
+      border-radius: 0.5rem;
+      background: white;
+    }
+
     .tabs {
       display: flex;
       flex-wrap: wrap;
@@ -140,6 +159,10 @@
   <h1>Admin</h1>
 
   <div class="status" id="status">Loading…</div>
+  <div class="toolbar">
+    <label for="realm-select">Realm</label>
+    <select id="realm-select"></select>
+  </div>
   <section class="catalogs" id="catalogs" hidden>
     <h2>Catalogs</h2>
     <div class="tabs" id="catalog-tabs" role="tablist" aria-label="Catalogs"></div>
@@ -160,6 +183,7 @@
     const catalogTabs = document.querySelector('#catalog-tabs');
     const catalogSummary = document.querySelector('#catalog-summary');
     const catalogTree = document.querySelector('#catalog-tree');
+    const realmSelect = document.querySelector('#realm-select');
 
     function formatPrimitive(value) {
       if (value === null) {
@@ -393,21 +417,61 @@
       });
     }
 
+    function renderGameData(gameData) {
+      status.textContent = [
+        'Loaded successfully.',
+        `World startRealm: ${gameData.world?.startRealm ?? '(none)'}`,
+        `Loaded realm: ${gameData.realm?.id ?? '(none)'}`,
+        `Catalogs: ${Object.keys(gameData.catalogs ?? {}).join(', ')}`
+      ].join('\n');
+
+      renderCatalogTabs(gameData.catalogs);
+      tree.replaceChildren(makeNode('gameData', gameData));
+    }
+
+    function buildGameData(sharedData, realm) {
+      return {
+        ...sharedData,
+        realm,
+      };
+    }
+
     async function main() {
       try {
         const dataRoot = new URL('./data/', import.meta.url);
         const loader = new GameDataLoader(dataRoot);
+        const [index, sharedData] = await Promise.all([
+          loader.loadIndex(),
+          loader.loadSharedData(),
+        ]);
 
-        const gameData = await loader.loadGameData();
-        status.textContent = [
-          'Loaded successfully.',
-          `Title: ${gameData.world?.title ?? '(no title)'}`,
-          `Starting realm: ${gameData.world?.startRealm ?? '(none)'}`,
-          `Catalogs: ${Object.keys(gameData.catalogs ?? {}).join(', ')}`
-        ].join('\n');
+        const realmNames = Object.keys(index.realms ?? {});
+        const defaultRealm = sharedData.world?.startRealm ?? realmNames[0] ?? '';
 
-        renderCatalogTabs(gameData.catalogs);
-        tree.replaceChildren(makeNode('gameData', gameData));
+        realmSelect.replaceChildren(
+          ...realmNames.map(realmName => {
+            const option = document.createElement('option');
+            option.value = realmName;
+            option.textContent = realmName;
+            return option;
+          })
+        );
+
+        async function loadSelectedRealm(realmName) {
+          status.textContent = `Loading realm ${realmName}…`;
+          const realm = await loader.loadRealm(realmName);
+          renderGameData(buildGameData(sharedData, realm));
+        }
+
+        realmSelect.value = defaultRealm;
+        realmSelect.addEventListener('change', event => {
+          loadSelectedRealm(event.target.value).catch(error => {
+            console.error(error);
+            status.textContent = `Error loading realm:\n\n${error.message}`;
+          });
+        });
+
+        await loadSelectedRealm(defaultRealm);
       } catch (error) {
         console.error(error);
         status.textContent = `Error loading game data:\n\n${error.message}`;

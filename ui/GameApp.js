@@ -11,11 +11,16 @@ class GameApp extends HTMLElement {
   #ui = null
   #commandQueue = []
   #loopId = null
+  #loader = null
+  #sharedData = null
+  #index = null
+  #currentRealmName = null
 
   constructor() {
     super()
     this.initializeLayout()
     this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleRealmChange = this.handleRealmChange.bind(this)
   }
 
   enqueueCommand(command) {
@@ -50,9 +55,17 @@ class GameApp extends HTMLElement {
   }
 
   initializeLayout() {
+    if (this.#ui) {
+      this.#ui.removeEventListener('realmchange', this.handleRealmChange)
+    }
+
     this.replaceChildren()
     this.#gameBoard = new GameBoard()
     this.#ui = new GameUI()
+    this.#ui.onRealmChange = (realmName) => {
+      this.handleRealmChange({ detail: { realmName } })
+    }
+    this.#ui.addEventListener('realmchange', this.handleRealmChange)
     this.append(this.#gameBoard, this.#ui)
   }
 
@@ -79,9 +92,14 @@ class GameApp extends HTMLElement {
     this.#isLoading = true
 
     try {
-      const loader = new GameDataLoader(dataRoot)
-      const gameData = await loader.loadGameData()
-      this.start(gameData)
+      this.#loader = new GameDataLoader(dataRoot)
+      const [index, sharedData] = await Promise.all([
+        this.#loader.loadIndex(),
+        this.#loader.loadSharedData(),
+      ])
+      this.#index = index
+      this.#sharedData = sharedData
+      await this.loadRealmIntoGame(sharedData.world.startRealm)
     } catch (error) {
       console.error('[GameApp] Failed to load game data:', error)
     } finally {
@@ -94,9 +112,24 @@ class GameApp extends HTMLElement {
   }
 
   start(gameData) {
+    if (this.#engine) {
+      this.initializeLayout()
+    }
+
     this.#engine = new GameEngine(gameData)
     this.#commandQueue = []
     this.render()
+    this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
+    this.#ui?.setCurrentRealm(this.#currentRealmName ?? gameData.realm?.id ?? '')
+    this.#ui?.setAdminData({
+      realmOptions: this.getRealmOptions(),
+      world: gameData.world,
+      catalogs: gameData.catalogs,
+      realm: {
+        ...gameData.realm,
+        id: this.#currentRealmName ?? gameData.realm?.id,
+      },
+    })
     this.startLoop()
 
     removeEventListener('keydown', this.handleKeyDown)
@@ -106,6 +139,8 @@ class GameApp extends HTMLElement {
   render() {
     if (!this.#engine || !this.#gameBoard) return
     this.#gameBoard.render(this.#engine.getState())
+    this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
+    this.#ui?.setCurrentRealm(this.#currentRealmName ?? this.#engine?.world?.id ?? '')
   }
 
   handleKeyDown(event) {
@@ -150,6 +185,40 @@ class GameApp extends HTMLElement {
         this.#gameBoard.emote(effect.actor, effect.emotion)
       }
     }
+  }
+
+  async handleRealmChange(event) {
+    const realmName = event.detail?.realmName
+    if (!realmName || !this.#loader || !this.#sharedData) return
+
+    this.#isLoading = true
+
+    try {
+      await this.loadRealmIntoGame(realmName)
+    } catch (error) {
+      console.error('[GameApp] Failed to switch realm:', error)
+    } finally {
+      this.#isLoading = false
+    }
+  }
+
+  async loadRealmIntoGame(realmName) {
+    if (!realmName || !this.#loader || !this.#sharedData) return
+
+    const realm = await this.#loader.loadRealm(realmName)
+    this.#currentRealmName = realmName
+
+    this.start({
+      ...this.#sharedData,
+      realm,
+    })
+  }
+
+  getRealmOptions() {
+    return Object.keys(this.#index?.realms ?? {}).map(realmName => ({
+      value: realmName,
+      label: realmName,
+    }))
   }
 }
 
