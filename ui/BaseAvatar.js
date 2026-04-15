@@ -8,6 +8,7 @@ class BaseAvatar extends HTMLElement {
     this.innerHTML = `
       <span class="avatar-emoji"></span>
       <span class="emotion-badge" hidden></span>
+      <speech-bubble class="avatar-speech-bubble" animation="float" hidden></speech-bubble>
     `
   }
 
@@ -30,6 +31,19 @@ class BaseAvatar extends HTMLElement {
 
   connectedCallback() {
     this.render()
+  }
+
+  speak(message) {
+    const bubble = this.querySelector('.avatar-speech-bubble')
+    if (!bubble) return
+
+    bubble.hidden = false
+    bubble.setText?.(message)
+
+    clearTimeout(this.hideSpeechTimer)
+    this.hideSpeechTimer = setTimeout(() => {
+      bubble.hidden = true
+    }, 1200 + message.length * 45)
   }
 
   fadeOutBadge(badge) {
@@ -90,18 +104,6 @@ class BaseAvatar extends HTMLElement {
     if (avatarEmoji) {
       avatarEmoji.textContent = this.data.emoji ?? '🙂'
     }
-
-    this.style.setProperty('anchor-name', this.anchorName)
-  }
-
-  get anchorName() {
-    const rawId =
-      this.data?.id ??
-      this.data?.name ??
-      `${this.localName}-avatar`
-
-    const safeId = String(rawId).replace(/[^a-zA-Z0-9_-]+/g, '-')
-    return `--${safeId}`
   }
 }
 

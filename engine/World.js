@@ -6,8 +6,8 @@ class World {
   constructor(realm = {}, terrainCatalog = null) {
     const worldData = realm.world ?? realm
 
-    this.rowCount = worldData.rowCount ?? realm.rowCount ?? 0
-    this.columnCount = worldData.columnCount ?? realm.columnCount ?? 0
+    this.rowCount = realm.rowCount ?? worldData.rowCount ?? 0
+    this.columnCount = realm.columnCount ?? worldData.columnCount ?? 0
     this.#terrainCatalog = terrainCatalog
 
     const defaultTerrain = this.normalizeTerrainId(

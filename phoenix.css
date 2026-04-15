@@ -87,14 +87,6 @@ effect-layer {
   overflow: hidden;
 }
 
-speech-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 5;
-}
-
 game-cell {
   aspect-ratio: 1;
   display: grid;
@@ -124,12 +116,13 @@ game-cell[terrain="tree"] {
 }
 
 .avatar {
-  anchor-name: --avatar;
   position: relative;
   display: grid;
   place-content: center;
   height: 100%;
   width: 100%;
+  overflow: visible;
+  z-index: 2;
 }
 
 .avatar-emoji {
@@ -175,11 +168,14 @@ player-avatar .emotion-badge {
   will-change: transform, opacity;
 }
 
-speech-bubble.board-speech-bubble {
+speech-bubble.avatar-speech-bubble {
   position: absolute;
+  left: 50%;
+  top: calc(100% + 0.5rem);
   transform: translateX(-50%);
   display: inline-block;
-  max-inline-size: min(22rem, calc(100% - 1.5rem));
+  inline-size: max-content;
+  max-inline-size: min(18rem, 60vw);
   padding: 0.7rem 0.9rem;
   border: 2px solid color-mix(in srgb, black 75%, #734b2b 25%);
   border-radius: 1rem;
@@ -187,9 +183,14 @@ speech-bubble.board-speech-bubble {
   color: #1e1e1e;
   font: 600 clamp(0.85rem, 0.55rem + 0.7vw, 1rem) / 1.35 ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", sans-serif;
   box-shadow: 0 0.7rem 1.8rem rgb(0 0 0 / 0.18);
+  z-index: 5;
 }
 
-speech-bubble.board-speech-bubble::after {
+speech-bubble.avatar-speech-bubble[hidden] {
+  display: none !important;
+}
+
+speech-bubble.avatar-speech-bubble::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -201,20 +202,16 @@ speech-bubble.board-speech-bubble::after {
   transform: translateX(-50%) rotate(45deg);
 }
 
-speech-bubble.board-speech-bubble[data-placement="top"]::after {
-  bottom: -0.5rem;
-}
-
-speech-bubble.board-speech-bubble[data-placement="bottom"]::after {
+speech-bubble.avatar-speech-bubble::after {
   top: -0.5rem;
   transform: translateX(-50%) rotate(225deg);
 }
 
-speech-bubble.board-speech-bubble .word {
+speech-bubble.avatar-speech-bubble .word {
   display: inline;
   white-space: normal;
 }
 
-speech-bubble.board-speech-bubble .letter {
+speech-bubble.avatar-speech-bubble .letter {
   display: inline-block;
 }

@@ -50,7 +50,9 @@ class AvatarLayer extends BaseLayer {
 
   speak(entity, message) {
     const avatar = this.avatarElements.get(entity)
-    if (avatar) avatar.speak(message)
+    if (typeof avatar?.speak === 'function') {
+      avatar.speak(message)
+    }
   }
 
   emote(entity, emotionName) {
