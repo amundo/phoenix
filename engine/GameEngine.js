@@ -26,9 +26,43 @@ class GameEngine {
     }
 
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
-    this.items = gameData.realm.entities.items.map(item => new Item(item))
+    this.items = gameData.realm.entities.items.map(item =>
+      new Item(this.resolveCatalogEntity(gameData.catalogs.items, item))
+    )
 
     this.centerCameraOnPlayer()
+  }
+
+  resolveCatalogEntity(catalog, instanceData = {}) {
+    const key = instanceData.catalogId ?? instanceData.kind
+    const catalogData = key ? catalog?.get?.(key) : null
+
+    if (!catalogData) {
+      return instanceData
+    }
+
+    const merged = {
+      ...catalogData,
+      ...instanceData,
+      catalogId: catalogData.id ?? instanceData.catalogId ?? null,
+      definition: catalogData,
+    }
+
+    if (catalogData.on || instanceData.on) {
+      merged.on = {
+        ...(catalogData.on ?? {}),
+        ...(instanceData.on ?? {}),
+      }
+    }
+
+    if (catalogData.requires || instanceData.requires) {
+      merged.requires = {
+        ...(catalogData.requires ?? {}),
+        ...(instanceData.requires ?? {}),
+      }
+    }
+
+    return merged
   }
 
   get entities() {

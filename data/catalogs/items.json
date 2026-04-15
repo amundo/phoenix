@@ -3,29 +3,414 @@
     "id": "red-mushroom",
     "name": "Red Mushroom",
     "emoji": "🍄",
-    "onTake": ["heal-small"]
+    "category": "food",
+    "description": "A bright forest mushroom with a dramatic red cap.",
+    "portable": true
   },
   {
     "id": "coin",
     "name": "Coin",
-    "emoji": "🪙"
+    "emoji": "🪙",
+    "category": "treasure",
+    "description": "A shiny coin that looks valuable enough to keep.",
+    "portable": true
   },
   {
     "id": "key",
     "name": "Key",
-    "emoji": "🗝️"
+    "emoji": "🗝️",
+    "category": "tool",
+    "description": "A simple key for locked doors and puzzle contraptions.",
+    "portable": true
   },
   {
     "id": "magic-mirror",
     "name": "Magic Mirror",
     "emoji": "🪞",
+    "category": "magic",
+    "description": "Its surface shimmers like it knows another place.",
     "onInteract": ["mirror-teleport"]
   },
   {
     "id": "signpost",
     "name": "Signpost",
     "emoji": "🪧",
+    "category": "world",
+    "description": "A helpful sign for players who actually read signs.",
     "onInteract": ["read-sign"]
+  },
+  {
+    "id": "cactus",
+    "name": "Cactus",
+    "emoji": "🌵",
+    "category": "hazard",
+    "description": "Spiky enough to make touching it feel like a mistake.",
+    "solid": true,
+    "on": {
+      "touch": {
+        "message": "Ow!",
+        "emotion": "pain"
+      }
+    }
+  },
+  {
+    "id": "door",
+    "name": "Door",
+    "emoji": "🚪",
+    "category": "world",
+    "description": "A door that probably wants a key or a trick.",
+    "solid": true
+  },
+  {
+    "id": "portal",
+    "name": "Portal",
+    "emoji": "🌀",
+    "category": "magic",
+    "description": "A swirling portal humming with unstable travel energy.",
+    "solid": true
+  },
+  {
+    "id": "scroll",
+    "name": "Scroll",
+    "emoji": "📜",
+    "category": "magic",
+    "description": "An old scroll covered in suspiciously important writing.",
+    "portable": true
+  },
+  {
+    "id": "bone",
+    "name": "Bone",
+    "emoji": "🦴",
+    "category": "food",
+    "description": "A snack if you are a dog and an artifact if you are not.",
+    "portable": true
+  },
+  {
+    "id": "poop",
+    "name": "Poop",
+    "emoji": "💩",
+    "category": "trash",
+    "description": "No one is happy about this item existing.",
+    "portable": true
+  },
+  {
+    "id": "guitar",
+    "name": "Guitar",
+    "emoji": "🎸",
+    "category": "tool",
+    "description": "A guitar for heroic riffs or questionable campfire songs.",
+    "portable": true
+  },
+  {
+    "id": "spell-book",
+    "name": "Spell Book",
+    "emoji": "📖",
+    "category": "magic",
+    "description": "A spell book packed with more confidence than safety.",
+    "portable": true
+  },
+  {
+    "id": "magic-ring",
+    "name": "Magic Ring",
+    "emoji": "💍",
+    "category": "magic",
+    "description": "A ring with the kind of glow that suggests consequences.",
+    "portable": true
+  },
+  {
+    "id": "health-potion",
+    "name": "Health Potion",
+    "emoji": "🧪",
+    "category": "potion",
+    "description": "A fizzy potion that promises to improve your outlook.",
+    "portable": true
+  },
+  {
+    "id": "treasure-chest",
+    "name": "Treasure Chest",
+    "emoji": "🧰",
+    "category": "treasure",
+    "description": "A chest that looks like it wants to be opened dramatically.",
+    "solid": true
+  },
+  {
+    "id": "torch",
+    "name": "Torch",
+    "emoji": "🔥",
+    "category": "tool",
+    "description": "Portable fire, one of civilization's more reckless triumphs.",
+    "portable": true
+  },
+  {
+    "id": "boots",
+    "name": "Boots",
+    "emoji": "🥾",
+    "category": "equipment",
+    "description": "Rugged boots built for mud, ruins, and bad decisions.",
+    "portable": true
+  },
+  {
+    "id": "gemstone",
+    "name": "Gemstone",
+    "emoji": "💎",
+    "category": "treasure",
+    "description": "A bright gemstone that instantly makes a pocket feel richer.",
+    "portable": true
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "emoji": "🍎",
+    "category": "food",
+    "description": "A crisp red apple that looks reliably edible.",
+    "portable": true
+  },
+  {
+    "id": "pear",
+    "name": "Pear",
+    "emoji": "🍐",
+    "category": "food",
+    "description": "A soft green pear with a surprisingly noble silhouette.",
+    "portable": true
+  },
+  {
+    "id": "bread",
+    "name": "Bread",
+    "emoji": "🍞",
+    "category": "food",
+    "description": "A loaf of bread with immediate campfire appeal.",
+    "portable": true
+  },
+  {
+    "id": "cheese",
+    "name": "Cheese",
+    "emoji": "🧀",
+    "category": "food",
+    "description": "A wedge of cheese that solves morale for at least one minute.",
+    "portable": true
+  },
+  {
+    "id": "carrot",
+    "name": "Carrot",
+    "emoji": "🥕",
+    "category": "food",
+    "description": "A practical vegetable with heroic orange energy.",
+    "portable": true
+  },
+  {
+    "id": "fish",
+    "name": "Fish",
+    "emoji": "🐟",
+    "category": "food",
+    "description": "Fresh enough that carrying it feels time-sensitive.",
+    "portable": true
+  },
+  {
+    "id": "drumstick",
+    "name": "Drumstick",
+    "emoji": "🍗",
+    "category": "food",
+    "description": "A dramatic piece of meat straight out of cartoon logic.",
+    "portable": true
+  },
+  {
+    "id": "berry",
+    "name": "Berry",
+    "emoji": "🫐",
+    "category": "food",
+    "description": "A handful of berries gathered from somewhere probably safe.",
+    "portable": true
+  },
+  {
+    "id": "honey",
+    "name": "Honey",
+    "emoji": "🍯",
+    "category": "food",
+    "description": "Sticky golden honey in a jar that bees probably miss.",
+    "portable": true
+  },
+  {
+    "id": "milk",
+    "name": "Milk",
+    "emoji": "🥛",
+    "category": "food",
+    "description": "A glass of milk that somehow survives backpack physics.",
+    "portable": true
+  },
+  {
+    "id": "egg",
+    "name": "Egg",
+    "emoji": "🥚",
+    "category": "food",
+    "description": "An egg with untapped breakfast potential.",
+    "portable": true
+  },
+  {
+    "id": "cupcake",
+    "name": "Cupcake",
+    "emoji": "🧁",
+    "category": "food",
+    "description": "A tiny cake that improves nearly any side quest.",
+    "portable": true
+  },
+  {
+    "id": "watermelon",
+    "name": "Watermelon",
+    "emoji": "🍉",
+    "category": "food",
+    "description": "A large watermelon that seems worth the inventory slot.",
+    "portable": true
+  },
+  {
+    "id": "mystery-meat",
+    "name": "Mystery Meat",
+    "emoji": "🥩",
+    "category": "food",
+    "description": "Nutritious in theory and suspicious in practice.",
+    "portable": true
+  },
+  {
+    "id": "herb",
+    "name": "Herb",
+    "emoji": "🌿",
+    "category": "ingredient",
+    "description": "A bundle of useful herbs for potions, soups, or placebo.",
+    "portable": true
+  },
+  {
+    "id": "flower",
+    "name": "Flower",
+    "emoji": "🌼",
+    "category": "ingredient",
+    "description": "A cheerful flower that looks too nice for a dungeon.",
+    "portable": true
+  },
+  {
+    "id": "shell",
+    "name": "Shell",
+    "emoji": "🐚",
+    "category": "treasure",
+    "description": "A polished shell with beach-day side quest energy.",
+    "portable": true
+  },
+  {
+    "id": "feather",
+    "name": "Feather",
+    "emoji": "🪶",
+    "category": "ingredient",
+    "description": "A feather light enough to feel magical on principle.",
+    "portable": true
+  },
+  {
+    "id": "lantern",
+    "name": "Lantern",
+    "emoji": "🏮",
+    "category": "tool",
+    "description": "A lantern that makes dark places seem slightly negotiable.",
+    "portable": true
+  },
+  {
+    "id": "rope",
+    "name": "Rope",
+    "emoji": "🪢",
+    "category": "tool",
+    "description": "A good rope, which in adventure terms means nearly priceless.",
+    "portable": true
+  },
+  {
+    "id": "map",
+    "name": "Map",
+    "emoji": "🗺️",
+    "category": "tool",
+    "description": "A map full of lines that are either roads or lies.",
+    "portable": true
+  },
+  {
+    "id": "compass",
+    "name": "Compass",
+    "emoji": "🧭",
+    "category": "tool",
+    "description": "A compass for players who respect north.",
+    "portable": true
+  },
+  {
+    "id": "shovel",
+    "name": "Shovel",
+    "emoji": "🪏",
+    "category": "tool",
+    "description": "A shovel for treasure, gardening, or suspicious digging.",
+    "portable": true
+  },
+  {
+    "id": "fishing-rod",
+    "name": "Fishing Rod",
+    "emoji": "🎣",
+    "category": "tool",
+    "description": "A fishing rod for calm moments and uncalm river monsters.",
+    "portable": true
+  },
+  {
+    "id": "flute",
+    "name": "Flute",
+    "emoji": "🪈",
+    "category": "tool",
+    "description": "A flute with the power to attract music and maybe snakes.",
+    "portable": true
+  },
+  {
+    "id": "crown",
+    "name": "Crown",
+    "emoji": "👑",
+    "category": "treasure",
+    "description": "A crown heavy with status and questionable responsibility.",
+    "portable": true
+  },
+  {
+    "id": "crystal-ball",
+    "name": "Crystal Ball",
+    "emoji": "🔮",
+    "category": "magic",
+    "description": "A crystal ball that practically demands prophecy.",
+    "portable": true
+  },
+  {
+    "id": "star-charm",
+    "name": "Star Charm",
+    "emoji": "🌟",
+    "category": "magic",
+    "description": "A tiny charm that seems weirdly lucky to hold.",
+    "portable": true
+  },
+  {
+    "id": "skull",
+    "name": "Skull",
+    "emoji": "💀",
+    "category": "hazard",
+    "description": "A skull that doubles as decor and a warning label.",
+    "portable": true
+  },
+  {
+    "id": "spider-web",
+    "name": "Spider Web",
+    "emoji": "🕸️",
+    "category": "hazard",
+    "description": "A sticky web that strongly implies a larger owner nearby.",
+    "solid": true
+  },
+  {
+    "id": "slime-blob",
+    "name": "Slime Blob",
+    "emoji": "🟢",
+    "category": "hazard",
+    "description": "A wobbling blob that looks too alive for comfort.",
+    "solid": true
+  },
+  {
+    "id": "moon-stone",
+    "name": "Moon Stone",
+    "emoji": "🌙",
+    "category": "treasure",
+    "description": "A moon-marked stone with old, quiet power.",
+    "portable": true
   }
-
 ]

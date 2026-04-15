@@ -1,25 +1,25 @@
 {
-  "id": "joe-and-porters-world",
-  "name": "Joe and Porter’s World",
-  "rowCount": 8,
-  "columnCount": 10,
+  "id": "pat",
+  "name": "Pat was here",
+  "rowCount": 24,
+  "columnCount": 30,
   "world": {
     "rowCount": 8,
     "columnCount": 10,
     "asciiMap": [
       "WWGGGGGGGG",
-      "WGGGGFGGGG",
-      "GGGGGTTGGG",
-      "GGGGGFGGGG",
-      "GGGGGGGGGG",
-      "GGGGGGGGGG",
-      "GGGGGGG@GW",
-      "GGGGGGGGWW"
+      "WGGGPPPPPP",
+      "GGGPPTGGG",
+      "GGPPFGGGG",
+      "GGPGGGGGG",
+      "GGPGGGGGG",
+      "GGPGGG@GW",
+      "GGPGGGGWW"
     ],
     "legend": {
       "W": "water",
       "G": "grass",
-      "F": "forest-floor",
+      "P": "path",
       "T": "tree",
       "@": "player"
     }
@@ -33,8 +33,8 @@
   "entities": {
     "player": {
       "kind": "player",
-      "name": "Phoenix",
-      "emoji": "🧒",
+      "name": "Scouty",
+      "emoji": "🐶",
       "x": 2,
       "y": 1,
       "inventory": []
@@ -50,51 +50,22 @@
         "portable": true,
         "on": {
           "pickup": {
-            "message": "💩 Ok this is gross but I guess I have to pick it up",
-            "emotion": "disgust"
-          }
-        }
-      },
-
-      {
-        "id": "guitar",
-        "kind": "guitar",
-        "emoji": "🎸",
-        "x": 7,
-        "y": 3,
-        "portable": true,
-        "on": {
-          "pickup": {
-            "message": "I found a guitar!",
-            "emotion": "happy"
+            "message": "Ok this is gross but I guess I have to pick it up",
+            "emotion": "disgusted"
           }
         }
       },
       {
-        "id": "lantern",
-        "kind": "lantern",
-        "emoji": "🏮",
-        "x": 8,
-        "y": 2,
-        "portable": true,
-        "on": {
-          "pickup": {
-            "message": "A lantern. That feels more useful than alarming.",
-            "emotion": "happy"
-          }
-        }
-      },
-      {
-        "id": "cactus-1",
-        "kind": "cactus",
-        "emoji": "🌵",
-        "x": 4,
-        "y": 3,
+        "id": "portal",
+        "kind": "portal",
+        "emoji": "🌀",
+        "x": 2,
+        "y": 0,
         "solid": true,
         "on": {
           "touch": {
-            "message": "Ow!",
-            "emotion": "pain"
+            "message": "ZZzzzhuuup! You portaled!",
+            "emotion": "zany"
           }
         }
       },
@@ -112,6 +83,22 @@
             "emotion": "happy"
           }
         }
+      },
+      {
+        "id": "scroll",
+        "kind": "scroll",
+        "emoji": "📜",
+        "name": "a mysterious scroll",
+        "x": 5,
+        "y": 5,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Whoa dude a mysterious scroll!",
+            "emotion": "curious"
+          }
+        }
+
       },
       {
         "id": "door-1",
@@ -135,6 +122,22 @@
             "set": {
               "solid": false
             }
+          }
+        }
+      },
+      
+      {
+        "id": "bone",
+        "kind": "bone",
+        "emoji": "🦴",
+        "name": "a tasty bone",
+        "x": 6,
+        "y": 6,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Woof!",
+            "emotion": "happy"
           }
         }
       }

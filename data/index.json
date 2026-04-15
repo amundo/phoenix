@@ -11,6 +11,7 @@
   "realms": {
     "joe-and-porters-world": "realms/joe-and-porters-world/realm.json",
     "usa-la-mente-bro": "realms/usa-la-mente-bro/realm.json",
+    "pat": "realms/pat/realm.json",
     "overworld": "realms/overworld/realm.json",
     "unlock-the-door": "realms/unlock-the-door/realm.json",
     "dark-forest": "realms/dark-forest/realm.json",

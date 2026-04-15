@@ -104,6 +104,22 @@ class BaseAvatar extends HTMLElement {
     if (avatarEmoji) {
       avatarEmoji.textContent = this.data.emoji ?? '🙂'
     }
+
+    if (this.data.kind) {
+      this.dataset.kind = this.data.kind
+    } else {
+      delete this.dataset.kind
+    }
+
+    if (this.data.category) {
+      this.dataset.category = this.data.category
+    } else {
+      delete this.dataset.category
+    }
+
+    const label = this.data.description ?? this.data.name ?? this.data.kind ?? ''
+    this.title = label
+    this.setAttribute('aria-label', label)
   }
 }
 

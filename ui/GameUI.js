@@ -36,7 +36,34 @@ class GameUI extends HTMLElement {
     items.forEach(item => {
       const element = document.createElement('div')
       element.className = 'inventory-item'
-      element.textContent = `${item.emoji} ${item.name}`
+
+      if (item.kind) {
+        element.dataset.kind = item.kind
+      }
+
+      if (item.category) {
+        element.dataset.category = item.category
+      }
+
+      element.title = item.description ?? item.name ?? item.kind ?? ''
+
+      const emoji = document.createElement('span')
+      emoji.className = 'inventory-item-emoji'
+      emoji.textContent = item.emoji ?? '📦'
+
+      const name = document.createElement('span')
+      name.className = 'inventory-item-name'
+      name.textContent = item.name ?? item.kind ?? 'Unknown item'
+
+      element.append(emoji, name)
+
+      if (item.category) {
+        const category = document.createElement('span')
+        category.className = 'inventory-item-category'
+        category.textContent = item.category
+        element.append(category)
+      }
+
       container.append(element)
     })
   }

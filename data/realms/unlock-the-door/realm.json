@@ -27,25 +27,15 @@
       {
         "id": "cactus-1",
         "kind": "cactus",
-        "emoji": "🌵",
         "x": 4,
-        "y": 3,
-        "solid": true,
-        "on": {
-          "touch": {
-            "message": "Ow!",
-            "emotion": "pain"
-          }
-        }
+        "y": 3
       },
       {
         "id": "bronze-key-1",
         "kind": "key",
-        "emoji": "🗝️",
         "name": "Bronze key",
         "x": 2,
         "y": 5,
-        "portable": true,
         "on": {
           "pickup": {
             "message": "🗝️ I found a shiny bronze key!",
@@ -56,11 +46,9 @@
       {
         "id": "door-1",
         "kind": "door",
-        "emoji": "🚪",
         "name": "a wooden door",
         "x": 8,
         "y": 1,
-        "solid": true,
         "requires": {
           "id": "bronze-key-1"
         },

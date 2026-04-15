@@ -43,6 +43,46 @@ game-ui {
   gap: 1rem;
 }
 
+#inventory {
+  display: grid;
+  gap: 0.5rem;
+}
+
+#inventory-items {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.inventory-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: 0.55rem;
+  row-gap: 0.15rem;
+  max-width: 20rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.8rem;
+  background: rgb(255 255 255 / 0.84);
+  color: #17313b;
+}
+
+.inventory-item-emoji {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.inventory-item-name {
+  font-weight: 700;
+}
+
+.inventory-item-category {
+  grid-column: 2;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  text-transform: capitalize;
+  color: color-mix(in srgb, #17313b 60%, white);
+}
+
 game-board {
   grid-area: center;
   --tile-size: 3rem;
