@@ -1,15 +1,24 @@
 class SpeechBubble extends HTMLElement {
+  #text = ''
+  #cleanupTimer = null
+
   static get observedAttributes() {
     return ['animation']
   }
 
   connectedCallback() {
     if (!this.dataset.ready) {
-      this.prepareText()
+      this.#text = this.textContent ?? ''
+      this.renderPlainText()
       this.dataset.ready = 'true'
     }
 
     requestAnimationFrame(() => this.play())
+  }
+
+  disconnectedCallback() {
+    this.clearCleanupTimer()
+    this.cancelLetterAnimations()
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -26,19 +35,22 @@ class SpeechBubble extends HTMLElement {
     return [...this.querySelectorAll('.letter')]
   }
 
-  prepareText() {
-    const text = this.textContent
+  get textValue() {
+    return this.#text
+  }
+
+  buildAnimatedFragment() {
     const fragment = document.createDocumentFragment()
 
     const wordSegmenter = new Intl.Segmenter(undefined, {
       granularity: 'word'
     })
 
-    const chararcterSegmenter = new Intl.Segmenter(undefined, {
+    const characterSegmenter = new Intl.Segmenter(undefined, {
       granularity: 'grapheme'
     })
 
-    for (const { segment, isWordLike } of wordSegmenter.segment(text)) {
+    for (const { segment, isWordLike } of wordSegmenter.segment(this.#text)) {
       if (!isWordLike) {
         // spaces, punctuation, etc.
         fragment.append(document.createTextNode(segment))
@@ -47,19 +59,22 @@ class SpeechBubble extends HTMLElement {
 
       const word = document.createElement('span')
       word.className = 'word'
+      word.setAttribute('aria-hidden', 'true')
 
-      for (const { segment: character } of chararcterSegmenter.segment(segment)) {
+      for (const { segment: character } of characterSegmenter.segment(segment)) {
         const letter = document.createElement('span')
         letter.className = 'letter'
         letter.textContent = character
+        letter.setAttribute('aria-hidden', 'true')
         word.append(letter)
       }
 
       fragment.append(word)
     }
 
-    this.replaceChildren(fragment)
+    return fragment
   }
+
   getTiming(letterCount) {
     const totalCap = 700
     const minStagger = 10
@@ -99,7 +114,39 @@ class SpeechBubble extends HTMLElement {
     }
   }
 
+  renderPlainText() {
+    this.cancelLetterAnimations()
+    this.replaceChildren(document.createTextNode(this.#text))
+    this.setAttribute('aria-label', this.#text)
+  }
+
+  renderAnimatedText() {
+    this.replaceChildren(this.buildAnimatedFragment())
+    this.setAttribute('aria-label', this.#text)
+  }
+
+  cancelLetterAnimations() {
+    for (const letter of this.letterSpans) {
+      letter.getAnimations().forEach(animation => animation.cancel())
+    }
+  }
+
+  clearCleanupTimer() {
+    if (this.#cleanupTimer) {
+      clearTimeout(this.#cleanupTimer)
+      this.#cleanupTimer = null
+    }
+  }
+
   play() {
+    if (!this.#text) {
+      this.renderPlainText()
+      return
+    }
+
+    this.clearCleanupTimer()
+    this.renderAnimatedText()
+
     const letters = this.letterSpans
     const { duration, stagger } = this.getTiming(letters.length)
     const keyframes = this.getKeyframes(this.animationName)
@@ -114,12 +161,21 @@ class SpeechBubble extends HTMLElement {
         fill: 'both'
       })
     })
+
+    const totalDuration = duration + Math.max(0, letters.length - 1) * stagger
+    this.#cleanupTimer = setTimeout(() => {
+      this.renderPlainText()
+      this.#cleanupTimer = null
+    }, totalDuration + 20)
   }
 
   setText(text) {
-    this.textContent = text
-    this.prepareText()
-    this.play()
+    this.#text = text ?? ''
+    this.renderPlainText()
+
+    if (this.isConnected) {
+      this.play()
+    }
   }
 }
 
