@@ -1,4 +1,11 @@
 class GameBoard extends HTMLElement {
+  static emotionAliases = {
+    confused: 'confusion',
+    curious: 'curiosity',
+    disgusted: 'disgust',
+    surprised: 'surprise',
+  }
+
   constructor() {
     super()
     this.innerHTML = `
@@ -11,6 +18,9 @@ class GameBoard extends HTMLElement {
     this.avatarLayer = this.querySelector('avatar-layer')
     this.effectLayer = this.querySelector('effect-layer')
 
+    this.catalogs = null
+    this.camera = null
+    this.tileSize = null
   }
 
   speak(entity, message) {
@@ -18,13 +28,12 @@ class GameBoard extends HTMLElement {
   }
 
   emote(entity, emotionName) {
-    console.log(`GameBoard.emote: ${entity.id} -> ${emotionName}`)
-    const emotion = this.catalogs.emotions.get(emotionName)
+    if (!this.catalogs) return
 
+    const emotion = this.resolveEmotion(emotionName)
     if (!emotion) return
 
-    const animation = this.catalogs.animations.get(emotion.animation)
-    if (!animation) return
+    const animation = this.resolveAnimation(emotion)
 
     this.effectLayer.showEmote(entity, emotion, animation)
   }
@@ -32,15 +41,18 @@ class GameBoard extends HTMLElement {
   render(gameState) {
     const { camera, catalogs } = gameState
 
+    if (!this.catalogs) {
+      this.catalogs = catalogs
+      this.avatarLayer.setCatalogs(catalogs)
+    }
+
     this.camera = camera
-    this.catalogs = catalogs
 
     this.style.setProperty('--column-count', camera.columnCount)
     this.style.setProperty('--row-count', camera.rowCount)
 
     this.terrainLayer.render(gameState)
     this.measureTileSize()
-
     this.avatarLayer.render(gameState)
 
     this.effectLayer.context = {
@@ -53,9 +65,35 @@ class GameBoard extends HTMLElement {
     const firstCell = this.querySelector('game-cell')
     if (!firstCell) return
 
-    const tileSize = firstCell.getBoundingClientRect().width
-    this.tileSize = tileSize
-    this.style.setProperty('--tile-size', `${tileSize}px`)
+    this.tileSize = firstCell.getBoundingClientRect().width
+    this.style.setProperty('--tile-size', `${this.tileSize}px`)
+  }
+
+  resolveEmotion(emotionName) {
+    const emotionCatalog = this.catalogs?.emotions
+    if (!emotionCatalog || !emotionName) return null
+
+    return (
+      emotionCatalog.get(emotionName) ??
+      emotionCatalog.get(GameBoard.emotionAliases[emotionName]) ??
+      null
+    )
+  }
+
+  resolveAnimation(emotion) {
+    const animationCatalog = this.catalogs?.animations
+    if (!animationCatalog) return null
+
+    const animationName =
+      emotion?.animation ??
+      (emotion?.arousal >= 0.6 ? 'burst' : 'float-up')
+
+    return (
+      animationCatalog.get(animationName) ??
+      animationCatalog.get('float-up') ??
+      animationCatalog.get('burst') ??
+      null
+    )
   }
 }
 

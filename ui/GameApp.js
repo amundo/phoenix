@@ -9,6 +9,8 @@ class GameApp extends HTMLElement {
   #hasConnected = false
   #isLoading = false
   #ui = null
+  #commandQueue = []
+  #loopId = null
 
   constructor() {
     super()
@@ -16,12 +18,41 @@ class GameApp extends HTMLElement {
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
+  enqueueCommand(command) {
+    this.#commandQueue.push(command)
+  }
+
+  startLoop() {
+    if (this.#loopId) return
+
+    this.#loopId = setInterval(() => {
+      this.step()
+    }, 250)
+  }
+
+  stopLoop() {
+    if (!this.#loopId) return
+    clearInterval(this.#loopId)
+    this.#loopId = null
+  }
+
+  step() {
+    if (!this.#engine) return
+
+    const commands = this.#commandQueue.splice(0)
+    const result = this.#engine.update(commands)
+
+    if (result.stateChanged) {
+      this.#gameBoard.render(this.#engine.getState())
+    }
+
+    this.handleEffects(result.effects)
+  }
+
   initializeLayout() {
     this.replaceChildren()
-
     this.#gameBoard = new GameBoard()
     this.#ui = new GameUI()
-
     this.append(this.#gameBoard, this.#ui)
   }
 
@@ -39,6 +70,11 @@ class GameApp extends HTMLElement {
     }
   }
 
+  disconnectedCallback() {
+    this.stopLoop()
+    removeEventListener('keydown', this.handleKeyDown)
+  }
+
   async loadGameData(dataRoot) {
     this.#isLoading = true
 
@@ -53,16 +89,17 @@ class GameApp extends HTMLElement {
     }
   }
 
-  get engine() { // debugging helper
+  get engine() {
     return this.#engine
   }
 
   start(gameData) {
     this.#engine = new GameEngine(gameData)
+    this.#commandQueue = []
     this.render()
+    this.startLoop()
 
-    // if we are restarting, remove old listener first
-    removeEventListener('keydown', this.handleKeyDown) 
+    removeEventListener('keydown', this.handleKeyDown)
     addEventListener('keydown', this.handleKeyDown)
   }
 
@@ -71,26 +108,36 @@ class GameApp extends HTMLElement {
     this.#gameBoard.render(this.#engine.getState())
   }
 
-  keyToCommand(key) {
-    if (key === 'ArrowUp') return { type: 'move', dx: 0, dy: -1 }
-    if (key === 'ArrowDown') return { type: 'move', dx: 0, dy: 1 }
-    if (key === 'ArrowLeft') return { type: 'move', dx: -1, dy: 0 }
-    if (key === 'ArrowRight') return { type: 'move', dx: 1, dy: 0 }
-    return null
-  }
-
   handleKeyDown(event) {
-    const command = this.keyToCommand(event.key)
-    if (!command) return
-    this.runCommand(command)
-  }
-
-  runCommand(command) {
     if (!this.#engine) return
 
-    const result = this.#engine.handleCommand(command)
-    this.render()
-    this.handleEffects(result.effects)
+    const actor = this.#engine.player
+    let command = null
+
+    if (event.key === 'ArrowUp') {
+      command = { type: 'move', actor, dx: 0, dy: -1 }
+    }
+
+    if (event.key === 'ArrowDown') {
+      command = { type: 'move', actor, dx: 0, dy: 1 }
+    }
+
+    if (event.key === 'ArrowLeft') {
+      command = { type: 'move', actor, dx: -1, dy: 0 }
+    }
+
+    if (event.key === 'ArrowRight') {
+      command = { type: 'move', actor, dx: 1, dy: 0 }
+    }
+
+    if (event.key === ' ') {
+      command = { type: 'interact', actor }
+    }
+
+    if (command) {
+      event.preventDefault()
+      this.enqueueCommand(command)
+    }
   }
 
   handleEffects(effects = []) {
@@ -100,7 +147,6 @@ class GameApp extends HTMLElement {
       }
 
       if (effect.type === 'emote') {
-        console.log(`GameApp.handleEffects: ${effect.actor.id} -> ${effect.emotion}`)
         this.#gameBoard.emote(effect.actor, effect.emotion)
       }
     }

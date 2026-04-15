@@ -19,7 +19,6 @@ body {
 
 body {
   display: grid;
-  place-items: center;
   overflow: hidden;
   padding: 2rem;
 
@@ -27,8 +26,21 @@ body {
   background-color: #46a4b5;
 }
 
+game-app {
+  display: grid;
+  justify-items: center;
+  grid-template:
+     "left center right"
+    / 1fr 1fr 1fr;
 
+  height: 100%;
+  outline: 5px solid hotpink;
+}
+game-ui {
+  grid-area: left;
+}
 game-board {
+grid-area: center;
   --tile-size: 3rem;
   font-size: clamp(1rem,
       /* min */
@@ -50,31 +62,30 @@ game-board {
   max-width: 100%;
   max-height: 100%;
   background: var(--grassland-green);
-    position: relative;
+  position: relative;
 }
 
-.tile-layer,
-.avatar-layer {
+terrain-layer,
+avatar-layer,
+effect-layer {
   display: grid;
   grid-column: 1 / -1;
   grid-row: 1 / -1;
-  grid-template-columns: subgrid;
-  grid-template-rows: subgrid;
   width: 100%;
   height: 100%;
 }
 
+terrain-layer,
+avatar-layer {
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+}
+
 effect-layer {
-  position: absolute;
-  inset: 0;
+  position: relative;
   pointer-events: none;
+  overflow: hidden;
 }
-
-.emote-effect {
-  position: absolute;
-  will-change: transform, opacity;
-}
-
 
 game-cell {
   aspect-ratio: 1;
@@ -91,8 +102,17 @@ game-cell[terrain="water"] {
   background-color: var(--deep-blue);
 }
 
-game-cell[terrain="grassland"] {
+game-cell[terrain="grassland"],
+game-cell[terrain="grass"] {
   background-image: radial-gradient(circle, var(--grassland-green), var(--dark-grassland-green));
+}
+
+game-cell[terrain="forest-floor"] {
+  background-image: radial-gradient(circle, #5e4b2f, #4a3b26);
+}
+
+game-cell[terrain="tree"] {
+  background-image: radial-gradient(circle, #2f6a2f, #214b21);
 }
 
 .avatar {
@@ -153,4 +173,11 @@ player-avatar .emotion-badge {
 
 .avatar[hidden] {
   display: none;
+}
+
+.emote-effect {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  will-change: transform, opacity;
 }

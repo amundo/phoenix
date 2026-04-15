@@ -19,7 +19,7 @@ class GameCell extends HTMLElement {
     if (!this.#cell) return
     this.style.gridColumn = this.#cell.x + 1
     this.style.gridRow = this.#cell.y + 1
-    this.setAttribute('terrain', this.#cell.terrain || 'grassland')
+    this.setAttribute('terrain', this.#cell.terrain || 'grass')
   }
 }
 

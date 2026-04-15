@@ -1,5 +1,17 @@
 class EffectLayer extends HTMLElement {
   #context = null
+  #defaultAnimation = {
+    name: 'float-up',
+    keyframes: [
+      { opacity: 1, translate: '0 0', scale: '1' },
+      { opacity: 0, translate: '0 -1em', scale: '1' }
+    ],
+    options: {
+      duration: 1000,
+      easing: 'ease-out',
+      fill: 'forwards',
+    }
+  }
 
   get context() {
     return this.#context
@@ -10,8 +22,9 @@ class EffectLayer extends HTMLElement {
   }
 
   showEmote(entity, emotion, animation) {
-    console.log(`showing emote ${emotion.name} with animation ${animation.name} for entity ${entity.id}`)
     if (!this.#context) return
+
+    animation ??= this.#defaultAnimation
 
     if (emotion.animation === 'burst') {
       this.showBurst(entity, emotion, animation, 4)

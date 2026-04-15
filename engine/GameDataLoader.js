@@ -87,7 +87,7 @@ class GameDataLoader {
     }
 
     const realm = await this.loadRealm(realmName)
-console.log(realm)
+
     const data = {
       ...sharedData,
       realm,

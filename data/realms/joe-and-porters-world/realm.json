@@ -1,0 +1,138 @@
+{
+  "id": "joe-and-porters-world",
+  "name": "Joe and Porter’s World",
+  "rowCount": 8,
+  "columnCount": 10,
+  "world": {
+    "rowCount": 8,
+    "columnCount": 10,
+    "cells": [
+      { "x": 0, "y": 0, "terrain": "water" },
+      { "x": 1, "y": 0, "terrain": "water" },
+      { "x": 0, "y": 1, "terrain": "water" },
+      { "x": 5, "y": 1, "terrain": "forest-floor" },
+      { "x": 5, "y": 2, "terrain": "tree" },
+      { "x": 6, "y": 2, "terrain": "tree" },
+      { "x": 5, "y": 3, "terrain": "forest-floor" },
+      { "x": 9, "y": 6, "terrain": "water" },
+      { "x": 8, "y": 7, "terrain": "water" },
+      { "x": 9, "y": 7, "terrain": "water" }
+    ]
+  },
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "entities": {
+    "player": {
+      "kind": "player",
+      "name": "Phoenix",
+      "emoji": "🧒",
+      "x": 2,
+      "y": 1,
+      "inventory": []
+    },
+    "enemies": [],
+    "items": [
+            {
+        "id": "poop",
+        "kind": "poop",
+        "emoji": "💩",
+        "x": 7,
+        "y": 7,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Ok this is gross but I guess I have to pick it up",
+            "emotion": "disgusted"
+          }
+        }
+      },
+
+      {
+        "id": "guitar",
+        "kind": "guitar",
+        "emoji": "🎸",
+        "x": 7,
+        "y": 3,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "I found a guitar!",
+            "emotion": "happy"
+          }
+        }
+      },
+      {
+        "id": "bomb",
+        "kind": "bomb",
+        "emoji": "💣",
+        "x": 8,
+        "y": 2,
+        "solid": true,
+        "on": {
+          "touch": {
+            "message": "Boom!",
+            "emotion": "surprised"
+          }
+        }
+      },
+      {
+        "id": "cactus-1",
+        "kind": "cactus",
+        "emoji": "🌵",
+        "x": 4,
+        "y": 3,
+        "solid": true,
+        "on": {
+          "touch": {
+            "message": "Ow!",
+            "emotion": "pain"
+          }
+        }
+      },
+      {
+        "id": "bronze-key-1",
+        "kind": "key",
+        "emoji": "🗝️",
+        "name": "Bronze key",
+        "x": 2,
+        "y": 5,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "🗝️ I found a shiny bronze key!",
+            "emotion": "happy"
+          }
+        }
+      },
+      {
+        "id": "door-1",
+        "kind": "door",
+        "emoji": "🚪",
+        "name": "a wooden door",
+        "x": 8,
+        "y": 1,
+        "solid": true,
+        "requires": {
+          "id": "bronze-key-1"
+        },
+        "on": {
+          "blocked": {
+            "message": "Locked!",
+            "emotion": "confused"
+          },
+          "success": {
+            "message": "You won!!",
+            "emotion": "happy",
+            "set": {
+              "solid": false
+            }
+          }
+        }
+      }
+    ]
+  }
+}

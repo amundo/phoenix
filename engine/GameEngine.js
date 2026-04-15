@@ -10,7 +10,7 @@ class GameEngine {
   }
 
   initialize(gameData) {
-    this.world = new World(gameData.realm)
+    this.world = new World(gameData.realm, gameData.catalogs.terrain)
     this.camera = new Camera(gameData.realm.camera)
 
     this.emotions = gameData.catalogs.emotions
@@ -22,6 +22,8 @@ class GameEngine {
 
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
     this.items = gameData.realm.entities.items.map(item => new Item(item))
+
+    this.centerCameraOnPlayer()
   }
 
   get entities() {
@@ -42,35 +44,80 @@ class GameEngine {
   }
 
   handleCommand(command) {
-    console.log(command)
     if (!command) {
       return {
-        stateChanged: false,
-        effects: [],
+        stateChanged:
+          false, effects: []
       }
     }
 
-    let result = {
-      stateChanged: false,
-      effects: [],
-    }
+    switch (command.type) {
+      case 'move':
+        return this.moveActorBy(command.actor, command.dx, command.dy)
 
-    if (command.type === 'move') {
-      result = this.movePlayerBy(command.dx, command.dy)
-    }
+      case 'interact':
+        return this.handleInteract(command.actor)
 
-    this.camera.centerOn(this.player.x, this.player.y, this.world)
-    return result
+      case 'speak':
+        return {
+          stateChanged: false,
+          effects: [{
+            type: 'speak',
+            actor: command.actor,
+            message: command.message,
+          }],
+        }
+
+      case 'emote':
+        return {
+          stateChanged: false,
+          effects: [{
+            type: 'emote',
+            actor: command.actor,
+            emotion: command.emotion,
+          }],
+        }
+
+      default:
+        return { stateChanged: false, effects: [] }
+    }
   }
 
-  movePlayerBy(dx, dy) {
-    const nextX = this.player.x + dx
-    const nextY = this.player.y + dy
+  update(commands = []) {
+    let stateChanged = false
+    let effects = []
+
+    const generatedCommands = this.getAutonomousCommands()
+
+    for (const command of [...commands, ...generatedCommands]) {
+      const result = this.handleCommand(command)
+      if (!result) continue
+
+      if (result.stateChanged) stateChanged = true
+      if (result.effects?.length) effects.push(...result.effects)
+    }
+
+    return { stateChanged, effects }
+  }
+  getAutonomousCommands() {
+    return []
+  }
+
+  moveActorBy(actor, dx, dy) {
+    const nextX = actor.x + dx
+    const nextY = actor.y + dy
 
     if (!this.world.contains(nextX, nextY)) {
       return {
         stateChanged: false,
-        effects: this.getBlockedByWorldEffects(),
+        effects: this.getBlockedByWorldEffects(actor)
+      }
+    }
+
+    if (!this.world.isWalkable(nextX, nextY)) {
+      return {
+        stateChanged: false,
+        effects: this.getBlockedByTerrainEffects(actor, this.world.at(nextX, nextY))
       }
     }
 
@@ -84,12 +131,12 @@ class GameEngine {
         effects: [
           {
             type: 'speak',
-            actor: this.player,
+            actor,
             message: `Look out! ${enemy.name}!`,
           },
           {
             type: 'emote',
-            actor: this.player,
+            actor,
             emotion: 'pain',
           },
         ],
@@ -97,27 +144,33 @@ class GameEngine {
     }
 
     const itemsHere = this.getItemsAt(nextX, nextY)
-
     const effects = []
-    effects.push(...this.resolveItemInteractions(itemsHere))
-    effects.push(...this.getTouchEffects(itemsHere))
+
+    effects.push(...this.getTouchEffects(actor, itemsHere))
+    effects.push(...this.resolveItemInteractions(actor, itemsHere))
 
     if (this.hasSolidItem(itemsHere)) {
       return {
         stateChanged: false,
         effects,
       }
-    }
+  }
 
-    this.player.moveTo({ x: nextX, y: nextY })
+    actor.moveTo({ x: nextX, y: nextY })
+    this.centerCameraOnPlayer()
 
-    const pickedUpItems = this.pickUpPortableItems(itemsHere)
-    effects.push(...this.getPickupEffects(pickedUpItems))
+    const pickedUpItems = this.pickUpPortableItems(actor, itemsHere)
+
+    effects.push(...this.getPickupEffects(actor, pickedUpItems))
 
     return {
       stateChanged: true,
       effects,
     }
+
+  }
+  handleInteract(actor) {
+    return { stateChanged: false, effects: [] }
   }
 
   getItemsAt(x, y) {
@@ -128,32 +181,33 @@ class GameEngine {
     return items.some(item => item.solid)
   }
 
-  pickUpPortableItems(items) {
+
+  pickUpPortableItems(actor, items) {
     const portableItems = items.filter(item => item.portable)
 
     for (const item of portableItems) {
-      this.player.take(item)
+      if (actor.take) actor.take(item)
       this.items = this.items.filter(other => other !== item)
     }
 
     return portableItems
   }
 
-  getPickupEffects(items) {
+  getPickupEffects(actor, items) {
     return items.map(item => ({
       type: 'speak',
-      actor: this.player,
+      actor,
       message: item.on?.pickup?.message ?? `Got ${item.name}!`,
     }))
   }
 
-  resolveItemInteractions(items) {
+  resolveItemInteractions(actor, items) {
     const effects = []
 
     for (const item of items) {
       if (!item.requires) continue
 
-      const ok = this.meetsRequirement(item.requires)
+      const ok = this.meetsRequirement(actor, item.requires)
 
       if (!ok) {
         const blocked = item.on?.blocked
@@ -161,7 +215,7 @@ class GameEngine {
         if (blocked?.message) {
           effects.push({
             type: 'speak',
-            actor: this.player,
+            actor,
             message: blocked.message,
           })
         }
@@ -169,7 +223,7 @@ class GameEngine {
         if (blocked?.emotion) {
           effects.push({
             type: 'emote',
-            actor: this.player,
+            actor,
             emotion: blocked.emotion,
           })
         }
@@ -186,7 +240,7 @@ class GameEngine {
       if (success?.message) {
         effects.push({
           type: 'speak',
-          actor: this.player,
+          actor,
           message: success.message,
         })
       }
@@ -194,7 +248,7 @@ class GameEngine {
       if (success?.emotion) {
         effects.push({
           type: 'emote',
-          actor: this.player,
+          actor,
           emotion: success.emotion,
         })
       }
@@ -203,31 +257,37 @@ class GameEngine {
     return effects
   }
 
-  meetsRequirement(requirement) {
+  meetsRequirement(actor, requirement) {
     if (!requirement) return true
 
     if (requirement.id) {
-      return this.player.hasItemId(requirement.id)
+      return actor.hasItemId?.(requirement.id)
     }
 
     if (requirement.kind) {
-      return this.player.hasKind(requirement.kind)
+      return actor.hasKind?.(requirement.kind)
     }
 
     return true
   }
-  // playerHasItem(kind) {
-  //   return this.player.inventory.some(item => item.kind === kind)
-  // }
 
-  getBlockedByWorldEffects() {
+  getBlockedByWorldEffects(actor) {
     return [
-      { type: 'speak', actor: this.player, message: 'D’oh!' },
-      { type: 'emote', actor: this.player, emotion: 'pain' },
+      { type: 'speak', actor, message: 'D’oh!' },
+      { type: 'emote', actor, emotion: 'pain' },
     ]
   }
 
-  getTouchEffects(items) {
+  getBlockedByTerrainEffects(actor, cell) {
+    const terrainName = cell?.terrain ?? 'terrain'
+
+    return [
+      { type: 'speak', actor, message: `Can't walk on ${terrainName}.` },
+      { type: 'emote', actor, emotion: 'confused' },
+    ]
+  }
+
+  getTouchEffects(actor, items) {
     const effects = []
 
     for (const item of items) {
@@ -237,7 +297,7 @@ class GameEngine {
       if (touch.message) {
         effects.push({
           type: 'speak',
-          actor: this.player,
+          actor,
           message: touch.message,
         })
       }
@@ -245,13 +305,18 @@ class GameEngine {
       if (touch.emotion) {
         effects.push({
           type: 'emote',
-          actor: this.player,
+          actor,
           emotion: touch.emotion,
         })
       }
     }
 
     return effects
+  }
+
+  centerCameraOnPlayer() {
+    if (!this.player || !this.camera || !this.world) return
+    this.camera.centerOn(this.player.x, this.player.y, this.world)
   }
 }
 

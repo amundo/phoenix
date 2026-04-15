@@ -1,10 +1,10 @@
+
 class Entity {
-  constructor({ name, emoji, x, y }) {
-    this.name = name
-    this.emoji = emoji
-    this.x = x
-    this.y = y
+  constructor(data) {
+    Object.assign(this, data)
+    this.id ??= crypto.randomUUID()
   }
+
 
   moveTo({ x, y }) {
     this.x = x

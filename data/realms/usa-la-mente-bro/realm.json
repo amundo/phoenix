@@ -1,0 +1,129 @@
+{
+  "id": "usa-la-mente-bro",
+  "name": "Usa la mente bro",
+  "rowCount": 24,
+  "columnCount": 30,
+  "world": {
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "entities": {
+    "player": {
+      "kind": "player",
+      "name": "Scouty",
+      "emoji": "🐶",
+      "x": 2,
+      "y": 1,
+      "inventory": []
+    },
+    "enemies": [],
+    "items": [
+            {
+        "id": "poop",
+        "kind": "poop",
+        "emoji": "💩",
+        "x": 7,
+        "y": 7,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Ok this is gross but I guess I have to pick it up",
+            "emotion": "disgusted"
+          }
+        }
+      },
+      {
+        "id": "portal",
+        "kind": "portal",
+        "emoji": "🌀",
+        "x": 2,
+        "y": 0,
+        "solid": true,
+        "on": {
+          "touch": {
+            "message": "Boom!",
+            "emotion": "surprised"
+          }
+        }
+      },
+      {
+        "id": "bronze-key-1",
+        "kind": "key",
+        "emoji": "🗝️",
+        "name": "Bronze key",
+        "x": 2,
+        "y": 5,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "🗝️ I found a shiny bronze key!",
+            "emotion": "happy"
+          }
+        }
+      },
+      {
+        "id": "scroll",
+        "kind": "scroll",
+        "emoji": "📜",
+        "name": "a mysterious scroll",
+        "x": 5,
+        "y": 5,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Whoa dude a mysterious scroll!",
+            "emotion": "curious"
+          }
+        }
+
+      },
+      {
+        "id": "door-1",
+        "kind": "door",
+        "emoji": "🚪",
+        "name": "a wooden door",
+        "x": 8,
+        "y": 1,
+        "solid": true,
+        "requires": {
+          "id": "bronze-key-1"
+        },
+        "on": {
+          "blocked": {
+            "message": "Locked!",
+            "emotion": "confused"
+          },
+          "success": {
+            "message": "You won!!",
+            "emotion": "happy",
+            "set": {
+              "solid": false
+            }
+          }
+        }
+      },
+      
+      {
+        "id": "bone",
+        "kind": "bone",
+        "emoji": "🦴",
+        "name": "a tasty bone",
+        "x": 6,
+        "y": 6,
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "Woof!",
+            "emotion": "happy"
+          }
+        }
+      }
+    ]
+  }
+}

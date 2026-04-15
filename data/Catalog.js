@@ -20,6 +20,10 @@ class Catalog {
   values() {
     return this.#items
   }
+
+  toJSON(){
+    return this.#items
+  }
   
   [Symbol.iterator]() {
     return this.#items[Symbol.iterator]()
