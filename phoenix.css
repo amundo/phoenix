@@ -30,17 +30,18 @@ game-app {
   display: grid;
   justify-items: center;
   grid-template:
-     "left center right"
+    "left center right"
     / 1fr 1fr 1fr;
 
   height: 100%;
-  outline: 5px solid hotpink;
 }
+
 game-ui {
   grid-area: left;
 }
+
 game-board {
-grid-area: center;
+  grid-area: center;
   --tile-size: 3rem;
   font-size: clamp(1rem,
       /* min */
