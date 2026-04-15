@@ -87,6 +87,14 @@ effect-layer {
   overflow: hidden;
 }
 
+speech-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
 game-cell {
   aspect-ratio: 1;
   display: grid;
@@ -156,21 +164,6 @@ player-avatar .emotion-badge {
 }
 
 
-.speech-bubble:empty {
-  display: none;
-}
-
-.speech-bubble {
-  position: absolute;
-  top: -2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: white;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
-}
-
 .avatar[hidden] {
   display: none;
 }
@@ -180,4 +173,48 @@ player-avatar .emotion-badge {
   transform: translate(-50%, -50%);
   z-index: 4;
   will-change: transform, opacity;
+}
+
+speech-bubble.board-speech-bubble {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline-block;
+  max-inline-size: min(22rem, calc(100% - 1.5rem));
+  padding: 0.7rem 0.9rem;
+  border: 2px solid color-mix(in srgb, black 75%, #734b2b 25%);
+  border-radius: 1rem;
+  background: white;
+  color: #1e1e1e;
+  font: 600 clamp(0.85rem, 0.55rem + 0.7vw, 1rem) / 1.35 ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", sans-serif;
+  box-shadow: 0 0.7rem 1.8rem rgb(0 0 0 / 0.18);
+}
+
+speech-bubble.board-speech-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+  background: white;
+  border-right: 2px solid color-mix(in srgb, black 75%, #734b2b 25%);
+  border-bottom: 2px solid color-mix(in srgb, black 75%, #734b2b 25%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+speech-bubble.board-speech-bubble[data-placement="top"]::after {
+  bottom: -0.5rem;
+}
+
+speech-bubble.board-speech-bubble[data-placement="bottom"]::after {
+  top: -0.5rem;
+  transform: translateX(-50%) rotate(225deg);
+}
+
+speech-bubble.board-speech-bubble .word {
+  display: inline;
+  white-space: normal;
+}
+
+speech-bubble.board-speech-bubble .letter {
+  display: inline-block;
 }
