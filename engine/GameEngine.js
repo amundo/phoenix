@@ -20,6 +20,11 @@ class GameEngine {
     this.player = new Player(gameData.realm.entities.player)
     this.player.emotions = gameData.catalogs.emotions
 
+    const playerMarker = this.world.findMarker('player')
+    if (playerMarker) {
+      this.player.moveTo(playerMarker)
+    }
+
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
     this.items = gameData.realm.entities.items.map(item => new Item(item))
 

@@ -28,10 +28,10 @@ body {
 
 game-app {
   display: grid;
-  justify-items: center;
+  align-items: center;
   grid-template:
     "left center right"
-    / 1fr 1fr 1fr;
+    / minmax(0, 1fr) auto minmax(0, 1fr);
 
   height: 100%;
 }
@@ -59,9 +59,10 @@ game-board {
 
   width: min(calc(100dvw - 4rem),
       calc((100dvh - 4rem) * (var(--column-count) / var(--row-count))));
-  height: 100%;
+  height: auto;
   max-width: 100%;
   max-height: 100%;
+  place-self: center;
   background: var(--grassland-green);
   position: relative;
 }
@@ -128,6 +129,10 @@ game-cell[terrain="tree"] {
 
 .avatar-emoji {
   position: static;
+  font-size: calc(var(--tile-size) * 0.78);
+  line-height: 1;
+  max-inline-size: 100%;
+  max-block-size: 100%;
 }
 
 
@@ -141,14 +146,13 @@ player-avatar {
 
 player-avatar .avatar-emoji {
   grid-area: 2 / 2 / 5 / 5;
-  font-size: 3rem;
   display: grid;
   place-content: center;
 }
 
 player-avatar .emotion-badge {
   grid-area: 1 / 1 / 4 / 4;
-  font-size: 2rem;
+  font-size: calc(var(--tile-size) * 0.45);
   rotate: -12deg;
   position: relative;
   left: -.4em;

@@ -2,6 +2,7 @@ import { Cell } from "./Cell.js"
 
 class World {
   #terrainCatalog = null
+  #markers = new Map()
 
   constructor(realm = {}, terrainCatalog = null) {
     const worldData = realm.world ?? realm
@@ -20,6 +21,10 @@ class World {
       )
     )
 
+    this.applyAsciiMap(
+      worldData.asciiMap ?? realm.asciiMap,
+      worldData.legend ?? realm.legend
+    )
     this.applyTerrainRows(worldData.terrainRows ?? realm.terrainRows)
     this.applyTerrainCells(worldData.cells ?? realm.cells)
   }
@@ -56,6 +61,10 @@ class World {
     return terrainDefinition.walkable !== false
   }
 
+  findMarker(name) {
+    return this.#markers.get(name) ?? null
+  }
+
   normalizeTerrainId(terrain) {
     if (!terrain) return 'grass'
     if (terrain === 'grassland') return 'grass'
@@ -86,6 +95,59 @@ class World {
     for (const cell of cells) {
       this.setTerrainAt(cell.x, cell.y, cell.terrain)
     }
+  }
+
+  applyAsciiMap(rows, legend = {}) {
+    if (!Array.isArray(rows)) return
+
+    rows.forEach((row, y) => {
+      if (typeof row !== 'string') return
+
+      for (const [x, symbol] of [...row].entries()) {
+        const entry = this.resolveLegendEntry(symbol, legend)
+        if (!entry) continue
+
+        if (entry.terrain) {
+          this.setTerrainAt(x, y, entry.terrain)
+        }
+
+        if (entry.marker) {
+          this.#markers.set(entry.marker, { x, y, symbol })
+        }
+      }
+    })
+  }
+
+  resolveLegendEntry(symbol, legend) {
+    const value = legend[symbol]
+    if (!value) return null
+
+    if (typeof value === 'string') {
+      if (this.isTerrainName(value)) {
+        return { terrain: value }
+      }
+
+      return { marker: value }
+    }
+
+    if (typeof value === 'object') {
+      return {
+        terrain: value.terrain ?? null,
+        marker: value.marker ?? value.entity ?? null,
+      }
+    }
+
+    return null
+  }
+
+  isTerrainName(name) {
+    const normalized = this.normalizeTerrainId(name)
+
+    if (this.#terrainCatalog?.has?.(normalized)) {
+      return true
+    }
+
+    return ['grass', 'grassland', 'water', 'forest-floor', 'tree'].includes(name)
   }
 }
 

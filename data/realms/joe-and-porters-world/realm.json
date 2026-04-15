@@ -6,18 +6,23 @@
   "world": {
     "rowCount": 8,
     "columnCount": 10,
-    "cells": [
-      { "x": 0, "y": 0, "terrain": "water" },
-      { "x": 1, "y": 0, "terrain": "water" },
-      { "x": 0, "y": 1, "terrain": "water" },
-      { "x": 5, "y": 1, "terrain": "forest-floor" },
-      { "x": 5, "y": 2, "terrain": "tree" },
-      { "x": 6, "y": 2, "terrain": "tree" },
-      { "x": 5, "y": 3, "terrain": "forest-floor" },
-      { "x": 9, "y": 6, "terrain": "water" },
-      { "x": 8, "y": 7, "terrain": "water" },
-      { "x": 9, "y": 7, "terrain": "water" }
-    ]
+    "asciiMap": [
+      "WWGGGGGGGG",
+      "WG@GGFGGGG",
+      "GGGGGTTGGG",
+      "GGGGGFGGGG",
+      "GGGGGGGGGG",
+      "GGGGGGGGGG",
+      "GGGGGGGGGW",
+      "GGGGGGGGWW"
+    ],
+    "legend": {
+      "W": "water",
+      "G": "grass",
+      "F": "forest-floor",
+      "T": "tree",
+      "@": "player"
+    }
   },
   "camera": {
     "x": 0,
