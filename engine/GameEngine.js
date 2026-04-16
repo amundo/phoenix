@@ -3,6 +3,7 @@ import { Camera } from './Camera.js'
 import { Item } from '../entities/index.js'
 import { Player } from '../entities/index.js'
 import { Enemy } from '../entities/index.js'
+import { Scenery } from '../entities/index.js'
 
 class GameEngine {
   constructor(gameData) {
@@ -26,6 +27,7 @@ class GameEngine {
     }
 
     this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
+    this.scenery = this.createScenery(gameData)
     this.items = gameData.realm.entities.items.map(item =>
       new Item(this.resolveCatalogEntity(gameData.catalogs.items, item))
     )
@@ -66,11 +68,52 @@ class GameEngine {
   }
 
   get entities() {
-    return [this.player, ...this.enemies, ...this.items]
+    return [...this.scenery, this.player, ...this.enemies, ...this.items]
   }
 
   getEntitiesAt(x, y) {
     return this.entities.filter(entity => entity.x === x && entity.y === y)
+  }
+
+  createScenery(gameData) {
+    const realmScenery = gameData.realm.entities.scenery ?? gameData.realm.scenery ?? []
+    const combined = [...this.world.scenery, ...realmScenery]
+
+    return combined.map(data =>
+      new Scenery(this.resolveSceneryEntity(gameData.catalogs, data))
+    )
+  }
+
+  resolveSceneryEntity(catalogs, instanceData = {}) {
+    const key = instanceData.catalogId ?? instanceData.kind
+    const terrainData = key ? catalogs?.terrain?.get?.(key) : null
+    const itemData = key ? catalogs?.items?.get?.(key) : null
+    const catalogData = terrainData ?? itemData
+
+    return {
+      ...(catalogData ?? {}),
+      ...instanceData,
+      catalogId: catalogData?.id ?? instanceData.catalogId ?? null,
+      definition: catalogData ?? null,
+      solid: instanceData.solid ?? catalogData?.solid ?? (catalogData?.walkable === false),
+      name: instanceData.name ?? catalogData?.name ?? instanceData.kind ?? 'Scenery',
+      emoji:
+        instanceData.emoji ??
+        catalogData?.emoji ??
+        this.getDefaultSceneryEmoji(instanceData.kind),
+    }
+  }
+
+  getDefaultSceneryEmoji(kind) {
+    const fallback = {
+      tree: '🌲',
+      rock: '🪨',
+      cliff: '🪨',
+      wall: '🧱',
+      bridge: '🪵',
+    }
+
+    return fallback[kind] ?? null
   }
 
   getState() {
@@ -182,18 +225,20 @@ class GameEngine {
       }
     }
 
+    const sceneryHere = this.getSceneryAt(nextX, nextY)
     const itemsHere = this.getItemsAt(nextX, nextY)
+    const entitiesHere = [...sceneryHere, ...itemsHere]
     const effects = []
 
-    effects.push(...this.getTouchEffects(actor, itemsHere))
-    effects.push(...this.resolveItemInteractions(actor, itemsHere))
+    effects.push(...this.getTouchEffects(actor, entitiesHere))
+    effects.push(...this.resolveItemInteractions(actor, entitiesHere))
 
-    if (this.hasSolidItem(itemsHere)) {
+    if (this.hasSolidEntity(entitiesHere)) {
       return {
         stateChanged: false,
         effects,
       }
-  }
+    }
 
     actor.moveTo({ x: nextX, y: nextY })
     this.centerCameraOnPlayer()
@@ -216,8 +261,12 @@ class GameEngine {
     return this.items.filter(item => item.x === x && item.y === y)
   }
 
-  hasSolidItem(items) {
-    return items.some(item => item.solid)
+  getSceneryAt(x, y) {
+    return this.scenery.filter(item => item.x === x && item.y === y)
+  }
+
+  hasSolidEntity(entities) {
+    return entities.some(entity => entity.solid)
   }
 
 

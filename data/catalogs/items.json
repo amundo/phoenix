@@ -29,7 +29,9 @@
     "emoji": "🪞",
     "category": "magic",
     "description": "Its surface shimmers like it knows another place.",
-    "onInteract": ["mirror-teleport"]
+    "onInteract": [
+      "mirror-teleport"
+    ]
   },
   {
     "id": "signpost",
@@ -37,14 +39,17 @@
     "emoji": "🪧",
     "category": "world",
     "description": "A helpful sign for players who actually read signs.",
-    "onInteract": ["read-sign"]
+    "onInteract": [
+      "read-sign"
+    ]
   },
   {
-    "id": "cactus",
-    "name": "Cactus",
+    "kind": "cactus",
     "emoji": "🌵",
     "category": "hazard",
     "description": "Spiky enough to make touching it feel like a mistake.",
+    "x": 4,
+    "y": 3,
     "solid": true,
     "on": {
       "touch": {

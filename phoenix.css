@@ -216,6 +216,7 @@ player-avatar .emotion-badge {
 
 speech-bubble.avatar-speech-bubble {
   position: absolute;
+  z-index: 5;
   left: 50%;
   top: calc(100% + 0.5rem);
   transform: translateX(-50%);

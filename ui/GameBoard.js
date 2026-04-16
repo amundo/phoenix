@@ -10,8 +10,8 @@ class GameBoard extends HTMLElement {
     super()
     this.innerHTML = `
       <terrain-layer></terrain-layer>
-      <avatar-layer></avatar-layer>
       <effect-layer></effect-layer>
+      <avatar-layer></avatar-layer>
     `
 
     this.terrainLayer = this.querySelector('terrain-layer')

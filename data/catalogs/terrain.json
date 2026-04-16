@@ -80,6 +80,7 @@
     "name": "Tree",
     "category": "forest",
     "description": "Dense tree cover that blocks movement.",
+    "emoji": "🌲",
     "color": "var(--color-tree)",
     "walkable": false,
     "palette": {
@@ -251,6 +252,7 @@
     "name": "Bridge",
     "category": "structure",
     "description": "Wooden bridge decking over water or a gap.",
+    "emoji": "🪵",
     "color": "var(--color-bridge)",
     "walkable": true,
     "palette": {
@@ -289,6 +291,7 @@
     "name": "Rock",
     "category": "rock",
     "description": "Solid rocky terrain that blocks movement.",
+    "emoji": "🪨",
     "color": "var(--color-rock)",
     "walkable": false,
     "palette": {
@@ -308,6 +311,7 @@
     "name": "Cliff",
     "category": "rock",
     "description": "A steep cliff edge or wall of stone.",
+    "emoji": "🪨",
     "color": "var(--color-cliff)",
     "walkable": false,
     "palette": {
@@ -327,6 +331,7 @@
     "name": "Wall",
     "category": "structure",
     "description": "Built stone or brick wall that blocks passage.",
+    "emoji": "🧱",
     "color": "var(--color-wall)",
     "walkable": false,
     "palette": {

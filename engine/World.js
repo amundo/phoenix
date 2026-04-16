@@ -3,6 +3,7 @@ import { Cell } from "./Cell.js"
 class World {
   #terrainCatalog = null
   #markers = new Map()
+  #scenery = new Map()
 
   constructor(realm = {}, terrainCatalog = null) {
     const worldData = realm.world ?? realm
@@ -65,6 +66,10 @@ class World {
     return this.#markers.get(name) ?? null
   }
 
+  get scenery() {
+    return [...this.#scenery.values()]
+  }
+
   normalizeTerrainId(terrain) {
     if (!terrain) return 'grass'
     if (terrain === 'grassland') return 'grass'
@@ -94,6 +99,7 @@ class World {
 
     for (const cell of cells) {
       this.setTerrainAt(cell.x, cell.y, cell.terrain)
+      this.placeScenery(cell.x, cell.y, cell.scenery)
     }
   }
 
@@ -109,6 +115,10 @@ class World {
 
         if (entry.terrain) {
           this.setTerrainAt(x, y, entry.terrain)
+        }
+
+        if (entry.scenery) {
+          this.placeScenery(x, y, entry.scenery)
         }
 
         if (entry.marker) {
@@ -133,11 +143,27 @@ class World {
     if (typeof value === 'object') {
       return {
         terrain: value.terrain ?? null,
+        scenery: value.scenery ?? null,
         marker: value.marker ?? value.entity ?? null,
       }
     }
 
     return null
+  }
+
+  placeScenery(x, y, scenery) {
+    if (!this.contains(x, y) || !scenery) return
+
+    const data = typeof scenery === 'string'
+      ? { kind: scenery }
+      : scenery
+
+    this.#scenery.set(`${x},${y}`, {
+      ...data,
+      id: data.id ?? `${data.kind ?? 'scenery'}-${x}-${y}`,
+      x,
+      y,
+    })
   }
 
   isTerrainName(name) {
