@@ -22,7 +22,7 @@
       "y": 1,
       "inventory": []
     },
-    "enemies": [],
+    "bots": [],
     "items": [
       {
         "id": "cactus-1",

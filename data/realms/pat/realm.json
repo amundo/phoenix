@@ -39,7 +39,7 @@
       "y": 1,
       "inventory": []
     },
-    "enemies": [],
+    "bots": [],
     "items": [
             {
         "id": "poop",

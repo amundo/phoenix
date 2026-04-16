@@ -9,6 +9,7 @@
     "terrain": "catalogs/terrain.json"
   },
   "realms": {
+    "tiny": "realms/tiny/realm.json",
     "find-the-seal": "realms/find-the-seal/realm.json",
     "joe-and-porters-world": "realms/joe-and-porters-world/realm.json",
     "usa-la-mente-bro": "realms/usa-la-mente-bro/realm.json",

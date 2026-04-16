@@ -34,7 +34,10 @@
       "terrain": "ice",
       "scenery": "ice-berg"
     },
-    "R": "rock",
+    "R": {
+      "terrain": "rock",
+      "scenery": "rock"
+    },
     "P": "player"
   },
   "entities": {
@@ -46,7 +49,7 @@
       "y": 6,
       "inventory": []
     },
-    "enemies": [],
+    "bots": [],
     "items": [
       {
         "id": "fish-1",
