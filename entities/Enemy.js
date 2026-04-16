@@ -1,5 +1,5 @@
 import { Entity } from './Entity.js'
 
-class Enemy extends Entity { }
+class Bot extends Entity { }
 
-export { Enemy }
+export { Bot }

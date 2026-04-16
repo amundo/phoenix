@@ -2,7 +2,7 @@ import { World } from './World.js'
 import { Camera } from './Camera.js'
 import { Item } from '../entities/index.js'
 import { Player } from '../entities/index.js'
-import { Enemy } from '../entities/index.js'
+import { Bot } from '../entities/index.js'
 import { Scenery } from '../entities/index.js'
 
 class GameEngine {
@@ -26,7 +26,7 @@ class GameEngine {
       this.player.moveTo(playerMarker)
     }
 
-    this.enemies = gameData.realm.entities.enemies.map(enemy => new Enemy(enemy))
+    this.enemies = gameData.realm.entities.enemies.map(bot => new Bot(bot))
     this.scenery = this.createScenery(gameData)
     this.items = gameData.realm.entities.items.map(item =>
       new Item(this.resolveCatalogEntity(gameData.catalogs.items, item))
@@ -203,18 +203,18 @@ class GameEngine {
       }
     }
 
-    const enemy = this.enemies.find(enemy =>
-      enemy.x === nextX && enemy.y === nextY
+    const bot = this.enemies.find(bot =>
+      bot.x === nextX && bot.y === nextY
     )
 
-    if (enemy) {
+    if (bot) {
       return {
         stateChanged: false,
         effects: [
           {
             type: 'speak',
             actor,
-            message: `Look out! ${enemy.name}!`,
+            message: `Look out! ${bot.name}!`,
           },
           {
             type: 'emote',
