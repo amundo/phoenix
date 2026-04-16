@@ -13,7 +13,7 @@ At a high level, a realm describes:
 * the size of the world
 * the camera viewport
 * the terrain and scenery
-* the player, bots, and objects inside the realm
+* the player, bots, and items inside the realm
 
 ---
 
@@ -294,9 +294,9 @@ At the moment, Bots are mostly static blockers / characters. The format is simpl
 
 # `entities.items`
 
-This is an array of object definitions.
+This is an array of item definitions.
 
-Objects can be:
+Items can be:
 
 * portable
 * solid

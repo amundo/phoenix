@@ -3,35 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Realm Live Preview</title>
+  <title>Realm Editor</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='0' y='14'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E" />
   <style>
     :root {
-      --page-bg: #f7f7f7;
-      --panel-bg: white;
-      --border: #d0d0d0;
-      --text: #222;
-      --muted: #666;
-      --tile-size: 48px;
-      --grid-columns: 12;
+      --page-bg: #eef6fb;
+      --panel-bg: rgb(255 255 255 / 0.94);
+      --border: rgb(12 40 56 / 0.14);
+      --text: #17313b;
+      --muted: #5a717c;
+      --accent: #16719a;
+      --ground-color: #7ea451;
+      --grid-line: rgb(255 255 255 / 0.38);
+      --tile-size: 52px;
+      --grid-columns: 10;
       --grid-rows: 8;
-      --ground-color: #dff2d8;
-      --sky-color: #d9ecff;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: var(--page-bg);
+      min-height: 100%;
+    }
+
+    body {
+      font-family: ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", sans-serif;
       color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgb(255 255 255 / 0.6), transparent 30%),
+        linear-gradient(180deg, #d9edf8, #c7e5f1 35%, #dcedf5 100%);
     }
 
     .app {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(22rem, 32rem) 1fr;
       gap: 1rem;
       padding: 1rem;
       min-height: 100vh;
@@ -40,44 +49,125 @@
     .panel {
       background: var(--panel-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem;
+      border-radius: 18px;
+      box-shadow: 0 1rem 2.5rem rgb(18 58 77 / 0.08);
+      overflow: hidden;
     }
 
-    h2 {
-      margin-top: 0;
+    .panel-body {
+      padding: 1rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .eyebrow {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .lede {
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    textarea,
+    pre {
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
     textarea {
       width: 100%;
-      height: 75vh;
+      min-height: 26rem;
       resize: vertical;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 1rem;
-      font: 14px/1.4 monospace;
-      background: #fff;
-      color: #111;
+      background: white;
+      color: #102126;
     }
 
-    .preview-wrap {
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    button {
+      border: 1px solid rgb(12 40 56 / 0.14);
+      border-radius: 999px;
+      padding: 0.65rem 1rem;
+      font: inherit;
+      cursor: pointer;
+      background: white;
+      color: var(--text);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: transparent;
+    }
+
+    .status,
+    .error-box,
+    .quest-box,
+    .help-box {
+      padding: 0.8rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgb(255 255 255 / 0.7);
+    }
+
+    .error-box {
+      background: #fff4f4;
+      border-color: #efcaca;
+      color: #8a1f1f;
+      min-height: 3.2rem;
+    }
+
+    .layout-right {
       display: grid;
-      gap: 0.75rem;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 1rem;
     }
 
-    .realm-name {
-      font-weight: bold;
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
     }
 
-    .realm {
+    .realm-meta {
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    .realm-meta .small {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .realm-stage {
       position: relative;
       width: calc(var(--grid-columns) * var(--tile-size));
       height: calc(var(--grid-rows) * var(--tile-size));
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 18px;
+      border: 1px solid rgb(20 64 83 / 0.14);
       overflow: hidden;
       background:
-        linear-gradient(to bottom, var(--sky-color) 0 35%, var(--ground-color) 35% 100%);
+        linear-gradient(to bottom, #abd2e4 0 22%, var(--ground-color) 22% 100%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
     }
 
     .grid {
@@ -90,8 +180,8 @@
     }
 
     .cell {
-      border-right: 1px solid rgba(0,0,0,0.08);
-      border-bottom: 1px solid rgba(0,0,0,0.08);
+      border-right: 1px solid var(--grid-line);
+      border-bottom: 1px solid var(--grid-line);
     }
 
     .entity {
@@ -100,10 +190,14 @@
       height: var(--tile-size);
       display: grid;
       place-items: center;
-      font-size: calc(var(--tile-size) * 0.65);
       line-height: 1;
       transform: translate(-50%, -50%);
       user-select: none;
+    }
+
+    .entity-emoji {
+      font-size: calc(var(--tile-size) * 0.68);
+      filter: drop-shadow(0 0.18rem 0.15rem rgb(0 0 0 / 0.14));
     }
 
     .entity-label {
@@ -111,224 +205,716 @@
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
-      margin-top: 2px;
-      font-size: 11px;
-      white-space: nowrap;
-      background: rgba(255,255,255,0.85);
-      padding: 1px 4px;
+      margin-top: 0.15rem;
+      padding: 0.1rem 0.35rem;
       border-radius: 999px;
+      background: rgb(255 255 255 / 0.86);
+      font-size: 0.72rem;
+      white-space: nowrap;
+      box-shadow: 0 0.15rem 0.4rem rgb(0 0 0 / 0.08);
     }
 
-    .error-box {
-      min-height: 2.5rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background: #fff4f4;
-      color: #8a1f1f;
-      border: 1px solid #efcaca;
-      font-size: 14px;
+    .speech {
+      position: absolute;
+      bottom: calc(100% + 0.25rem);
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 10rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 0.8rem;
+      background: white;
+      border: 1px solid rgb(0 0 0 / 0.12);
+      font-size: 0.76rem;
+      line-height: 1.25;
+      text-align: center;
+      box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.08);
     }
 
-    .hint {
-      color: var(--muted);
-      font-size: 14px;
+    .speech::after {
+      content: "";
+      position: absolute;
+      top: calc(100% - 0.18rem);
+      left: 50%;
+      width: 0.55rem;
+      height: 0.55rem;
+      background: white;
+      border-right: 1px solid rgb(0 0 0 / 0.12);
+      border-bottom: 1px solid rgb(0 0 0 / 0.12);
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+      gap: 0.8rem;
+    }
+
+    .reference-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.8rem;
+      background: rgb(255 255 255 / 0.76);
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .emoji-list {
+      display: grid;
+      gap: 0.25rem;
+      max-height: 12rem;
+      overflow: auto;
+    }
+
+    .emoji-row {
+      display: grid;
+      grid-template-columns: 1.6rem 1fr;
+      gap: 0.45rem;
+      align-items: center;
+      font-size: 0.92rem;
+    }
+
+    .emoji-glyph {
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .emoji-name {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #234c5c;
+    }
+
+    .json-panel pre {
+      margin: 0;
+      max-height: 20rem;
+      overflow: auto;
+      padding: 1rem;
+      border-radius: 12px;
+      background: #f5fbff;
+      border: 1px solid var(--border);
+      color: #153744;
+    }
+
+    dialog {
+      border: none;
+      border-radius: 20px;
+      padding: 0;
+      width: min(36rem, calc(100vw - 2rem));
+      box-shadow: 0 1.6rem 4rem rgb(0 0 0 / 0.24);
+    }
+
+    dialog::backdrop {
+      background: rgb(12 25 35 / 0.36);
+    }
+
+    .dialog-shell {
+      padding: 1rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .qr-wrap {
+      display: grid;
+      gap: 0.8rem;
+      justify-items: center;
+      text-align: center;
+    }
+
+    #qrCanvas,
+    #qrImage {
+      width: 280px;
+      height: 280px;
+      max-width: 100%;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 0.65rem;
+      object-fit: contain;
+    }
+
+    #qrText {
+      width: 100%;
+      min-height: 8rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem;
+      background: #f7fbfd;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .realm-stage {
+        width: min(100%, calc(var(--grid-columns) * var(--tile-size)));
+        height: auto;
+        aspect-ratio: var(--grid-columns) / var(--grid-rows);
+      }
+
+      .grid {
+        grid-template-columns: repeat(var(--grid-columns), 1fr);
+        grid-template-rows: repeat(var(--grid-rows), 1fr);
+      }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 </head>
 <body>
   <div class="app">
     <section class="panel">
-      <h2>Realm HTML <a href="https://chatgpt.com/c/69da75a6-aaac-83e8-88f3-166f52c17485" target="_blank">🤖</a></h2>
-      <p class="hint">Edit the realm and watch the preview update.</p>
-      <textarea id="source"><realm name="Phoenix Land">
-  <bot type="me" x="2" y="2" name="Phoenix" image="🧝"></bot>
-  <bot type="zombie" x="8" y="3" name="Zog" image="🧟"></bot>
-  <thing type="tree" x="5" y="4" image="🌳"></thing>
-  <thing type="rock" x="9" y="6" image="🪨"></thing>
-  <portal x="11" y="2" to="bork-realm" image="🌀"></portal>
+      <div class="panel-body">
+        <div>
+          <div class="eyebrow">Realm Editor</div>
+          <h1>Build A World With Tags</h1>
+          <p class="lede">Write a realm using custom tags. The preview updates live, the game data appears below, and the export button turns the finished realm into a QR code.</p>
+        </div>
+
+        <div class="help-box">
+          <strong>Starter tags</strong><br />
+          Use <code>&lt;realm&gt;</code>, <code>&lt;player&gt;</code>, <code>&lt;bot&gt;</code>, <code>&lt;item&gt;</code>, and <code>&lt;quest&gt;</code>.<br />
+          In the <code>emoji</code> attribute, you can type a name like <code>child</code>, <code>fox</code>, or <code>key</code> instead of pasting the emoji itself.
+        </div>
+
+        <textarea id="source"><realm name="Moon Garden">
+  <player name="Ava" emoji="child" x="2" y="6"></player>
+
+  <bot name="Guide" emoji="fox" x="4" y="2">
+    <speech>Find the silver key and open the door.</speech>
+  </bot>
+
+  <item kind="key" emoji="key" x="3" y="5"></item>
+  <item kind="door" emoji="door" x="8" y="2"></item>
+  <item kind="flower" emoji="flower" x="6" y="4"></item>
+
+  <quest>
+    <goal>Find the silver key and open the door.</goal>
+  </quest>
 </realm></textarea>
+
+        <div class="button-row">
+          <button type="button" class="primary" id="showQr">Show QR Export</button>
+          <button type="button" id="copyJson">Copy JSON</button>
+          <button type="button" id="resetExample">Reset Example</button>
+        </div>
+
+        <div class="error-box" id="errors">No errors.</div>
+      </div>
     </section>
 
-    <section class="panel preview-wrap">
-      <div>
-        <h2>Preview</h2>
-        <div class="realm-name" id="realmName">Realm</div>
-      </div>
+    <section class="layout-right">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="preview-top">
+            <div class="realm-meta">
+              <div class="eyebrow">Preview</div>
+              <h2 id="realmName">Untitled Realm</h2>
+              <div class="small" id="realmMeta">10 columns × 8 rows</div>
+            </div>
+            <div class="status" id="exportStatus">Export is ready.</div>
+          </div>
 
-      <div class="realm" id="realmPreview">
-        <div class="grid" id="grid"></div>
-      </div>
+          <div class="quest-box" id="questBox">No quest yet.</div>
 
-      <div class="error-box" id="errors">No errors.</div>
+          <div class="realm-stage" id="realmPreview">
+            <div class="grid" id="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel json-panel">
+        <div class="panel-body">
+          <div class="eyebrow">Game Data</div>
+          <h2>Compiled realm.json</h2>
+          <pre id="realmJson"></pre>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-body">
+          <div class="eyebrow">Emoji Guide</div>
+          <h2>Names You Can Type</h2>
+          <div class="reference-grid" id="emojiReference"></div>
+        </div>
+      </section>
     </section>
   </div>
 
+  <dialog id="qrDialog">
+    <div class="dialog-shell">
+      <div>
+        <div class="eyebrow">Export</div>
+        <h2>Finished Realm QR Code</h2>
+        <p class="lede">Scan this QR code to collect the student’s realm data. The text box below contains the same minified JSON.</p>
+      </div>
+
+      <div class="qr-wrap">
+        <canvas id="qrCanvas" width="280" height="280" hidden></canvas>
+        <img id="qrImage" alt="Realm QR code" hidden />
+        <div class="status" id="qrStatus">Preparing QR code…</div>
+      </div>
+
+      <textarea id="qrText" readonly></textarea>
+
+      <div class="button-row">
+        <button type="button" class="primary" id="copyQrText">Copy Export Text</button>
+        <button type="button" id="closeQr">Close</button>
+      </div>
+    </div>
+  </dialog>
+
   <script type="module">
+    const DEFAULT_COLUMNS = 10
+    const DEFAULT_ROWS = 8
+    const DEFAULT_TERRAIN = 'grass'
+    const EXAMPLE_SOURCE = document.querySelector('#source').value
+
+    const EMOJI_REFERENCE = {
+      player: [
+        ['child', '🧒'],
+        ['dog', '🐶'],
+        ['cat', '🐱'],
+        ['fox', '🦊'],
+        ['bear', '🐻'],
+        ['wizard', '🧙'],
+        ['fairy', '🧚'],
+        ['astronaut', '🧑‍🚀'],
+      ],
+      bot: [
+        ['robot', '🤖'],
+        ['fox', '🦊'],
+        ['ghost', '👻'],
+        ['dragon', '🐉'],
+        ['slime', '🟢'],
+        ['owl', '🦉'],
+        ['frog', '🐸'],
+        ['cat', '🐱'],
+      ],
+      item: [
+        ['key', '🗝️'],
+        ['door', '🚪'],
+        ['portal', '🌀'],
+        ['scroll', '📜'],
+        ['flower', '🌼'],
+        ['apple', '🍎'],
+        ['guitar', '🎸'],
+        ['lantern', '🏮'],
+        ['bone', '🦴'],
+        ['poop', '💩'],
+        ['coin', '🪙'],
+        ['shell', '🐚'],
+      ],
+    }
+
+    const EMOJI_ALIASES = Object.fromEntries(
+      Object.values(EMOJI_REFERENCE).flat().map(([name, emoji]) => [name, emoji])
+    )
+
+    const OBJECT_DEFAULTS = {
+      key: { emoji: '🗝️', portable: true },
+      door: { emoji: '🚪', solid: true },
+      portal: { emoji: '🌀', solid: true },
+      scroll: { emoji: '📜', portable: true },
+      flower: { emoji: '🌼', portable: true },
+      apple: { emoji: '🍎', portable: true },
+      guitar: { emoji: '🎸', portable: true },
+      lantern: { emoji: '🏮', portable: true },
+      bone: { emoji: '🦴', portable: true },
+      poop: { emoji: '💩', portable: true },
+      coin: { emoji: '🪙', portable: true },
+      shell: { emoji: '🐚', portable: true },
+      cactus: { emoji: '🌵', solid: true },
+    }
+
     const source = document.querySelector('#source')
     const realmName = document.querySelector('#realmName')
+    const realmMeta = document.querySelector('#realmMeta')
     const realmPreview = document.querySelector('#realmPreview')
     const errors = document.querySelector('#errors')
     const grid = document.querySelector('#grid')
+    const realmJson = document.querySelector('#realmJson')
+    const questBox = document.querySelector('#questBox')
+    const exportStatus = document.querySelector('#exportStatus')
+    const emojiReference = document.querySelector('#emojiReference')
 
-    const GRID_COLUMNS = 12
-    const GRID_ROWS = 8
-    const TILE_SIZE = 48
+    const qrDialog = document.querySelector('#qrDialog')
+    const qrCanvas = document.querySelector('#qrCanvas')
+    const qrImage = document.querySelector('#qrImage')
+    const qrStatus = document.querySelector('#qrStatus')
+    const qrText = document.querySelector('#qrText')
 
-    buildGrid()
+    let latestCompiledRealm = null
 
+    renderEmojiReference()
     source.addEventListener('input', renderFromSource)
+    document.querySelector('#resetExample').addEventListener('click', () => {
+      source.value = EXAMPLE_SOURCE
+      renderFromSource()
+    })
+    document.querySelector('#copyJson').addEventListener('click', async () => {
+      if (!latestCompiledRealm) return
+      await navigator.clipboard.writeText(JSON.stringify(latestCompiledRealm, null, 2))
+      exportStatus.textContent = 'Copied realm JSON.'
+    })
+    document.querySelector('#showQr').addEventListener('click', showQrDialog)
+    document.querySelector('#copyQrText').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(qrText.value)
+      qrStatus.textContent = 'Copied export text.'
+    })
+    document.querySelector('#closeQr').addEventListener('click', () => qrDialog.close())
+
     renderFromSource()
 
-    function buildGrid() {
+    function renderFromSource() {
+      clearEntities()
+
+      try {
+        const parsedRealm = parseRealmMarkup(source.value)
+        latestCompiledRealm = compileRealm(parsedRealm)
+        renderPreview(parsedRealm)
+        renderCompiledRealm(latestCompiledRealm)
+        errors.textContent = 'No errors.'
+        exportStatus.textContent = `Export is ready. ${JSON.stringify(latestCompiledRealm).length} characters.`
+      } catch (error) {
+        latestCompiledRealm = null
+        realmName.textContent = 'Preview error'
+        realmMeta.textContent = `${DEFAULT_COLUMNS} columns × ${DEFAULT_ROWS} rows`
+        questBox.textContent = 'Fix the markup to see the realm.'
+        realmJson.textContent = ''
+        exportStatus.textContent = 'Export is not ready.'
+        errors.textContent = error.message
+      }
+    }
+
+    function parseRealmMarkup(text) {
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const realmEl = doc.querySelector('realm')
+
+      if (!realmEl) {
+        throw new Error('Your markup needs one <realm> tag.')
+      }
+
+      const columns = readPositiveInteger(realmEl, 'columns', DEFAULT_COLUMNS)
+      const rows = readPositiveInteger(realmEl, 'rows', DEFAULT_ROWS)
+      const playerEl = realmEl.querySelector(':scope > player')
+
+      if (!playerEl) {
+        throw new Error('Your realm needs one <player> tag.')
+      }
+
+      const player = parsePlayer(playerEl, columns, rows)
+      const bots = [...realmEl.querySelectorAll(':scope > bot')].map((el, index) =>
+        parseBot(el, index, columns, rows)
+      )
+      const items = [...realmEl.querySelectorAll(':scope > item')].map((el, index) =>
+        parseItem(el, index, columns, rows)
+      )
+      const questEl = realmEl.querySelector(':scope > quest')
+      const goalText = questEl?.querySelector('goal')?.textContent?.trim() ?? ''
+
+      return {
+        id: slugify(realmEl.getAttribute('name') || 'untitled-realm'),
+        name: realmEl.getAttribute('name')?.trim() || 'Untitled Realm',
+        columns,
+        rows,
+        player,
+        bots,
+        items,
+        quest: {
+          goal: goalText,
+        },
+      }
+    }
+
+    function parsePlayer(el, columns, rows) {
+      return {
+        id: 'player',
+        kind: 'player',
+        name: el.getAttribute('name')?.trim() || 'Player',
+        emoji: resolveEmoji(el.getAttribute('emoji') || 'child'),
+        x: readCoordinate(el, 'x', columns),
+        y: readCoordinate(el, 'y', rows),
+        inventory: [],
+      }
+    }
+
+    function parseBot(el, index, columns, rows) {
+      const kind = el.getAttribute('kind')?.trim() || 'bot'
+      return {
+        id: `${slugify(el.getAttribute('name') || kind || `bot-${index + 1}`)}-${index + 1}`,
+        kind,
+        name: el.getAttribute('name')?.trim() || `Bot ${index + 1}`,
+        emoji: resolveEmoji(el.getAttribute('emoji') || kind || 'robot'),
+        x: readCoordinate(el, 'x', columns),
+        y: readCoordinate(el, 'y', rows),
+        speech: el.querySelector('speech')?.textContent?.trim() ?? '',
+      }
+    }
+
+    function parseItem(el, index, columns, rows) {
+      const kind = el.getAttribute('kind')?.trim()
+      if (!kind) {
+        throw new Error('<item> needs a "kind" attribute.')
+      }
+
+      const defaults = OBJECT_DEFAULTS[kind] ?? {}
+      return {
+        id: el.getAttribute('id')?.trim() || `${slugify(kind)}-${index + 1}`,
+        kind,
+        name: el.getAttribute('name')?.trim() || titleCase(kind),
+        emoji: resolveEmoji(el.getAttribute('emoji') || defaults.emoji || kind),
+        x: readCoordinate(el, 'x', columns),
+        y: readCoordinate(el, 'y', rows),
+        portable: readBoolean(el.getAttribute('portable'), defaults.portable ?? false),
+        solid: readBoolean(el.getAttribute('solid'), defaults.solid ?? false),
+      }
+    }
+
+    function compileRealm(parsedRealm) {
+      return {
+        id: parsedRealm.id,
+        name: parsedRealm.name,
+        rowCount: parsedRealm.rows,
+        columnCount: parsedRealm.columns,
+        world: {
+          rowCount: parsedRealm.rows,
+          columnCount: parsedRealm.columns,
+          defaultTerrain: DEFAULT_TERRAIN,
+        },
+        camera: {
+          x: 0,
+          y: 0,
+          rowCount: parsedRealm.rows,
+          columnCount: parsedRealm.columns,
+        },
+        quest: parsedRealm.quest.goal ? { goal: parsedRealm.quest.goal } : undefined,
+        entities: {
+          player: parsedRealm.player,
+          bots: parsedRealm.bots.map(bot => {
+            const data = {
+              id: bot.id,
+              kind: bot.kind,
+              name: bot.name,
+              emoji: bot.emoji,
+              x: bot.x,
+              y: bot.y,
+            }
+
+            if (bot.speech) {
+              data.speech = bot.speech
+            }
+
+            return data
+          }),
+          items: parsedRealm.items.map(item => ({
+            id: item.id,
+            kind: item.kind,
+            name: item.name,
+            emoji: item.emoji,
+            x: item.x,
+            y: item.y,
+            portable: item.portable,
+            solid: item.solid,
+          })),
+        },
+      }
+    }
+
+    function renderPreview(parsedRealm) {
+      realmName.textContent = parsedRealm.name
+      realmMeta.textContent = `${parsedRealm.columns} columns × ${parsedRealm.rows} rows`
+      questBox.textContent = parsedRealm.quest.goal || 'No quest yet.'
+      realmPreview.style.setProperty('--grid-columns', parsedRealm.columns)
+      realmPreview.style.setProperty('--grid-rows', parsedRealm.rows)
+
+      buildGrid(parsedRealm.columns, parsedRealm.rows)
+
+      const entities = [
+        parsedRealm.player,
+        ...parsedRealm.bots,
+        ...parsedRealm.items,
+      ]
+
+      for (const entity of entities) {
+        realmPreview.append(renderEntity(entity))
+      }
+    }
+
+    function renderCompiledRealm(realm) {
+      realmJson.textContent = JSON.stringify(pruneUndefined(realm), null, 2)
+    }
+
+    function renderEntity(entity) {
+      const tileSize = getTileSize()
+      const el = document.createElement('div')
+      el.className = 'entity'
+      el.style.left = `${entity.x * tileSize - tileSize / 2}px`
+      el.style.top = `${entity.y * tileSize - tileSize / 2}px`
+
+      const emoji = document.createElement('div')
+      emoji.className = 'entity-emoji'
+      emoji.textContent = entity.emoji
+      el.append(emoji)
+
+      const label = document.createElement('div')
+      label.className = 'entity-label'
+      label.textContent = entity.name || entity.kind
+      el.append(label)
+
+      if (entity.speech) {
+        const speech = document.createElement('div')
+        speech.className = 'speech'
+        speech.textContent = entity.speech
+        el.append(speech)
+      }
+
+      return el
+    }
+
+    function buildGrid(columns, rows) {
       grid.replaceChildren()
-      for (let i = 0; i < GRID_COLUMNS * GRID_ROWS; i++) {
+      grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`
+      grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`
+
+      for (let i = 0; i < columns * rows; i++) {
         const cell = document.createElement('div')
         cell.className = 'cell'
         grid.append(cell)
       }
     }
 
-    function renderFromSource() {
-      clearEntities()
-
-      try {
-        const realmData = parseRealm(source.value)
-        realmName.textContent = realmData.name || 'Untitled Realm'
-        renderRealm(realmData)
-        errors.textContent = 'No errors.'
-      } catch (error) {
-        realmName.textContent = 'Preview error'
-        errors.textContent = error.message
-      }
-    }
-
-    function parseRealm(text) {
-      const doc = new DOMParser().parseFromString(text, 'text/html')
-      const realmEl = doc.querySelector('realm')
-
-      if (!realmEl) {
-        throw new Error('Your HTML needs a <realm> element.')
-      }
-
-      const bots = [...realmEl.querySelectorAll(':scope > bot')].map(parseBot)
-      const things = [...realmEl.querySelectorAll(':scope > thing')].map(parseThing)
-      const portals = [...realmEl.querySelectorAll(':scope > portal')].map(parsePortal)
-
-      const meBots = bots.filter(bot => bot.type === 'me')
-      if (meBots.length > 1) {
-        throw new Error('You can only have one <bot type="me">.')
-      }
-
-      return {
-        name: realmEl.getAttribute('name') || '',
-        bots,
-        things,
-        portals,
-      }
-    }
-
-    function parseBot(el) {
-      return {
-        tag: 'bot',
-        type: el.getAttribute('type') || 'bot',
-        x: readNumber(el, 'x'),
-        y: readNumber(el, 'y'),
-        name: el.getAttribute('name') || '',
-        image: el.getAttribute('image') || defaultImageFor(el.getAttribute('type') || 'bot'),
-      }
-    }
-
-    function parseThing(el) {
-      return {
-        tag: 'thing',
-        type: el.getAttribute('type') || 'thing',
-        x: readNumber(el, 'x'),
-        y: readNumber(el, 'y'),
-        name: el.getAttribute('name') || '',
-        image: el.getAttribute('image') || defaultImageFor(el.getAttribute('type') || 'thing'),
-      }
-    }
-
-    function parsePortal(el) {
-      return {
-        tag: 'portal',
-        type: 'portal',
-        x: readNumber(el, 'x'),
-        y: readNumber(el, 'y'),
-        to: el.getAttribute('to') || '',
-        image: el.getAttribute('image') || '🌀',
-      }
-    }
-
-    function readNumber(el, name) {
-      const value = Number(el.getAttribute(name))
-      if (Number.isNaN(value)) {
-        throw new Error(`<${el.tagName.toLowerCase()}> is missing a valid "${name}" number.`)
-      }
-      return value
-    }
-
-    function defaultImageFor(type) {
-      const defaults = {
-        me: '🙂',
-        zombie: '🧟',
-        tree: '🌳',
-        rock: '🪨',
-        thing: '📦',
-        bot: '🤖',
-        portal: '🌀',
-      }
-      return defaults[type] || '❓'
-    }
-
-    function renderRealm(realmData) {
-      const entities = [
-        ...realmData.bots,
-        ...realmData.things,
-        ...realmData.portals,
-      ]
-
-      for (const entity of entities) {
-        if (!isInBounds(entity.x, entity.y)) continue
-        realmPreview.append(renderEntity(entity))
-      }
-    }
-
-    function renderEntity(entity) {
-      const el = document.createElement('div')
-      el.className = 'entity'
-      el.style.left = `${entity.x * TILE_SIZE - TILE_SIZE / 2}px`
-      el.style.top = `${entity.y * TILE_SIZE - TILE_SIZE / 2}px`
-      el.textContent = displayValue(entity.image)
-
-      const label = document.createElement('div')
-      label.className = 'entity-label'
-      label.textContent =
-        entity.name ||
-        entity.to ||
-        entity.type
-
-      el.append(label)
-      return el
-    }
-
-    function displayValue(image) {
-      if (looksLikeImageFile(image)) {
-        return '🖼️'
-      }
-      return image
-    }
-
-    function looksLikeImageFile(value) {
-      return /\\.(png|jpg|jpeg|gif|webp|svg)$/i.test(value)
-    }
-
     function clearEntities() {
       realmPreview.querySelectorAll('.entity').forEach(el => el.remove())
     }
 
-    function isInBounds(x, y) {
-      return x >= 1 && x <= GRID_COLUMNS && y >= 1 && y <= GRID_ROWS
+    function renderEmojiReference() {
+      emojiReference.replaceChildren()
+
+      for (const [label, entries] of Object.entries(EMOJI_REFERENCE)) {
+        const card = document.createElement('section')
+        card.className = 'reference-card'
+
+        const heading = document.createElement('h3')
+        heading.textContent = titleCase(label)
+
+        const list = document.createElement('div')
+        list.className = 'emoji-list'
+
+        for (const [name, emoji] of entries) {
+          const row = document.createElement('div')
+          row.className = 'emoji-row'
+          row.innerHTML = `
+            <div class="emoji-glyph">${emoji}</div>
+            <div><span class="emoji-name">${name}</span></div>
+          `
+          list.append(row)
+        }
+
+        card.append(heading, list)
+        emojiReference.append(card)
+      }
+    }
+
+    async function showQrDialog() {
+      if (!latestCompiledRealm) return
+
+      const payload = JSON.stringify(pruneUndefined(latestCompiledRealm))
+      qrText.value = payload
+      qrStatus.textContent = `Preparing QR code… ${payload.length} characters.`
+      qrCanvas.hidden = true
+      qrImage.hidden = true
+      qrDialog.showModal()
+
+      try {
+        if (window.QRCode?.toCanvas) {
+          await window.QRCode.toCanvas(qrCanvas, payload, {
+            margin: 1,
+            width: 280,
+            errorCorrectionLevel: 'M',
+            color: {
+              dark: '#102126',
+              light: '#ffffff',
+            },
+          })
+          qrCanvas.hidden = false
+          qrStatus.textContent = 'Scan this QR code to collect the realm.'
+          return
+        }
+
+        qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(payload)}`
+        qrImage.hidden = false
+        qrStatus.textContent = 'Showing fallback QR image.'
+      } catch (error) {
+        qrStatus.textContent = `Could not generate QR code: ${error.message}`
+      }
+    }
+
+    function resolveEmoji(value) {
+      const trimmed = value.trim()
+      return EMOJI_ALIASES[trimmed] ?? trimmed
+    }
+
+    function readCoordinate(el, name, limit) {
+      const value = Number(el.getAttribute(name))
+      if (!Number.isInteger(value) || value < 1 || value > limit) {
+        throw new Error(`<${el.tagName.toLowerCase()}> needs a "${name}" from 1 to ${limit}.`)
+      }
+      return value
+    }
+
+    function readPositiveInteger(el, name, fallback) {
+      const raw = el.getAttribute(name)
+      if (raw === null || raw === '') return fallback
+
+      const value = Number(raw)
+      if (!Number.isInteger(value) || value <= 0) {
+        throw new Error(`<realm> has an invalid "${name}" value.`)
+      }
+      return value
+    }
+
+    function readBoolean(raw, fallback) {
+      if (raw == null || raw === '') return fallback
+      if (raw === 'true') return true
+      if (raw === 'false') return false
+      return fallback
+    }
+
+    function slugify(value) {
+      return value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'untitled-realm'
+    }
+
+    function titleCase(value) {
+      return value
+        .split(/[-_\s]+/)
+        .filter(Boolean)
+        .map(word => word[0].toUpperCase() + word.slice(1))
+        .join(' ')
+    }
+
+    function pruneUndefined(value) {
+      if (Array.isArray(value)) {
+        return value.map(pruneUndefined)
+      }
+
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(
+          Object.entries(value)
+            .filter(([, child]) => child !== undefined)
+            .map(([key, child]) => [key, pruneUndefined(child)])
+        )
+      }
+
+      return value
+    }
+
+    function getTileSize() {
+      const stageWidth = realmPreview.getBoundingClientRect().width
+      const columns = Number(getComputedStyle(realmPreview).getPropertyValue('--grid-columns')) || DEFAULT_COLUMNS
+      return stageWidth / columns
     }
   </script>
 </body>
