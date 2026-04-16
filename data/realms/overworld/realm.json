@@ -96,14 +96,26 @@
         "emoji": "🧪",
         "x": 0,
         "y": 0,
-        "solid": true
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "A health potion!",
+            "emotion": "happy"
+          }
+        }
       },
       {
         "name": "Scroll",
         "emoji": "📜",
         "x": 12,
         "y": 9,
-        "solid": true
+        "portable": true,
+        "on": {
+          "pickup": {
+            "message": "I found a scroll!",
+            "emotion": "happy"
+          }
+        }
       },
       {
         "id": "magic-ring-1",
@@ -124,7 +136,13 @@
         "emoji": "🪙",
         "x": 18,
         "y": 2,
-        "solid": true
+        "portable": "true",
+        "on": {
+          "pickup": {
+            "message": "🪙 Dang, I’m rich!",
+            "emotion": "happy"
+          }
+        }
       },
       {
         "name": "Treasure Chest",

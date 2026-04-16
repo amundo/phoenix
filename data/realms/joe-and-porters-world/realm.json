@@ -20,7 +20,10 @@
       "W": "water",
       "G": "grass",
       "F": "forest-floor",
-      "T": "tree",
+      "T": {
+        "terrain": "forest-floor",
+        "scenery": "tree"
+      },
       "@": "player"
     }
   },

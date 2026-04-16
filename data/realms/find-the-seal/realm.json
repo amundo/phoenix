@@ -1,0 +1,105 @@
+{
+  "id": "find-the-seal",
+  "name": "Find the Seal",
+  "rowCount": 8,
+  "columnCount": 10,
+  "world": {
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "rowCount": 8,
+    "columnCount": 10
+  },
+  "asciiMap": [
+    "IIIIIIIWWW",
+    "IIISIIIWWW",
+    "IISSSIIWWW",
+    "IIIIIIBBWW",
+    "IIIIIIBBWW",
+    "IIIRIIIIWW",
+    "IIIIIIIPWW",
+    "IIIIIIIWWW"
+  ],
+  "legend": {
+    "I": "ice",
+    "W": "water",
+    "S": {
+      "terrain": "ice",
+      "scenery": "snowdrift"
+    },
+    "B": {
+      "terrain": "ice",
+      "scenery": "ice-berg"
+    },
+    "R": "rock",
+    "P": "player"
+  },
+  "entities": {
+    "player": {
+      "kind": "player",
+      "name": "Nanuq",
+      "emoji": "🐻‍❄️",
+      "x": 7,
+      "y": 6,
+      "inventory": []
+    },
+    "enemies": [],
+    "items": [
+      {
+        "id": "fish-1",
+        "kind": "fish",
+        "name": "Arctic fish",
+        "emoji": "🐟",
+        "x": 2,
+        "y": 5,
+        "on": {
+          "pickup": {
+            "message": "🐟 I caught a fish!",
+            "emotion": "happy"
+          }
+        }
+      },
+      {
+        "id": "seal-hole-1",
+        "kind": "seal-hole",
+        "name": "breathing hole",
+        "x": 5,
+        "y": 3,
+        "on": {
+          "touch": {
+            "message": "🕳️ A seal might come up here.",
+            "emotion": "curious"
+          }
+        }
+      },
+      {
+        "id": "seal-1",
+        "kind": "seal",
+        "name": "ringed seal",
+        "emoji": "🦭",
+        "x": 3,
+        "y": 1,
+        "requires": {
+          "id": "fish-1"
+        },
+        "on": {
+          "blocked": {
+            "message": "🦭 The seal slips away across the ice.",
+            "emotion": "confused"
+          },
+          "success": {
+            "message": "🦭 The seal comes closer when you offer the fish.",
+            "emotion": "happy",
+            "set": {
+              "solid": false
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+
