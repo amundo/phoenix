@@ -26,7 +26,7 @@ class GameEngine {
       this.player.moveTo(playerMarker)
     }
 
-    this.enemies = gameData.realm.entities.enemies.map(bot => new Bot(bot))
+    this.bots = gameData.realm.entities.bots.map(bot => new Bot(bot))
     this.scenery = this.createScenery(gameData)
     this.items = gameData.realm.entities.items.map(item =>
       new Item(this.resolveCatalogEntity(gameData.catalogs.items, item))
@@ -68,7 +68,7 @@ class GameEngine {
   }
 
   get entities() {
-    return [...this.scenery, this.player, ...this.enemies, ...this.items]
+    return [...this.scenery, this.player, ...this.bots, ...this.items]
   }
 
   getEntitiesAt(x, y) {
@@ -203,7 +203,7 @@ class GameEngine {
       }
     }
 
-    const bot = this.enemies.find(bot =>
+    const bot = this.bots.find(bot =>
       bot.x === nextX && bot.y === nextY
     )
 
