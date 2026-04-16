@@ -1,7 +1,7 @@
 export { AvatarLayer } from './AvatarLayer.js'
 export { BaseAvatar } from './BaseAvatar.js'
 export { BaseLayer } from './BaseLayer.js'
-export { EnemyAvatar } from './EnemyAvatar.js'
+export { BotAvatar } from './BotAvatar.js'
 export { AdminDialog } from './AdminDialog.js'
 export { GameApp } from './GameApp.js'
 export { GameBoard } from './GameBoard.js'

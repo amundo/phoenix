@@ -1,6 +1,6 @@
 import { BaseAvatar } from "./BaseAvatar.js"
-class EnemyAvatar extends BaseAvatar { }
+class BotAvatar extends BaseAvatar { }
 
-customElements.define('bot-avatar', EnemyAvatar)
+customElements.define('bot-avatar', BotAvatar)
 
-export { EnemyAvatar }
+export { BotAvatar }

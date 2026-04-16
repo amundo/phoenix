@@ -1,7 +1,7 @@
 import { BaseLayer } from './BaseLayer.js'
 
 import { PlayerAvatar } from './PlayerAvatar.js'
-import { EnemyAvatar } from './EnemyAvatar.js'
+import { BotAvatar } from './BotAvatar.js'
 import { ItemAvatar } from './ItemAvatar.js'
 import { SceneryAvatar } from './SceneryAvatar.js'
 
@@ -82,7 +82,7 @@ class AvatarLayer extends BaseLayer {
   createAvatar(entity) {
     if (entity instanceof Scenery) return new SceneryAvatar()
     if (entity instanceof Player) return new PlayerAvatar()
-    if (entity instanceof Bot) return new EnemyAvatar()
+    if (entity instanceof Bot) return new BotAvatar()
     if (entity instanceof Item) return new ItemAvatar()
     throw new Error(`No avatar class for entity: ${entity?.constructor?.name}`)
   }
