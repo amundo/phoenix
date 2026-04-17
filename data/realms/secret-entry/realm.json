@@ -1,0 +1,141 @@
+{
+    "id": "secret-entry",
+    "name": "Secret entry",
+    "rowCount": 6,
+    "columnCount": 8,
+    "world": {
+        "rowCount": 6,
+        "columnCount": 8,
+        "defaultTerrain": "grass",
+        "background": "teal"
+    },
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "rowCount": 6,
+        "columnCount": 8
+    },
+    "entities": {
+        "player": {
+            "id": "player",
+            "kind": "player",
+            "name": "Pat",
+            "emoji": "🧒",
+            "x": 1,
+            "y": 4
+        },
+        "bots": [
+            {
+                "id": "wizard-1",
+                "kind": "wizard",
+                "name": "Bot 1",
+                "emoji": "🧙",
+                "x": 5,
+                "y": 1,
+                "speech": "Hello!"
+            }
+        ],
+        "items": [
+            {
+                "id": "key-1",
+                "kind": "key",
+                "name": "Key",
+                "emoji": "🔑",
+                "x": 3,
+                "y": 2,
+                "portable": true,
+                "solid": false
+            },
+            {
+                "id": "rock-2",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 5,
+                "y": 2,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-3",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 5,
+                "y": 3,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-4",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 4,
+                "y": 4,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-5",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 3,
+                "y": 4,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-6",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 2,
+                "y": 3,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-7",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 2,
+                "y": 2,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-8",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 3,
+                "y": 1,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "rock-9",
+                "kind": "rock",
+                "name": "Rock",
+                "emoji": "🪨",
+                "x": 4,
+                "y": 1,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "door-10",
+                "kind": "door",
+                "name": "Door",
+                "emoji": "🚪",
+                "x": 6,
+                "y": 1,
+                "portable": false,
+                "solid": true
+            }
+        ]
+    }
+}
