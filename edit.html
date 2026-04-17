@@ -424,14 +424,22 @@
 
     <section class="main">
       <section class="panel editor-panel">
-        <textarea id="source" spellcheck="false"><player emoji=child x=1 y=4></player>
+        <textarea id="source" spellcheck="false"><realm background=teal>
+
+<player emoji=child x=1 y=4>
+</player>
 
 <bot emoji=wizard x=5 y=1>
   <speech>Hello!</speech>
 </bot>
 
-<item emoji=key x=3 y=2></item>
-<item emoji=door x=6 y=1></item></textarea>
+<item emoji=key x=3 y=2>
+</item>
+
+<item emoji=door x=6 y=1>
+</item>
+
+</realm></textarea>
 
         <div>
           <button class="tab" id="openEmojiReference" type="button">Open emoji reference</button>
@@ -643,17 +651,23 @@
 
     function buildAliasMap(items) {
       const aliases = new Map()
+
       for (const item of items) {
-        const names = new Set()
-        if (item.description) names.add(slugify(item.description))
-        for (const keyword of item.keywords || []) {
-          const alias = slugify(keyword)
-          if (alias) names.add(alias)
-        }
-        for (const name of names) {
-          if (!aliases.has(name)) aliases.set(name, item.emoji)
+        const description = slugify(item.description || '')
+        if (description && !aliases.has(description)) {
+          aliases.set(description, item.emoji)
         }
       }
+
+      for (const item of items) {
+        for (const keyword of item.keywords || []) {
+          const alias = slugify(keyword)
+          if (alias && !aliases.has(alias)) {
+            aliases.set(alias, item.emoji)
+          }
+        }
+      }
+
       return aliases
     }
 
@@ -672,8 +686,18 @@
     }
 
     function parseSource(text) {
-      const doc = new DOMParser().parseFromString(`<realm-fragment>${text}</realm-fragment>`, 'text/html')
-      const root = doc.querySelector('realm-fragment')
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const realmEl = doc.querySelector('realm')
+
+      if (!realmEl) {
+        throw new Error('Add one <realm> tag around everything.')
+      }
+
+      if (doc.querySelectorAll('realm').length > 1) {
+        throw new Error('You can only have one <realm> tag.')
+      }
+
+      const root = realmEl
       const playerEls = [...root.querySelectorAll(':scope > player')]
       const playerEl = playerEls[0]
 
@@ -688,6 +712,7 @@
       return {
         title: realmTitle.value.trim() || 'My realm',
         playerName: playerName.value.trim() || 'Player',
+        background: realmEl.getAttribute('background')?.trim() || DEFAULT_TERRAIN,
         player: parsePlayer(playerEl),
         bots: [...root.querySelectorAll(':scope > bot')].map((el, index) => parseBot(el, index)),
         items: [...root.querySelectorAll(':scope > item')].map((el, index) => parseItem(el, index)),
@@ -748,6 +773,7 @@
           rowCount: DEFAULT_ROWS,
           columnCount: DEFAULT_COLUMNS,
           defaultTerrain: DEFAULT_TERRAIN,
+          background: parsed.background,
         },
         camera: {
           x: 0,
@@ -764,6 +790,7 @@
     }
 
     function renderBoard(parsed) {
+      board.style.backgroundColor = parsed.background || 'var(--grid-bg)'
       const entities = [parsed.player, ...parsed.bots, ...parsed.items]
       for (const entity of entities) {
         board.append(renderEntity(entity))
@@ -876,7 +903,7 @@
     function validateMarkup(text) {
       validateQuotes(text)
 
-      const allowedTags = new Set(['player', 'bot', 'item', 'speech'])
+      const allowedTags = new Set(['realm', 'player', 'bot', 'item', 'speech'])
       const tokenPattern = /<\/?([a-z-]+)\b[^>]*>/gi
       const stack = []
       let match
