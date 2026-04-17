@@ -1,0 +1,50 @@
+{
+    "id": "dance-world",
+    "name": "Dance world",
+    "rowCount": 6,
+    "columnCount": 8,
+    "world": {
+        "rowCount": 6,
+        "columnCount": 8,
+        "defaultTerrain": "grass"
+    },
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "rowCount": 6,
+        "columnCount": 8
+    },
+    "entities": {
+        "player": {
+            "id": "player",
+            "kind": "player",
+            "name": "Pat",
+            "emoji": "🕺",
+            "x": 1,
+            "y": 4
+        },
+        "bots": [
+            {
+                "id": "bot-1",
+                "kind": "bot",
+                "name": "Bot 1",
+                "emoji": "💃",
+                "x": 2,
+                "y": 1,
+                "speech": "Go to the mirror ball!"
+            }
+        ],
+        "items": [
+            {
+                "id": "key-1",
+                "kind": "key",
+                "name": "Key",
+                "emoji": "🪩",
+                "x": 5,
+                "y": 2,
+                "portable": true,
+                "solid": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "id": "my-realm",
+    "name": "My realm",
+    "rowCount": 6,
+    "columnCount": 8,
+    "world": {
+        "rowCount": 6,
+        "columnCount": 8,
+        "defaultTerrain": "grass"
+    },
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "rowCount": 6,
+        "columnCount": 8
+    },
+    "entities": {
+        "player": {
+            "id": "player",
+            "kind": "player",
+            "name": "My name",
+            "emoji": "👩‍🌾",
+            "x": 1,
+            "y": 4
+        },
+        "bots": [
+            {
+                "id": "bot-1",
+                "kind": "bot",
+                "name": "Bot 1",
+                "emoji": "🧙",
+                "x": 5,
+                "y": 1,
+                "speech": "Hello!"
+            }
+        ],
+        "items": [
+            {
+                "id": "key-1",
+                "kind": "key",
+                "name": "Key",
+                "emoji": "🍋‍🟩",
+                "x": 3,
+                "y": 2,
+                "portable": true,
+                "solid": false
+            },
+            {
+                "id": "door-2",
+                "kind": "door",
+                "name": "Door",
+                "emoji": "🍑",
+                "x": 6,
+                "y": 1,
+                "portable": false,
+                "solid": true
+            },
+            {
+                "id": "apple-3",
+                "kind": "apple",
+                "name": "Apple",
+                "emoji": "🍎",
+                "x": 7,
+                "y": 3,
+                "portable": true,
+                "solid": false
+            },
+            {
+                "id": "mango-4",
+                "kind": "mango",
+                "name": "Mango",
+                "emoji": "🥭",
+                "x": 2,
+                "y": 3,
+                "portable": true,
+                "solid": false
+            }
+        ]
+    }
+}

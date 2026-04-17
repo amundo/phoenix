@@ -3,12 +3,15 @@
   "catalogs": {
     "actors": "catalogs/actors.json",
     "effects": "catalogs/effects.json",
+    "emoji": "catalogs/emoji.json",
     "animations": "catalogs/animations.json",
     "emotions": "catalogs/emotions.json",
     "items": "catalogs/items.json",
     "terrain": "catalogs/terrain.json"
   },
   "realms": {
+    "fruit-farm": "realms/fruit-farm/realm.json",
+    "dance-world": "realms/dance-world/realm.json",
     "tiny": "realms/tiny/realm.json",
     "find-the-seal": "realms/find-the-seal/realm.json",
     "joe-and-porters-world": "realms/joe-and-porters-world/realm.json",

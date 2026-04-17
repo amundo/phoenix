@@ -7,10 +7,10 @@ class AdminDialog extends HTMLElement {
   constructor() {
     super()
     this.innerHTML = `
-      <dialog class="admin-dialog">
+      <dialog closedby="any" class="admin-dialog">
         <form method="dialog" class="admin-shell">
           <header class="admin-header">
-            <h2>Admin</h2>
+            <h2>Settings</h2>
             <button type="submit" class="admin-close" aria-label="Close">Close</button>
           </header>
 

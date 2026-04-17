@@ -7,17 +7,16 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='0' y='14'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E" />
   <style>
     :root {
-      --page-bg: #eef6fb;
-      --panel-bg: rgb(255 255 255 / 0.94);
-      --border: rgb(12 40 56 / 0.14);
-      --text: #17313b;
-      --muted: #5a717c;
-      --accent: #16719a;
-      --ground-color: #7ea451;
-      --grid-line: rgb(255 255 255 / 0.38);
-      --tile-size: 52px;
-      --grid-columns: 10;
-      --grid-rows: 8;
+      --page-bg: #d9d1cc;
+      --panel-bg: #f8f7f5;
+      --line: #a9a19a;
+      --text: #171412;
+      --muted: #5a534d;
+      --grid-bg: #128789;
+      --grid-line: rgb(255 255 255 / 0.46);
+      --tile-size: 70px;
+      --columns: 8;
+      --rows: 6;
     }
 
     * {
@@ -32,156 +31,206 @@
 
     body {
       font-family: ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", sans-serif;
+      background: var(--page-bg);
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgb(255 255 255 / 0.6), transparent 30%),
-        linear-gradient(180deg, #d9edf8, #c7e5f1 35%, #dcedf5 100%);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
     }
 
     .app {
-      display: grid;
-      grid-template-columns: minmax(22rem, 32rem) 1fr;
-      gap: 1rem;
-      padding: 1rem;
       min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 1rem;
+      padding: 1.4rem 1.4rem 1.2rem;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr 26rem;
+      gap: 2rem;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.25rem;
+    }
+
+    .field input {
+      border: none;
+      border-bottom: 5px solid var(--line);
+      background: transparent;
+      padding: 0.2rem 0.1rem 0.35rem;
+      font-size: 1.9rem;
+      font-style: italic;
+      outline: none;
+      color: inherit;
+    }
+
+    .field input::placeholder {
+      color: #45403c;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(22rem, 1fr) minmax(32rem, 1fr);
+      gap: 1rem;
+      min-height: 0;
     }
 
     .panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: 0 1rem 2.5rem rgb(18 58 77 / 0.08);
-      overflow: hidden;
+      background: rgb(255 255 255 / 0.26);
+      border: 1px solid rgb(255 255 255 / 0.45);
+      min-height: 0;
     }
 
-    .panel-body {
-      padding: 1rem;
+    .editor-panel {
       display: grid;
-      gap: 0.9rem;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin: 0;
-    }
-
-    .eyebrow {
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .lede {
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    textarea,
-    pre {
-      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+      grid-template-rows: 1fr auto auto;
+      gap: 1rem;
+      padding: 1rem;
     }
 
     textarea {
       width: 100%;
-      min-height: 26rem;
-      resize: vertical;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      min-height: 0;
+      resize: none;
       padding: 1rem;
+      border: none;
       background: white;
-      color: #102126;
+      color: #171412;
+      font: 1rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+      outline: none;
     }
 
-    .button-row {
+    .picker-row {
+      display: grid;
+      grid-template-columns: 12rem auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .search {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0;
+      outline: none;
+      font-size: 1.05rem;
+      font-style: italic;
+    }
+
+    .tabs {
       display: flex;
+      gap: 0.5rem;
       flex-wrap: wrap;
-      gap: 0.6rem;
     }
 
-    button {
-      border: 1px solid rgb(12 40 56 / 0.14);
-      border-radius: 999px;
-      padding: 0.65rem 1rem;
-      font: inherit;
-      cursor: pointer;
-      background: white;
-      color: var(--text);
-    }
-
-    button.primary {
-      background: var(--accent);
-      color: white;
-      border-color: transparent;
-    }
-
-    .status,
-    .error-box,
-    .quest-box,
-    .help-box {
-      padding: 0.8rem 0.9rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
+    .tab {
+      border: none;
+      border-radius: 0.5rem;
       background: rgb(255 255 255 / 0.7);
+      padding: 0.45rem 0.8rem;
+      cursor: pointer;
+      color: inherit;
     }
 
-    .error-box {
-      background: #fff4f4;
-      border-color: #efcaca;
-      color: #8a1f1f;
-      min-height: 3.2rem;
+    .tab.active {
+      background: white;
+      box-shadow: inset 0 0 0 2px rgb(23 20 18 / 0.12);
     }
 
-    .layout-right {
+    .status {
+      min-height: 1.4rem;
+      color: #7b1c1c;
+      font-size: 0.95rem;
+    }
+
+    .preview-panel {
       display: grid;
-      grid-template-rows: auto auto auto 1fr;
+      grid-template-rows: 1fr auto;
       gap: 1rem;
+      padding: 1.2rem;
     }
 
-    .preview-top {
-      display: flex;
-      justify-content: space-between;
+    .board-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 0;
+    }
+
+    .board-frame {
+      display: grid;
+      grid-template-columns: 2.1rem auto;
+      grid-template-rows: 2.1rem auto;
+      gap: 0.35rem;
+      align-items: start;
+      justify-items: start;
+    }
+
+    .corner {
+      width: 2.1rem;
+      height: 2.1rem;
+    }
+
+    .axis-top,
+    .axis-left {
+      display: grid;
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 650;
+    }
+
+    .axis-top {
+      width: calc(var(--columns) * var(--tile-size));
+      grid-template-columns: repeat(var(--columns), var(--tile-size));
+      justify-items: center;
       align-items: end;
-      gap: 1rem;
+      padding-bottom: 0.35rem;
     }
 
-    .realm-meta {
-      display: grid;
-      gap: 0.2rem;
+    .axis-left {
+      height: calc(var(--rows) * var(--tile-size));
+      grid-template-rows: repeat(var(--rows), var(--tile-size));
+      align-items: center;
+      justify-items: center;
+      padding-right: 0.35rem;
     }
 
-    .realm-meta .small {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .realm-stage {
+    .board {
       position: relative;
-      width: calc(var(--grid-columns) * var(--tile-size));
-      height: calc(var(--grid-rows) * var(--tile-size));
-      border-radius: 18px;
-      border: 1px solid rgb(20 64 83 / 0.14);
+      width: calc(var(--columns) * var(--tile-size));
+      height: calc(var(--rows) * var(--tile-size));
+      background: var(--grid-bg);
+      border: 5px solid var(--line);
+      border-radius: 0.25rem;
       overflow: hidden;
-      background:
-        linear-gradient(to bottom, #abd2e4 0 22%, var(--ground-color) 22% 100%);
-      box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
     }
 
     .grid {
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: repeat(var(--grid-columns), var(--tile-size));
-      grid-template-rows: repeat(var(--grid-rows), var(--tile-size));
+      grid-template-columns: repeat(var(--columns), var(--tile-size));
+      grid-template-rows: repeat(var(--rows), var(--tile-size));
       pointer-events: none;
     }
 
     .cell {
-      border-right: 1px solid var(--grid-line);
-      border-bottom: 1px solid var(--grid-line);
+      border-right: 2px solid var(--grid-line);
+      border-bottom: 2px solid var(--grid-line);
+    }
+
+    .cell:nth-child(8n) {
+      border-right: none;
+    }
+
+    .cell:nth-last-child(-n + 8) {
+      border-bottom: none;
     }
 
     .entity {
@@ -190,28 +239,14 @@
       height: var(--tile-size);
       display: grid;
       place-items: center;
-      line-height: 1;
       transform: translate(-50%, -50%);
+      line-height: 1;
       user-select: none;
     }
 
-    .entity-emoji {
-      font-size: calc(var(--tile-size) * 0.68);
-      filter: drop-shadow(0 0.18rem 0.15rem rgb(0 0 0 / 0.14));
-    }
-
-    .entity-label {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      margin-top: 0.15rem;
-      padding: 0.1rem 0.35rem;
-      border-radius: 999px;
-      background: rgb(255 255 255 / 0.86);
-      font-size: 0.72rem;
-      white-space: nowrap;
-      box-shadow: 0 0.15rem 0.4rem rgb(0 0 0 / 0.08);
+    .entity span {
+      font-size: calc(var(--tile-size) * 0.65);
+      filter: drop-shadow(0 0.18rem 0.14rem rgb(0 0 0 / 0.16));
     }
 
     .speech {
@@ -220,14 +255,14 @@
       left: 50%;
       transform: translateX(-50%);
       max-width: 10rem;
-      padding: 0.45rem 0.6rem;
+      padding: 0.38rem 0.55rem;
       border-radius: 0.8rem;
-      background: white;
       border: 1px solid rgb(0 0 0 / 0.12);
+      background: white;
       font-size: 0.76rem;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: center;
-      box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.08);
+      box-shadow: 0 0.45rem 1rem rgb(0 0 0 / 0.1);
     }
 
     .speech::after {
@@ -243,80 +278,94 @@
       transform: translateX(-50%) rotate(45deg);
     }
 
-    .reference-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-      gap: 0.8rem;
+    .actions {
+      display: flex;
+      justify-content: flex-end;
     }
 
-    .reference-card {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 0.8rem;
-      background: rgb(255 255 255 / 0.76);
-      display: grid;
-      gap: 0.55rem;
-    }
-
-    .emoji-list {
-      display: grid;
-      gap: 0.25rem;
-      max-height: 12rem;
-      overflow: auto;
-    }
-
-    .emoji-row {
-      display: grid;
-      grid-template-columns: 1.6rem 1fr;
-      gap: 0.45rem;
-      align-items: center;
-      font-size: 0.92rem;
-    }
-
-    .emoji-glyph {
-      font-size: 1.1rem;
-      text-align: center;
-    }
-
-    .emoji-name {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      color: #234c5c;
-    }
-
-    .json-panel pre {
-      margin: 0;
-      max-height: 20rem;
-      overflow: auto;
-      padding: 1rem;
-      border-radius: 12px;
-      background: #f5fbff;
-      border: 1px solid var(--border);
-      color: #153744;
+    .save-button {
+      border: none;
+      border-radius: 0.5rem;
+      background: rgb(255 255 255 / 0.82);
+      padding: 0.55rem 1.1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      color: inherit;
     }
 
     dialog {
       border: none;
-      border-radius: 20px;
+      border-radius: 1rem;
       padding: 0;
-      width: min(36rem, calc(100vw - 2rem));
-      box-shadow: 0 1.6rem 4rem rgb(0 0 0 / 0.24);
+      width: min(28rem, calc(100vw - 2rem));
+      box-shadow: 0 1.4rem 4rem rgb(0 0 0 / 0.22);
     }
 
     dialog::backdrop {
-      background: rgb(12 25 35 / 0.36);
+      background: rgb(14 12 11 / 0.38);
     }
 
     .dialog-shell {
       padding: 1rem;
       display: grid;
       gap: 0.8rem;
+      text-align: center;
+      background: var(--panel-bg);
     }
 
-    .qr-wrap {
+    .dialog-shell h2,
+    .dialog-shell p {
+      margin: 0;
+    }
+
+    .emoji-dialog {
+      width: min(42rem, calc(100vw - 2rem));
+    }
+
+    .emoji-dialog-shell {
+      padding: 1rem;
       display: grid;
-      gap: 0.8rem;
-      justify-items: center;
+      gap: 0.9rem;
+      background: var(--panel-bg);
+      min-height: 28rem;
+    }
+
+    .emoji-dialog-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .emoji-reference-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+      gap: 0.5rem;
+      align-content: start;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .emoji-reference-row {
+      display: grid;
+      grid-template-columns: 1.6rem 1fr;
+      gap: 0.45rem;
+      align-items: center;
+      padding: 0.45rem 0.55rem;
+      border-radius: 0.6rem;
+      background: rgb(255 255 255 / 0.78);
+      cursor: pointer;
+    }
+
+    .emoji-reference-row .glyph {
+      font-size: 1.15rem;
+      line-height: 1;
       text-align: center;
+    }
+
+    .emoji-reference-row .label {
+      font-size: 0.92rem;
+      word-break: break-word;
     }
 
     #qrCanvas,
@@ -325,35 +374,38 @@
       height: 280px;
       max-width: 100%;
       background: white;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 0.65rem;
+      border-radius: 0.8rem;
       object-fit: contain;
+      justify-self: center;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .dialog-actions button {
+      border: none;
+      border-radius: 999px;
+      background: white;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      color: inherit;
     }
 
     #qrText {
-      width: 100%;
-      min-height: 8rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.8rem;
-      background: #f7fbfd;
+      display: none;
     }
 
     @media (max-width: 1100px) {
-      .app {
+      .topbar,
+      .main {
         grid-template-columns: 1fr;
       }
 
-      .realm-stage {
-        width: min(100%, calc(var(--grid-columns) * var(--tile-size)));
-        height: auto;
-        aspect-ratio: var(--grid-columns) / var(--grid-rows);
-      }
-
-      .grid {
-        grid-template-columns: repeat(var(--grid-columns), 1fr);
-        grid-template-rows: repeat(var(--grid-rows), 1fr);
+      .preview-panel {
+        overflow: auto;
       }
     }
   </style>
@@ -361,79 +413,46 @@
 </head>
 <body>
   <div class="app">
-    <section class="panel">
-      <div class="panel-body">
-        <div>
-          <div class="eyebrow">Realm Editor</div>
-          <h1>Build A World With Tags</h1>
-          <p class="lede">Write a realm using custom tags. The preview updates live, the game data appears below, and the export button turns the finished realm into a QR code.</p>
-        </div>
-
-        <div class="help-box">
-          <strong>Starter tags</strong><br />
-          Use <code>&lt;realm&gt;</code>, <code>&lt;player&gt;</code>, <code>&lt;bot&gt;</code>, <code>&lt;item&gt;</code>, and <code>&lt;quest&gt;</code>.<br />
-          In the <code>emoji</code> attribute, you can type a name like <code>child</code>, <code>fox</code>, or <code>key</code> instead of pasting the emoji itself.
-        </div>
-
-        <textarea id="source"><realm name="Moon Garden">
-  <player name="Ava" emoji="child" x="2" y="6"></player>
-
-  <bot name="Guide" emoji="fox" x="4" y="2">
-    <speech>Find the silver key and open the door.</speech>
-  </bot>
-
-  <item kind="key" emoji="key" x="3" y="5"></item>
-  <item kind="door" emoji="door" x="8" y="2"></item>
-  <item kind="flower" emoji="flower" x="6" y="4"></item>
-
-  <quest>
-    <goal>Find the silver key and open the door.</goal>
-  </quest>
-</realm></textarea>
-
-        <div class="button-row">
-          <button type="button" class="primary" id="showQr">Show QR Export</button>
-          <button type="button" id="copyJson">Copy JSON</button>
-          <button type="button" id="resetExample">Reset Example</button>
-        </div>
-
-        <div class="error-box" id="errors">No errors.</div>
-      </div>
+    <section class="topbar">
+      <label class="field">
+        <input id="realmTitle" type="text" value="My realm" aria-label="Realm name" />
+      </label>
+      <label class="field">
+        <input id="playerName" type="text" value="My name" aria-label="Player name" />
+      </label>
     </section>
 
-    <section class="layout-right">
-      <section class="panel">
-        <div class="panel-body">
-          <div class="preview-top">
-            <div class="realm-meta">
-              <div class="eyebrow">Preview</div>
-              <h2 id="realmName">Untitled Realm</h2>
-              <div class="small" id="realmMeta">10 columns × 8 rows</div>
+    <section class="main">
+      <section class="panel editor-panel">
+        <textarea id="source" spellcheck="false"><player emoji=child x=1 y=4></player>
+
+<bot emoji=wizard x=5 y=1>
+  <speech>Hello!</speech>
+</bot>
+
+<item emoji=key x=3 y=2></item>
+<item emoji=door x=6 y=1></item></textarea>
+
+        <div>
+          <button class="tab" id="openEmojiReference" type="button">Open emoji reference</button>
+          <div class="status" id="status"></div>
+        </div>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="board-wrap">
+          <div class="board-frame">
+            <div class="corner"></div>
+            <div class="axis-top" id="axisTop"></div>
+            <div class="axis-left" id="axisLeft"></div>
+            <div class="board" id="board">
+              <div class="grid" id="grid"></div>
             </div>
-            <div class="status" id="exportStatus">Export is ready.</div>
-          </div>
-
-          <div class="quest-box" id="questBox">No quest yet.</div>
-
-          <div class="realm-stage" id="realmPreview">
-            <div class="grid" id="grid"></div>
           </div>
         </div>
-      </section>
 
-      <section class="panel json-panel">
-        <div class="panel-body">
-          <div class="eyebrow">Game Data</div>
-          <h2>Compiled realm.json</h2>
-          <pre id="realmJson"></pre>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-body">
-          <div class="eyebrow">Emoji Guide</div>
-          <h2>Names You Can Type</h2>
-          <div class="reference-grid" id="emojiReference"></div>
+        <div class="actions">
+          <button class="save-button" id="saveButton" type="button">Save</button>
         </div>
       </section>
     </section>
@@ -441,324 +460,325 @@
 
   <dialog id="qrDialog">
     <div class="dialog-shell">
-      <div>
-        <div class="eyebrow">Export</div>
-        <h2>Finished Realm QR Code</h2>
-        <p class="lede">Scan this QR code to collect the student’s realm data. The text box below contains the same minified JSON.</p>
-      </div>
-
-      <div class="qr-wrap">
-        <canvas id="qrCanvas" width="280" height="280" hidden></canvas>
-        <img id="qrImage" alt="Realm QR code" hidden />
-        <div class="status" id="qrStatus">Preparing QR code…</div>
-      </div>
-
+      <h2>Save This Realm</h2>
+      <p>Scan this QR code to collect the student’s finished realm.</p>
+      <canvas id="qrCanvas" width="280" height="280" hidden></canvas>
+      <img id="qrImage" alt="Realm QR code" hidden />
+      <div id="qrStatus"></div>
       <textarea id="qrText" readonly></textarea>
-
-      <div class="button-row">
-        <button type="button" class="primary" id="copyQrText">Copy Export Text</button>
-        <button type="button" id="closeQr">Close</button>
+      <div class="dialog-actions">
+        <button id="copyExport" type="button">Copy Export</button>
+        <button id="closeDialog" type="button">Close</button>
       </div>
     </div>
   </dialog>
 
-  <script type="module">
-    const DEFAULT_COLUMNS = 10
-    const DEFAULT_ROWS = 8
-    const DEFAULT_TERRAIN = 'grass'
-    const EXAMPLE_SOURCE = document.querySelector('#source').value
+  <dialog id="emojiDialog" class="emoji-dialog" closedby="any">
+    <div class="emoji-dialog-shell">
+      <div class="emoji-dialog-top">
+        <div>
+          <h2>Emoji Reference</h2>
+          <p>Click a name to copy it.</p>
+        </div>
+        <button id="closeEmojiDialog" type="button">Close</button>
+      </div>
 
-    const EMOJI_REFERENCE = {
+      <div class="picker-row">
+        <input id="emojiDialogSearch" class="search" type="text" placeholder="Search emojis:" aria-label="Search emoji names" />
+        <div class="tabs" id="dialogTabs">
+          <button class="tab active" type="button" data-role="player">😀 Player</button>
+          <button class="tab" type="button" data-role="item">🗝 Item</button>
+          <button class="tab" type="button" data-role="bot">🧙 Bot</button>
+        </div>
+      </div>
+
+      <div id="emojiCopyStatus"></div>
+      <div class="emoji-reference-list" id="emojiReferenceList"></div>
+    </div>
+  </dialog>
+
+  <script type="module">
+    const DEFAULT_COLUMNS = 8
+    const DEFAULT_ROWS = 6
+    const DEFAULT_TERRAIN = 'grass'
+    const FALLBACK_EMOJI = {
       player: [
-        ['child', '🧒'],
-        ['dog', '🐶'],
-        ['cat', '🐱'],
-        ['fox', '🦊'],
-        ['bear', '🐻'],
-        ['wizard', '🧙'],
-        ['fairy', '🧚'],
-        ['astronaut', '🧑‍🚀'],
-      ],
-      bot: [
-        ['robot', '🤖'],
-        ['fox', '🦊'],
-        ['ghost', '👻'],
-        ['dragon', '🐉'],
-        ['slime', '🟢'],
-        ['owl', '🦉'],
-        ['frog', '🐸'],
-        ['cat', '🐱'],
+        { emoji: '🧒', label: 'child' },
+        { emoji: '👧', label: 'girl' },
+        { emoji: '👦', label: 'boy' },
+        { emoji: '🐶', label: 'dog' },
+        { emoji: '🐱', label: 'cat' },
+        { emoji: '🧙', label: 'wizard' },
+        { emoji: '🧚', label: 'fairy' },
+        { emoji: '🧝', label: 'elf' },
       ],
       item: [
-        ['key', '🗝️'],
-        ['door', '🚪'],
-        ['portal', '🌀'],
-        ['scroll', '📜'],
-        ['flower', '🌼'],
-        ['apple', '🍎'],
-        ['guitar', '🎸'],
-        ['lantern', '🏮'],
-        ['bone', '🦴'],
-        ['poop', '💩'],
-        ['coin', '🪙'],
-        ['shell', '🐚'],
+        { emoji: '🗝️', label: 'key' },
+        { emoji: '🚪', label: 'door' },
+        { emoji: '📜', label: 'scroll' },
+        { emoji: '🌼', label: 'flower' },
+        { emoji: '🍎', label: 'apple' },
+        { emoji: '🏮', label: 'lantern' },
+        { emoji: '🪙', label: 'coin' },
+        { emoji: '🔮', label: 'crystal-ball' },
+      ],
+      bot: [
+        { emoji: '🧙', label: 'wizard' },
+        { emoji: '🤖', label: 'robot' },
+        { emoji: '🐉', label: 'dragon' },
+        { emoji: '👻', label: 'ghost' },
+        { emoji: '🦊', label: 'fox' },
+        { emoji: '🐸', label: 'frog' },
+        { emoji: '🦉', label: 'owl' },
+        { emoji: '🦄', label: 'unicorn' },
       ],
     }
 
-    const EMOJI_ALIASES = Object.fromEntries(
-      Object.values(EMOJI_REFERENCE).flat().map(([name, emoji]) => [name, emoji])
-    )
-
-    const OBJECT_DEFAULTS = {
+    const ITEM_DEFAULTS = {
       key: { emoji: '🗝️', portable: true },
       door: { emoji: '🚪', solid: true },
-      portal: { emoji: '🌀', solid: true },
       scroll: { emoji: '📜', portable: true },
       flower: { emoji: '🌼', portable: true },
       apple: { emoji: '🍎', portable: true },
-      guitar: { emoji: '🎸', portable: true },
       lantern: { emoji: '🏮', portable: true },
-      bone: { emoji: '🦴', portable: true },
-      poop: { emoji: '💩', portable: true },
       coin: { emoji: '🪙', portable: true },
-      shell: { emoji: '🐚', portable: true },
-      cactus: { emoji: '🌵', solid: true },
+      'crystal-ball': { emoji: '🔮', portable: true },
     }
 
+    const realmTitle = document.querySelector('#realmTitle')
+    const playerName = document.querySelector('#playerName')
     const source = document.querySelector('#source')
-    const realmName = document.querySelector('#realmName')
-    const realmMeta = document.querySelector('#realmMeta')
-    const realmPreview = document.querySelector('#realmPreview')
-    const errors = document.querySelector('#errors')
+    const status = document.querySelector('#status')
+    const board = document.querySelector('#board')
     const grid = document.querySelector('#grid')
-    const realmJson = document.querySelector('#realmJson')
-    const questBox = document.querySelector('#questBox')
-    const exportStatus = document.querySelector('#exportStatus')
-    const emojiReference = document.querySelector('#emojiReference')
+    const axisTop = document.querySelector('#axisTop')
+    const axisLeft = document.querySelector('#axisLeft')
+    const saveButton = document.querySelector('#saveButton')
 
     const qrDialog = document.querySelector('#qrDialog')
     const qrCanvas = document.querySelector('#qrCanvas')
     const qrImage = document.querySelector('#qrImage')
     const qrStatus = document.querySelector('#qrStatus')
     const qrText = document.querySelector('#qrText')
+    const emojiDialog = document.querySelector('#emojiDialog')
+    const emojiDialogSearch = document.querySelector('#emojiDialogSearch')
+    const emojiReferenceList = document.querySelector('#emojiReferenceList')
+    const dialogTabs = document.querySelector('#dialogTabs')
+    const emojiCopyStatus = document.querySelector('#emojiCopyStatus')
 
-    let latestCompiledRealm = null
+    let activeRole = 'player'
+    let emojiCatalog = { player: FALLBACK_EMOJI.player, item: FALLBACK_EMOJI.item, bot: FALLBACK_EMOJI.bot }
+    let emojiAliases = new Map()
+    let latestRealm = null
 
+    buildAxes()
+    buildGrid()
+    bindEvents()
+    await loadEmojiCatalog()
     renderEmojiReference()
-    source.addEventListener('input', renderFromSource)
-    document.querySelector('#resetExample').addEventListener('click', () => {
-      source.value = EXAMPLE_SOURCE
-      renderFromSource()
-    })
-    document.querySelector('#copyJson').addEventListener('click', async () => {
-      if (!latestCompiledRealm) return
-      await navigator.clipboard.writeText(JSON.stringify(latestCompiledRealm, null, 2))
-      exportStatus.textContent = 'Copied realm JSON.'
-    })
-    document.querySelector('#showQr').addEventListener('click', showQrDialog)
-    document.querySelector('#copyQrText').addEventListener('click', async () => {
-      await navigator.clipboard.writeText(qrText.value)
-      qrStatus.textContent = 'Copied export text.'
-    })
-    document.querySelector('#closeQr').addEventListener('click', () => qrDialog.close())
+    render()
 
-    renderFromSource()
+    function bindEvents() {
+      realmTitle.addEventListener('input', render)
+      playerName.addEventListener('input', render)
+      source.addEventListener('input', render)
+      dialogTabs.addEventListener('click', event => {
+        const button = event.target.closest('[data-role]')
+        if (!button) return
+        activeRole = button.dataset.role
+        dialogTabs.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab === button))
+        renderEmojiReference()
+      })
+      emojiDialogSearch.addEventListener('input', renderEmojiReference)
+      document.querySelector('#openEmojiReference').addEventListener('click', () => {
+        renderEmojiReference()
+        emojiDialog.showModal()
+      })
+      document.querySelector('#closeEmojiDialog').addEventListener('click', () => emojiDialog.close())
+      saveButton.addEventListener('click', showQrDialog)
+      document.querySelector('#copyExport').addEventListener('click', async () => {
+        if (!latestRealm) return
+        await navigator.clipboard.writeText(JSON.stringify(latestRealm))
+        qrStatus.textContent = 'Export copied.'
+      })
+      document.querySelector('#closeDialog').addEventListener('click', () => qrDialog.close())
+    }
 
-    function renderFromSource() {
-      clearEntities()
-
+    async function loadEmojiCatalog() {
       try {
-        const parsedRealm = parseRealmMarkup(source.value)
-        latestCompiledRealm = compileRealm(parsedRealm)
-        renderPreview(parsedRealm)
-        renderCompiledRealm(latestCompiledRealm)
-        errors.textContent = 'No errors.'
-        exportStatus.textContent = `Export is ready. ${JSON.stringify(latestCompiledRealm).length} characters.`
-      } catch (error) {
-        latestCompiledRealm = null
-        realmName.textContent = 'Preview error'
-        realmMeta.textContent = `${DEFAULT_COLUMNS} columns × ${DEFAULT_ROWS} rows`
-        questBox.textContent = 'Fix the markup to see the realm.'
-        realmJson.textContent = ''
-        exportStatus.textContent = 'Export is not ready.'
-        errors.textContent = error.message
+        const response = await fetch('../data/catalogs/emoji.json')
+        if (!response.ok) throw new Error('Could not load emoji catalog.')
+        const items = await response.json()
+        emojiCatalog = {
+          player: buildPickerEntries(items, 'emoji-player'),
+          item: buildPickerEntries(items, 'emoji-item'),
+          bot: buildPickerEntries(items, 'emoji-bot'),
+        }
+        emojiAliases = buildAliasMap(items)
+      } catch {
+        emojiAliases = buildAliasMap(
+          Object.values(FALLBACK_EMOJI)
+            .flat()
+            .map(entry => ({
+              emoji: entry.emoji,
+              description: entry.label,
+              keywords: [entry.label],
+            }))
+        )
       }
     }
 
-    function parseRealmMarkup(text) {
-      const doc = new DOMParser().parseFromString(text, 'text/html')
-      const realmEl = doc.querySelector('realm')
+    function buildPickerEntries(items, tag) {
+      return items
+        .filter(item => item.tags?.includes(tag))
+        .map(item => ({
+          emoji: item.emoji,
+          label: slugify(item.description || item.keywords?.[0] || item.emoji),
+          description: item.description || item.keywords?.[0] || item.emoji,
+        }))
+        .filter(entry => entry.label)
+        .filter((entry, index, array) => array.findIndex(other => other.emoji === entry.emoji) === index)
+        .slice(0, 160)
+    }
 
-      if (!realmEl) {
-        throw new Error('Your markup needs one <realm> tag.')
+    function buildAliasMap(items) {
+      const aliases = new Map()
+      for (const item of items) {
+        const names = new Set()
+        if (item.description) names.add(slugify(item.description))
+        for (const keyword of item.keywords || []) {
+          const alias = slugify(keyword)
+          if (alias) names.add(alias)
+        }
+        for (const name of names) {
+          if (!aliases.has(name)) aliases.set(name, item.emoji)
+        }
+      }
+      return aliases
+    }
+
+    function render() {
+      clearEntities()
+      try {
+        validateMarkup(source.value)
+        const parsed = parseSource(source.value)
+        latestRealm = compileRealm(parsed)
+        renderBoard(parsed)
+        status.textContent = ''
+      } catch (error) {
+        latestRealm = null
+        status.textContent = error.message
+      }
+    }
+
+    function parseSource(text) {
+      const doc = new DOMParser().parseFromString(`<realm-fragment>${text}</realm-fragment>`, 'text/html')
+      const root = doc.querySelector('realm-fragment')
+      const playerEls = [...root.querySelectorAll(':scope > player')]
+      const playerEl = playerEls[0]
+
+      if (playerEls.length === 0) {
+        throw new Error('Add one <player> tag.')
       }
 
-      const columns = readPositiveInteger(realmEl, 'columns', DEFAULT_COLUMNS)
-      const rows = readPositiveInteger(realmEl, 'rows', DEFAULT_ROWS)
-      const playerEl = realmEl.querySelector(':scope > player')
-
-      if (!playerEl) {
-        throw new Error('Your realm needs one <player> tag.')
+      if (playerEls.length > 1) {
+        throw new Error('You can only have one <player> tag.')
       }
-
-      const player = parsePlayer(playerEl, columns, rows)
-      const bots = [...realmEl.querySelectorAll(':scope > bot')].map((el, index) =>
-        parseBot(el, index, columns, rows)
-      )
-      const items = [...realmEl.querySelectorAll(':scope > item')].map((el, index) =>
-        parseItem(el, index, columns, rows)
-      )
-      const questEl = realmEl.querySelector(':scope > quest')
-      const goalText = questEl?.querySelector('goal')?.textContent?.trim() ?? ''
 
       return {
-        id: slugify(realmEl.getAttribute('name') || 'untitled-realm'),
-        name: realmEl.getAttribute('name')?.trim() || 'Untitled Realm',
-        columns,
-        rows,
-        player,
-        bots,
-        items,
-        quest: {
-          goal: goalText,
-        },
+        title: realmTitle.value.trim() || 'My realm',
+        playerName: playerName.value.trim() || 'Player',
+        player: parsePlayer(playerEl),
+        bots: [...root.querySelectorAll(':scope > bot')].map((el, index) => parseBot(el, index)),
+        items: [...root.querySelectorAll(':scope > item')].map((el, index) => parseItem(el, index)),
       }
     }
 
-    function parsePlayer(el, columns, rows) {
+    function parsePlayer(el) {
       return {
         id: 'player',
         kind: 'player',
-        name: el.getAttribute('name')?.trim() || 'Player',
-        emoji: resolveEmoji(el.getAttribute('emoji') || 'child'),
-        x: readCoordinate(el, 'x', columns),
-        y: readCoordinate(el, 'y', rows),
-        inventory: [],
+        name: playerName.value.trim() || 'Player',
+        emoji: resolveEmojiValue(el.getAttribute('emoji') || 'child', 'player'),
+        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
+        y: readCoordinate(el, 'y', DEFAULT_ROWS),
       }
     }
 
-    function parseBot(el, index, columns, rows) {
-      const kind = el.getAttribute('kind')?.trim() || 'bot'
+    function parseBot(el, index) {
+      const kind = el.getAttribute('kind')?.trim() || slugify(el.getAttribute('emoji') || 'bot') || 'bot'
       return {
-        id: `${slugify(el.getAttribute('name') || kind || `bot-${index + 1}`)}-${index + 1}`,
+        id: `${slugify(kind)}-${index + 1}`,
         kind,
         name: el.getAttribute('name')?.trim() || `Bot ${index + 1}`,
-        emoji: resolveEmoji(el.getAttribute('emoji') || kind || 'robot'),
-        x: readCoordinate(el, 'x', columns),
-        y: readCoordinate(el, 'y', rows),
+        emoji: resolveEmojiValue(el.getAttribute('emoji') || kind || 'robot', 'bot'),
+        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
+        y: readCoordinate(el, 'y', DEFAULT_ROWS),
         speech: el.querySelector('speech')?.textContent?.trim() ?? '',
       }
     }
 
-    function parseItem(el, index, columns, rows) {
-      const kind = el.getAttribute('kind')?.trim()
-      if (!kind) {
-        throw new Error('<item> needs a "kind" attribute.')
+    function parseItem(el, index) {
+      const emojiName = el.getAttribute('emoji')?.trim()
+      if (!emojiName) {
+        throw new Error('Every <item> needs an emoji.')
       }
 
-      const defaults = OBJECT_DEFAULTS[kind] ?? {}
+      const kind = el.getAttribute('kind')?.trim() || slugify(emojiName)
+      const defaults = ITEM_DEFAULTS[kind] ?? {}
       return {
         id: el.getAttribute('id')?.trim() || `${slugify(kind)}-${index + 1}`,
         kind,
         name: el.getAttribute('name')?.trim() || titleCase(kind),
-        emoji: resolveEmoji(el.getAttribute('emoji') || defaults.emoji || kind),
-        x: readCoordinate(el, 'x', columns),
-        y: readCoordinate(el, 'y', rows),
+        emoji: resolveEmojiValue(emojiName || defaults.emoji || kind, 'item'),
+        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
+        y: readCoordinate(el, 'y', DEFAULT_ROWS),
         portable: readBoolean(el.getAttribute('portable'), defaults.portable ?? false),
         solid: readBoolean(el.getAttribute('solid'), defaults.solid ?? false),
       }
     }
 
-    function compileRealm(parsedRealm) {
+    function compileRealm(parsed) {
       return {
-        id: parsedRealm.id,
-        name: parsedRealm.name,
-        rowCount: parsedRealm.rows,
-        columnCount: parsedRealm.columns,
+        id: slugify(parsed.title),
+        name: parsed.title,
+        rowCount: DEFAULT_ROWS,
+        columnCount: DEFAULT_COLUMNS,
         world: {
-          rowCount: parsedRealm.rows,
-          columnCount: parsedRealm.columns,
+          rowCount: DEFAULT_ROWS,
+          columnCount: DEFAULT_COLUMNS,
           defaultTerrain: DEFAULT_TERRAIN,
         },
         camera: {
           x: 0,
           y: 0,
-          rowCount: parsedRealm.rows,
-          columnCount: parsedRealm.columns,
+          rowCount: DEFAULT_ROWS,
+          columnCount: DEFAULT_COLUMNS,
         },
-        quest: parsedRealm.quest.goal ? { goal: parsedRealm.quest.goal } : undefined,
         entities: {
-          player: parsedRealm.player,
-          bots: parsedRealm.bots.map(bot => {
-            const data = {
-              id: bot.id,
-              kind: bot.kind,
-              name: bot.name,
-              emoji: bot.emoji,
-              x: bot.x,
-              y: bot.y,
-            }
-
-            if (bot.speech) {
-              data.speech = bot.speech
-            }
-
-            return data
-          }),
-          items: parsedRealm.items.map(item => ({
-            id: item.id,
-            kind: item.kind,
-            name: item.name,
-            emoji: item.emoji,
-            x: item.x,
-            y: item.y,
-            portable: item.portable,
-            solid: item.solid,
-          })),
+          player: parsed.player,
+          bots: parsed.bots,
+          items: parsed.items,
         },
       }
     }
 
-    function renderPreview(parsedRealm) {
-      realmName.textContent = parsedRealm.name
-      realmMeta.textContent = `${parsedRealm.columns} columns × ${parsedRealm.rows} rows`
-      questBox.textContent = parsedRealm.quest.goal || 'No quest yet.'
-      realmPreview.style.setProperty('--grid-columns', parsedRealm.columns)
-      realmPreview.style.setProperty('--grid-rows', parsedRealm.rows)
-
-      buildGrid(parsedRealm.columns, parsedRealm.rows)
-
-      const entities = [
-        parsedRealm.player,
-        ...parsedRealm.bots,
-        ...parsedRealm.items,
-      ]
-
+    function renderBoard(parsed) {
+      const entities = [parsed.player, ...parsed.bots, ...parsed.items]
       for (const entity of entities) {
-        realmPreview.append(renderEntity(entity))
+        board.append(renderEntity(entity))
       }
-    }
-
-    function renderCompiledRealm(realm) {
-      realmJson.textContent = JSON.stringify(pruneUndefined(realm), null, 2)
     }
 
     function renderEntity(entity) {
-      const tileSize = getTileSize()
       const el = document.createElement('div')
       el.className = 'entity'
-      el.style.left = `${entity.x * tileSize - tileSize / 2}px`
-      el.style.top = `${entity.y * tileSize - tileSize / 2}px`
+      el.style.left = `${entity.x * getTileSize() + getTileSize() / 2}px`
+      el.style.top = `${entity.y * getTileSize() + getTileSize() / 2}px`
 
-      const emoji = document.createElement('div')
-      emoji.className = 'entity-emoji'
-      emoji.textContent = entity.emoji
-      el.append(emoji)
-
-      const label = document.createElement('div')
-      label.className = 'entity-label'
-      label.textContent = entity.name || entity.kind
-      el.append(label)
+      const glyph = document.createElement('span')
+      glyph.textContent = entity.emoji
+      el.append(glyph)
 
       if (entity.speech) {
         const speech = document.createElement('div')
@@ -770,56 +790,57 @@
       return el
     }
 
-    function buildGrid(columns, rows) {
-      grid.replaceChildren()
-      grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`
-      grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`
+    function buildAxes() {
+      axisTop.replaceChildren()
+      axisLeft.replaceChildren()
 
-      for (let i = 0; i < columns * rows; i++) {
+      for (let x = 0; x < DEFAULT_COLUMNS; x++) {
+        const cell = document.createElement('div')
+        cell.textContent = x
+        axisTop.append(cell)
+      }
+
+      for (let y = 0; y < DEFAULT_ROWS; y++) {
+        const cell = document.createElement('div')
+        cell.textContent = y
+        axisLeft.append(cell)
+      }
+    }
+
+    function buildGrid() {
+      grid.replaceChildren()
+      for (let i = 0; i < DEFAULT_COLUMNS * DEFAULT_ROWS; i++) {
         const cell = document.createElement('div')
         cell.className = 'cell'
         grid.append(cell)
       }
     }
 
-    function clearEntities() {
-      realmPreview.querySelectorAll('.entity').forEach(el => el.remove())
-    }
-
     function renderEmojiReference() {
-      emojiReference.replaceChildren()
+      emojiReferenceList.replaceChildren()
+      const query = slugify(emojiDialogSearch.value)
+      const entries = (emojiCatalog[activeRole] || FALLBACK_EMOJI[activeRole] || [])
+        .filter(entry => !query || entry.label.includes(query) || slugify(entry.description || '').includes(query))
+        .slice(0, 160)
 
-      for (const [label, entries] of Object.entries(EMOJI_REFERENCE)) {
-        const card = document.createElement('section')
-        card.className = 'reference-card'
-
-        const heading = document.createElement('h3')
-        heading.textContent = titleCase(label)
-
-        const list = document.createElement('div')
-        list.className = 'emoji-list'
-
-        for (const [name, emoji] of entries) {
-          const row = document.createElement('div')
-          row.className = 'emoji-row'
-          row.innerHTML = `
-            <div class="emoji-glyph">${emoji}</div>
-            <div><span class="emoji-name">${name}</span></div>
-          `
-          list.append(row)
-        }
-
-        card.append(heading, list)
-        emojiReference.append(card)
+      for (const entry of entries) {
+        const row = document.createElement('div')
+        row.className = 'emoji-reference-row'
+        row.innerHTML = `<span class="glyph">${entry.emoji}</span><span class="label">${entry.label}</span>`
+        row.addEventListener('click', async () => {
+          await navigator.clipboard.writeText(entry.label)
+          emojiCopyStatus.textContent = `Copied "${entry.label}".`
+        })
+        emojiReferenceList.append(row)
       }
     }
 
     async function showQrDialog() {
-      if (!latestCompiledRealm) return
+      if (!latestRealm) return
 
-      const payload = JSON.stringify(pruneUndefined(latestCompiledRealm))
+      const payload = JSON.stringify(latestRealm)
       qrText.value = payload
-      qrStatus.textContent = `Preparing QR code… ${payload.length} characters.`
+      qrStatus.textContent = 'Preparing QR code…'
       qrCanvas.hidden = true
       qrImage.hidden = true
       qrDialog.showModal()
@@ -831,43 +852,105 @@
             width: 280,
             errorCorrectionLevel: 'M',
             color: {
-              dark: '#102126',
+              dark: '#171412',
               light: '#ffffff',
             },
           })
           qrCanvas.hidden = false
-          qrStatus.textContent = 'Scan this QR code to collect the realm.'
+          qrStatus.textContent = 'Scan to save this realm.'
           return
         }
 
         qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(payload)}`
         qrImage.hidden = false
-        qrStatus.textContent = 'Showing fallback QR image.'
+        qrStatus.textContent = 'Scan to save this realm.'
       } catch (error) {
         qrStatus.textContent = `Could not generate QR code: ${error.message}`
       }
     }
 
+    function clearEntities() {
+      board.querySelectorAll('.entity').forEach(entity => entity.remove())
+    }
+
+    function validateMarkup(text) {
+      validateQuotes(text)
+
+      const allowedTags = new Set(['player', 'bot', 'item', 'speech'])
+      const tokenPattern = /<\/?([a-z-]+)\b[^>]*>/gi
+      const stack = []
+      let match
+
+      while ((match = tokenPattern.exec(text)) !== null) {
+        const raw = match[0]
+        const tag = match[1].toLowerCase()
+        const isClosing = raw.startsWith('</')
+        const isVoidLike = raw.endsWith('/>')
+
+        if (!allowedTags.has(tag)) {
+          throw new Error(`I do not know the <${tag}> tag yet.`)
+        }
+
+        if (isClosing) {
+          const expected = stack.at(-1)
+          if (!expected) {
+            throw new Error(`There is a </${tag}> tag with nothing to close.`)
+          }
+          if (expected !== tag) {
+            throw new Error(`You opened <${expected}> but closed </${tag}>. Try </${expected}>.`)
+          }
+          stack.pop()
+          continue
+        }
+
+        if (!isVoidLike) {
+          stack.push(tag)
+        }
+      }
+
+      if (stack.length > 0) {
+        const tag = stack.at(-1)
+        throw new Error(`Your <${tag}> tag still needs a closing </${tag}>.`)
+      }
+    }
+
+    function validateQuotes(text) {
+      let doubleQuoteCount = 0
+      let singleQuoteCount = 0
+
+      for (const char of text) {
+        if (char === '"') doubleQuoteCount += 1
+        if (char === "'") singleQuoteCount += 1
+      }
+
+      if (doubleQuoteCount % 2 !== 0) {
+        throw new Error('A double quote is missing somewhere. Check values like name="Golden Key".')
+      }
+
+      if (singleQuoteCount % 2 !== 0) {
+        throw new Error("A single quote is missing somewhere. Check values like name='Golden Key'.")
+      }
+    }
+
     function resolveEmoji(value) {
       const trimmed = value.trim()
-      return EMOJI_ALIASES[trimmed] ?? trimmed
+      return emojiAliases.get(slugify(trimmed)) ?? trimmed
+    }
+
+    function resolveEmojiValue(value, role) {
+      const trimmed = value.trim()
+      const resolved = resolveEmoji(trimmed)
+      if (resolved !== trimmed) return resolved
+      if (/^[a-z0-9-]+$/i.test(trimmed)) {
+        throw new Error(`I do not know the ${role} emoji name "${trimmed}". Check the emoji reference.`)
+      }
+      return resolved
     }
 
     function readCoordinate(el, name, limit) {
       const value = Number(el.getAttribute(name))
-      if (!Number.isInteger(value) || value < 1 || value > limit) {
-        throw new Error(`<${el.tagName.toLowerCase()}> needs a "${name}" from 1 to ${limit}.`)
-      }
-      return value
-    }
-
-    function readPositiveInteger(el, name, fallback) {
-      const raw = el.getAttribute(name)
-      if (raw === null || raw === '') return fallback
-
-      const value = Number(raw)
-      if (!Number.isInteger(value) || value <= 0) {
-        throw new Error(`<realm> has an invalid "${name}" value.`)
+      if (!Number.isInteger(value) || value < 0 || value >= limit) {
+        throw new Error(`<${el.tagName.toLowerCase()}> needs ${name} from 0 to ${limit - 1}.`)
       }
       return value
     }
@@ -884,7 +967,7 @@
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '') || 'untitled-realm'
+        .replace(/^-+|-+$/g, '')
     }
 
     function titleCase(value) {
@@ -895,26 +978,8 @@
         .join(' ')
     }
 
-    function pruneUndefined(value) {
-      if (Array.isArray(value)) {
-        return value.map(pruneUndefined)
-      }
-
-      if (value && typeof value === 'object') {
-        return Object.fromEntries(
-          Object.entries(value)
-            .filter(([, child]) => child !== undefined)
-            .map(([key, child]) => [key, pruneUndefined(child)])
-        )
-      }
-
-      return value
-    }
-
     function getTileSize() {
-      const stageWidth = realmPreview.getBoundingClientRect().width
-      const columns = Number(getComputedStyle(realmPreview).getPropertyValue('--grid-columns')) || DEFAULT_COLUMNS
-      return stageWidth / columns
+      return board.getBoundingClientRect().width / DEFAULT_COLUMNS
     }
   </script>
 </body>

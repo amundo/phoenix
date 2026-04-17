@@ -11,7 +11,7 @@ class GameUI extends HTMLElement {
         <div class="current-realm"></div>
         <div id="inventory-items"></div>
       </section>
-      <button type="button" class="admin-launch">Admin</button>
+      <button type="button" class="admin-launch">Settings</button>
       <admin-dialog></admin-dialog>
     `
 

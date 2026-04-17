@@ -279,6 +279,7 @@ speech-bubble.avatar-speech-bubble .letter {
   max-height: min(85dvh, 52rem);
   border: none;
   border-radius: 1rem;
+  margin: auto;
   padding: 0;
   background: #f8fbfd;
   color: #123;
