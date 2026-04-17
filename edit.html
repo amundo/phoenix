@@ -614,7 +614,7 @@
 
     async function loadEmojiCatalog() {
       try {
-        const response = await fetch('../data/catalogs/emoji.json')
+        const response = await fetch('./data/catalogs/emoji.json')
         if (!response.ok) throw new Error('Could not load emoji catalog.')
         const items = await response.json()
         emojiCatalog = {
