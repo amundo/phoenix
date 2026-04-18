@@ -519,7 +519,7 @@ If not, the engine does not move the player. Instead, it adds an effect saying t
 
 So instead of silently failing, the game responds with feedback.
 
-That is a nice touch because it makes the world feel reactive.
+That is a nice detail because it makes the world feel reactive.
 
 ---
 
@@ -811,34 +811,3 @@ That shows the intended relationship pretty clearly:
 * engine owns logic
 * renderer draws state
 * effects system displays reactions
-
----
-
-# One stylistic rewrite you might like
-
-If you wanted, `handleCommand` could later become a `switch`, which gets easier to read as commands grow:
-
-```js
-handleCommand(command) {
-  if (!command) {
-    return { stateChanged: false, effects: [] }
-  }
-
-  let result = { stateChanged: false, effects: [] }
-
-  switch (command.type) {
-    case 'move':
-      result = this.movePlayerBy(command.dx, command.dy)
-      break
-  }
-
-  this.camera.centerOn(this.player.x, this.player.y, this.world)
-  return result
-}
-```
-
-Not necessary yet, but it is the natural next step if you add more command types.
-
----
-
-If you want, I can do a second pass where I annotate the file inline, almost like code comments between every few lines.

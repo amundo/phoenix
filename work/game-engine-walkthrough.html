@@ -672,7 +672,7 @@ effect saying the player speaks:</p>
 <p>“Edge of the world!”</p>
 </blockquote>
 <p>So instead of silently failing, the game responds with feedback.</p>
-<p>That is a nice touch because it makes the world feel reactive.</p>
+<p>That is a nice detail because it makes the world feel reactive.</p>
 <hr />
 <section id="emote-effect" class="level2">
 <h2>Emote effect</h2>
@@ -933,34 +933,6 @@ class="sourceCode js"><code class="sourceCode javascript"><span id="cb44-1"><a h
 <li>renderer draws state</li>
 <li>effects system displays reactions</li>
 </ul>
-<hr />
-</section>
-<section id="one-stylistic-rewrite-you-might-like" class="level1">
-<h1>One stylistic rewrite you might like</h1>
-<p>If you wanted, <code>handleCommand</code> could later become a
-<code>switch</code>, which gets easier to read as commands grow:</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode js"><code class="sourceCode javascript"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">handleCommand</span>(command) {</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>command) {</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> { <span class="dt">stateChanged</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span> <span class="dt">effects</span><span class="op">:</span> [] }</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result <span class="op">=</span> { <span class="dt">stateChanged</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span> <span class="dt">effects</span><span class="op">:</span> [] }</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (command<span class="op">.</span><span class="at">type</span>) {</span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;move&#39;</span><span class="op">:</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>      result <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="fu">movePlayerBy</span>(command<span class="op">.</span><span class="at">dx</span><span class="op">,</span> command<span class="op">.</span><span class="at">dy</span>)</span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">.</span><span class="fu">centerOn</span>(<span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">x</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">y</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">world</span>)</span>
-<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> result</span>
-<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Not necessary yet, but it is the natural next step if you add more
-command types.</p>
-<hr />
-<p>If you want, I can do a second pass where I annotate the file inline,
-almost like code comments between every few lines.</p>
 </section>
 </body>
 </html>

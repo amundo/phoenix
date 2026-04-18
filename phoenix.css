@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
 :root {
   --deep-blue: #3c2c9c;
   --grassland-green: #4a824a;
@@ -86,6 +87,7 @@ game-ui {
 game-board {
   grid-area: center;
   --tile-size: 3rem;
+  font-family: Noto Color Emoji;
   font-size: clamp(1rem,
       /* min */
       calc(var(--tile-size) * 0.5),

@@ -300,7 +300,7 @@ Items can be:
 
 * portable
 * solid
-* touch-reactive
+* bump-reactive
 * pickup-reactive
 * locked / gated by requirements
 
@@ -372,7 +372,7 @@ Optional interaction object.
 
 Supported subkeys currently include:
 
-* `touch`
+* `bump`
 * `pickup`
 * `blocked`
 * `success`
