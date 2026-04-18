@@ -10,16 +10,6 @@
     ]
   },
   {
-    "emoji": "😊",
-    "name": "affection",
-    "valence": 0.9,
-    "arousal": 0.3,
-    "tags": [
-      "mm",
-      "aww"
-    ]
-  },
-  {
     "emoji": "🥰",
     "name": "affection",
     "valence": 0.8,
@@ -56,15 +46,6 @@
     "tags": [
       "haha",
       "hehe"
-    ]
-  },
-  {
-    "emoji": "😠",
-    "name": "anger",
-    "valence": -0.9,
-    "arousal": 0.8,
-    "tags": [
-      "grr"
     ]
   },
   {
@@ -137,15 +118,6 @@
     ]
   },
   {
-    "emoji": "😎",
-    "name": "calm",
-    "valence": 0.7,
-    "arousal": -0.3,
-    "tags": [
-      "mmm"
-    ]
-  },
-  {
     "emoji": "😌",
     "name": "calm",
     "valence": 0.7,
@@ -200,15 +172,6 @@
     "arousal": 0,
     "tags": [
       "huh"
-    ]
-  },
-  {
-    "emoji": "😶‍🌫️",
-    "name": "confusion",
-    "valence": -0.3,
-    "arousal": -0.4,
-    "tags": [
-      "uhh"
     ]
   },
   {
@@ -340,15 +303,6 @@
     "arousal": -0.8,
     "tags": [
       "yawn"
-    ]
-  },
-  {
-    "emoji": "🫠",
-    "name": "embarrassment",
-    "valence": -0.3,
-    "arousal": -0.4,
-    "tags": [
-      "uh"
     ]
   },
   {
@@ -713,15 +667,6 @@
     ]
   },
   {
-    "emoji": "☹️",
-    "name": "sad",
-    "valence": -0.7,
-    "arousal": 0.3,
-    "tags": [
-      "aww"
-    ]
-  },
-  {
     "emoji": "😥",
     "name": "sadness_with_relief",
     "valence": -0.5,
@@ -736,16 +681,8 @@
     "valence": 0.7,
     "arousal": -0.4,
     "tags": [
-      "hm"
-    ]
-  },
-  {
-    "emoji": "😋",
-    "name": "satisfaction",
-    "valence": 0.8,
-    "arousal": 0.5,
-    "tags": [
-      "mmm"
+      "hm",
+      "oh yeah"
     ]
   },
   {
@@ -755,15 +692,6 @@
     "arousal": 0.1,
     "tags": [
       "shh"
-    ]
-  },
-  {
-    "emoji": "😯",
-    "name": "shock",
-    "valence": 0.3,
-    "arousal": 0.6,
-    "tags": [
-      "oh"
     ]
   },
   {
@@ -845,16 +773,6 @@
     "arousal": -0.1,
     "tags": [
       "..."
-    ]
-  },
-  {
-    "emoji": "😮",
-    "name": "surprise",
-    "valence": 0.4,
-    "arousal": 0.7,
-    "tags": [
-      "oh",
-      "whoa"
     ]
   },
   {
