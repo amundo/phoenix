@@ -53,7 +53,15 @@ class GameDataLoader {
 
   async loadWorld() {
     const index = await this.loadIndex()
-    return this.fetchJSON(index.world)
+    const {
+      startRealm = null,
+      realmsForLater = [],
+    } = index
+
+    return {
+      startRealm,
+      realmsForLater,
+    }
   }
 
   async loadRealm(realmName) {
@@ -83,7 +91,7 @@ class GameDataLoader {
     const realmName = sharedData.world.startRealm
 
     if (!realmName) {
-      throw new Error('world.json is missing "startRealm"')
+      throw new Error('index.json is missing "startRealm"')
     }
 
     const realm = await this.loadRealm(realmName)
