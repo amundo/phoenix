@@ -10,16 +10,26 @@
     "terrain": "catalogs/terrain.json"
   },
   "realms": {
-    "fruit-farm": "realms/fruit-farm/realm.json",
+    "overworld": "realms/overworld/realm.json",
+    "aliens": "realms/aliens/realm.json",
+    "kidnapped": "realms/kidnapped/realm.json",
+    "r-67": "realms/r-67/realm.json",
+    "six-seven-world": "realms/six-seven-world/realm.json",
+    "my-flowers": "realms/my-flowers/realm.json"
+  },
+  "otherRealms": {
+    "usa-la-mente-bro": "realms/usa-la-mente-bro/realm.json",
+    "dark-forest": "realms/dark-forest/realm.json",
+    "pleasant-river-town": "realms/pleasant-river-town/realm.json",
+        "fruit-farm": "realms/fruit-farm/realm.json",
     "dance-world": "realms/dance-world/realm.json",
     "tiny": "realms/tiny/realm.json",
     "find-the-seal": "realms/find-the-seal/realm.json",
     "joe-and-porters-world": "realms/joe-and-porters-world/realm.json",
-    "usa-la-mente-bro": "realms/usa-la-mente-bro/realm.json",
     "pat": "realms/pat/realm.json",
     "overworld": "realms/overworld/realm.json",
-    "unlock-the-door": "realms/unlock-the-door/realm.json",
-    "dark-forest": "realms/dark-forest/realm.json",
-    "pleasant-river-town": "realms/pleasant-river-town/realm.json"
+    "unlock-the-door": "realms/unlock-the-door/realm.json"
+
+
   }
 }

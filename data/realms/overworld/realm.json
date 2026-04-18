@@ -186,13 +186,6 @@
         "solid": true
       },
       {
-        "name": "Boots",
-        "emoji": "🥾",
-        "x": 22,
-        "y": 22,
-        "solid": true
-      },
-      {
         "name": "Gemstone",
         "emoji": "💎",
         "x": 99,

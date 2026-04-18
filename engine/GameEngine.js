@@ -219,7 +219,7 @@ class GameEngine {
           {
             type: 'emote',
             actor,
-            emotion: 'pain',
+            emotion: 'fear',
           },
         ],
       }
@@ -230,7 +230,7 @@ class GameEngine {
     const entitiesHere = [...sceneryHere, ...itemsHere]
     const effects = []
 
-    effects.push(...this.getTouchEffects(actor, entitiesHere))
+    effects.push(...this.getBumpEffects(actor, entitiesHere))
     effects.push(...this.resolveItemInteractions(actor, entitiesHere))
 
     if (this.hasSolidEntity(entitiesHere)) {
@@ -282,11 +282,25 @@ class GameEngine {
   }
 
   getPickupEffects(actor, items) {
-    return items.map(item => ({
-      type: 'speak',
-      actor,
-      message: item.on?.pickup?.message ?? `Got ${item.name}!`,
-    }))
+    const effects = []
+
+    for (const item of items) {
+      effects.push({
+        type: 'speak',
+        actor,
+        message: item.on?.pickup?.message ?? `Got ${item.name}!`,
+      })
+
+      if (item.on?.pickup?.emotion) {
+        effects.push({
+          type: 'emote',
+          actor,
+          emotion: item.on.pickup.emotion,
+        })
+      }
+    }
+
+    return effects
   }
 
   resolveItemInteractions(actor, items) {
@@ -375,26 +389,26 @@ class GameEngine {
     ]
   }
 
-  getTouchEffects(actor, items) {
+  getBumpEffects(actor, items) {
     const effects = []
 
     for (const item of items) {
-      const touch = item.on?.touch
-      if (!touch) continue
+      const bump = item.on?.bump
+      if (!bump) continue
 
-      if (touch.message) {
+      if (bump.message) {
         effects.push({
           type: 'speak',
           actor,
-          message: touch.message,
+          message: bump.message,
         })
       }
 
-      if (touch.emotion) {
+      if (bump.emotion) {
         effects.push({
           type: 'emote',
           actor,
-          emotion: touch.emotion,
+          emotion: bump.emotion,
         })
       }
     }

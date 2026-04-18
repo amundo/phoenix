@@ -47,12 +47,12 @@
     "kind": "cactus",
     "emoji": "🌵",
     "category": "hazard",
-    "description": "Spiky enough to make touching it feel like a mistake.",
+    "description": "Spiky enough to make bumping into it feel like a mistake.",
     "x": 4,
     "y": 3,
     "solid": true,
     "on": {
-      "touch": {
+      "bump": {
         "message": "Ow!",
         "emotion": "pain"
       }

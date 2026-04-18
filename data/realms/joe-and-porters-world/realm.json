@@ -95,7 +95,7 @@
         "y": 3,
         "solid": true,
         "on": {
-          "touch": {
+          "bump": {
             "message": "Ow!",
             "emotion": "pain"
           }

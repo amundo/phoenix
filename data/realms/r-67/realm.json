@@ -1,0 +1,61 @@
+{
+    "id": "r-67",
+    "name": "r 67",
+    "rowCount": 6,
+    "columnCount": 8,
+    "world": {
+        "rowCount": 6,
+        "columnCount": 8,
+        "defaultTerrain": "grass",
+        "background": "black"
+    },
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "rowCount": 6,
+        "columnCount": 8
+    },
+    "entities": {
+        "player": {
+            "id": "player",
+            "kind": "player",
+            "name": "ian",
+            "emoji": "🧒",
+            "x": 0,
+            "y": 4
+        },
+        "bots": [
+            {
+                "id": "alien-1",
+                "kind": "alien",
+                "name": "Bot 1",
+                "emoji": "👽",
+                "x": 3,
+                "y": 2,
+                "speech": "Hello!"
+            }
+        ],
+        "items": [
+            {
+                "id": "key-1",
+                "kind": "key",
+                "name": "Key",
+                "emoji": "🔑",
+                "x": 4,
+                "y": 3,
+                "portable": true,
+                "solid": false
+            },
+            {
+                "id": "robot-2",
+                "kind": "robot",
+                "name": "Robot",
+                "emoji": "🤖",
+                "x": 6,
+                "y": 2,
+                "portable": false,
+                "solid": false
+            }
+        ]
+    }
+}

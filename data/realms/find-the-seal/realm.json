@@ -72,7 +72,7 @@
         "x": 5,
         "y": 3,
         "on": {
-          "touch": {
+          "bump": {
             "message": "🕳️ A seal might come up here.",
             "emotion": "curious"
           }
@@ -105,4 +105,3 @@
     ]
   }
 }
-

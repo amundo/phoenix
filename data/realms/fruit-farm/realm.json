@@ -27,7 +27,7 @@
             {
                 "id": "bot-1",
                 "kind": "bot",
-                "name": "Bot 1",
+                "name": "Friendly wizard",
                 "emoji": "🧙",
                 "x": 5,
                 "y": 1,
@@ -39,7 +39,7 @@
                 "id": "key-1",
                 "kind": "key",
                 "name": "Key",
-                "emoji": "🍋‍🟩",
+                "emoji": "🔑",
                 "x": 3,
                 "y": 2,
                 "portable": true,
@@ -47,20 +47,45 @@
             },
             {
                 "id": "door-2",
-                "kind": "door",
-                "name": "Door",
+                "kind": "peach",
+                "name": "Peach",
                 "emoji": "🍑",
+                "solid": true,
                 "x": 6,
                 "y": 1,
-                "portable": false,
-                "solid": true
+                "requires": {
+                    "kind": "key"
+                },
+                "on": {
+                    "blocked": {
+                        "message": "What a strange fruit, it has a keyhole!",
+                        "emotion": "thinking"
+                    },
+                    "success": {
+                        "message": "The key unlocked the peach!?",
+                        "emotion": "surprised",
+                        "set": {
+                            "solid": false
+                        }
+                    }
+                }
+            },
+            {
+                "id": "mango-1",
+                "kind": "mango",
+                "name": "Mango",
+                "emoji": "🥭",
+                "x": 7,
+                "y": 3,
+                "portable": true,
+                "solid": false
             },
             {
                 "id": "apple-3",
                 "kind": "apple",
                 "name": "Apple",
                 "emoji": "🍎",
-                "x": 7,
+                "x": 3,
                 "y": 3,
                 "portable": true,
                 "solid": false

@@ -1,0 +1,61 @@
+{
+    "id": "my-flowers",
+    "name": "MY FLOWERS",
+    "rowCount": 6,
+    "columnCount": 8,
+    "world": {
+        "rowCount": 6,
+        "columnCount": 8,
+        "defaultTerrain": "grass",
+        "background": "black"
+    },
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "rowCount": 6,
+        "columnCount": 8
+    },
+    "entities": {
+        "player": {
+            "id": "player",
+            "kind": "player",
+            "name": "Empanadas E",
+            "emoji": "💐",
+            "x": 7,
+            "y": 3
+        },
+        "bots": [
+            {
+                "id": "happy-1",
+                "kind": "happy",
+                "name": "Bot 1",
+                "emoji": "😀",
+                "x": 5,
+                "y": 1,
+                "speech": "my flowers!"
+            }
+        ],
+        "items": [
+            {
+                "id": "cherry-blossom-1",
+                "kind": "cherry-blossom",
+                "name": "Cherry Blossom",
+                "emoji": "🌸",
+                "x": 3,
+                "y": 1,
+                "portable": false,
+                "solid": false
+            },
+            {
+                "id": "sheaf-of-rice-2",
+                "kind": "sheaf-of-rice",
+                "name": "Sheaf Of Rice",
+                "emoji": "🌾",
+                "x": 6,
+                "y": 1,
+                "portable": false,
+                "solid": false
+            }
+        ]
+    }
+}

@@ -46,7 +46,7 @@
         "y": 0,
         "solid": true,
         "on": {
-          "touch": {
+          "bump": {
             "message": "ZZzzzhuuup! You portaled!",
             "emotion": "zany"
           }
