@@ -24,7 +24,7 @@ So you can think of `GameEngine` as the part that says:
 # The imports
 
 ```js
-import { World } from './World.js'
+import { RealmMap } from './RealmMap.js'
 import { Camera } from './Camera.js'
 import { Item } from '../entities/index.js'
 import { Player  } from '../entities/index.js'  
@@ -33,7 +33,7 @@ import { Enemy } from '../entities/index.js'
 
 These lines pull in the other classes this file depends on.
 
-## `World`
+## `RealmMap`
 
 This probably represents the map or grid. It likely knows things like:
 
@@ -51,7 +51,7 @@ These are your entities. The engine creates instances of these from the raw `gam
 
 So already we can see the architecture:
 
-* **World** = the map
+* **RealmMap** = the map
 * **Camera** = what portion is visible
 * **Entities** = things inside the world
 * **GameEngine** = the logic layer tying them together
@@ -104,7 +104,7 @@ You could imagine the constructor as saying:
 
 ```js
   initialize(gameData) {
-    this.world = new World(gameData)
+    this.realmMap = new RealmMap(gameData)
     this.camera = new Camera(gameData.camera)
 
     this.player = new Player(gameData.entities.player)
@@ -117,16 +117,16 @@ This is where the engine turns raw data into actual class instances.
 
 Let’s go line by line.
 
-## `this.world = new World(gameData)`
+## `this.realmMap = new RealmMap(gameData)`
 
 This creates the world.
 
-Interesting detail: you are passing the entire `gameData` object to `World`, not just `gameData.world`.
+Interesting detail: you are passing the entire `gameData` object to `RealmMap`, not just `gameData.realmMap`.
 
-That means `World` is probably expected to extract what it needs from the whole object. That can work, though some people might prefer:
+That means `RealmMap` is probably expected to extract what it needs from the whole object. That can work, though some people might prefer:
 
 ```js
-new World(gameData.world)
+new RealmMap(gameData.realmMap)
 ```
 
 because it is more explicit.
@@ -141,7 +141,7 @@ But as written, the idea is:
 
 This creates the camera from the camera-specific part of the data.
 
-This is a nice contrast with `World`: here you are passing only the relevant slice.
+This is a nice contrast with `RealmMap`: here you are passing only the relevant slice.
 
 So the camera gets something like:
 
@@ -295,7 +295,7 @@ It is basically saying:
 ```js
   getState() {
     return {
-      world: this.world,
+      realmMap: this.realmMap,
       camera: this.camera,
       entities: this.entities,
     }
@@ -314,7 +314,7 @@ and receive everything it needs for rendering.
 
 The returned object contains:
 
-* `world`
+* `realmMap`
 * `camera`
 * `entities`
 
@@ -346,7 +346,7 @@ This is a good example of the engine acting as an interface between raw game log
       result = this.movePlayerBy(command.dx, command.dy)
     }
 
-    this.camera.centerOn(this.player.x, this.player.y, this.world)
+    this.camera.centerOn(this.player.x, this.player.y, this.realmMap)
     return result
   }
 ```
@@ -440,7 +440,7 @@ That keeps responsibilities separated.
 ## Step 4: recenter the camera
 
 ```js
-    this.camera.centerOn(this.player.x, this.player.y, this.world)
+    this.camera.centerOn(this.player.x, this.player.y, this.realmMap)
 ```
 
 After the command is processed, the camera is centered on the player.
@@ -503,7 +503,7 @@ That is a very expandable pattern.
 # Boundary check: edge of the world
 
 ```js
-    if (!this.world.contains(nextX, nextY)) {
+    if (!this.realmMap.contains(nextX, nextY)) {
       effects.push({
         type: 'speak',
         actor: this.player,
@@ -737,10 +737,10 @@ That gives you room for behavior on `Player`, `Enemy`, `Item`, etc.
 
 # A couple of things to notice
 
-## 1. `World` gets all of `gameData`
+## 1. `RealmMap` gets all of `gameData`
 
 ```js
-this.world = new World(gameData)
+this.realmMap = new RealmMap(gameData)
 ```
 
 That may be intentional, but it stands out because the camera gets only `gameData.camera`.
@@ -748,7 +748,7 @@ That may be intentional, but it stands out because the camera gets only `gameDat
 You may eventually want consistency, like:
 
 ```js
-this.world = new World(gameData.world)
+this.realmMap = new RealmMap(gameData.realmMap)
 ```
 
 if the world only needs the world config.

@@ -24,12 +24,12 @@ class Camera {
     return worldY - this.y
   }
 
-  centerOn(x, y, world) {
+  centerOn(x, y, realmMap) {
     let nextX = x - Math.floor(this.columnCount / 2)
     let nextY = y - Math.floor(this.rowCount / 2)
 
-    let maxX = Math.max(0, world.columnCount - this.columnCount)
-    let maxY = Math.max(0, world.rowCount - this.rowCount)
+    let maxX = Math.max(0, realmMap.columnCount - this.columnCount)
+    let maxY = Math.max(0, realmMap.rowCount - this.rowCount)
 
     this.x = Math.max(0, Math.min(nextX, maxX))
     this.y = Math.max(0, Math.min(nextY, maxY))

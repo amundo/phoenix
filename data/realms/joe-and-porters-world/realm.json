@@ -3,7 +3,7 @@
   "name": "Joe and Porter’s World",
   "rowCount": 8,
   "columnCount": 10,
-  "world": {
+  "realmMap": {
     "rowCount": 8,
     "columnCount": 10,
     "asciiMap": [

@@ -22,8 +22,8 @@ class AvatarLayer extends BaseLayer {
   }
 
   render(gameState) {
-    const { world, camera, entities, catalogs } = gameState
-    this.setContext({ world, camera })
+    const { realmMap, camera, entities, catalogs } = gameState
+    this.setContext({ realmMap, camera })
     this.catalogs = catalogs
 
     entities.forEach(entity => this.syncEntity(entity))

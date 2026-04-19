@@ -99,7 +99,7 @@ class GameApp extends HTMLElement {
       ])
       this.#index = index
       this.#sharedData = sharedData
-      await this.loadRealmIntoGame(sharedData.world.startRealm)
+      await this.loadRealmIntoGame(sharedData.game.startRealm)
     } catch (error) {
       console.error('[GameApp] Failed to load game data:', error)
     } finally {
@@ -123,7 +123,7 @@ class GameApp extends HTMLElement {
     this.#ui?.setCurrentRealm(this.#currentRealmName ?? gameData.realm?.id ?? '')
     this.#ui?.setAdminData({
       realmOptions: this.getRealmOptions(),
-      world: gameData.world,
+      game: gameData.game,
       catalogs: gameData.catalogs,
       realm: {
         ...gameData.realm,
@@ -140,7 +140,7 @@ class GameApp extends HTMLElement {
     if (!this.#engine || !this.#gameBoard) return
     this.#gameBoard.render(this.#engine.getState())
     this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
-    this.#ui?.setCurrentRealm(this.#currentRealmName ?? this.#engine?.world?.id ?? '')
+    this.#ui?.setCurrentRealm(this.#currentRealmName ?? this.#engine?.realmMap?.id ?? '')
   }
 
   handleKeyDown(event) {

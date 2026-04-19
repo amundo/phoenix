@@ -1,37 +1,37 @@
 import { Cell } from "./Cell.js"
 
-class World {
+class RealmMap {
   #terrainCatalog = null
   #markers = new Map()
   #scenery = new Map()
 
   constructor(realm = {}, terrainCatalog = null) {
-    const worldData = realm.world ?? realm
+    const realmMapData = realm.realmMap ?? realm.world ?? realm
 
-    this.rowCount = realm.rowCount ?? worldData.rowCount ?? 0
-    this.columnCount = realm.columnCount ?? worldData.columnCount ?? 0
+    this.rowCount = realm.rowCount ?? realmMapData.rowCount ?? 0
+    this.columnCount = realm.columnCount ?? realmMapData.columnCount ?? 0
     this.#terrainCatalog = terrainCatalog
 
     const defaultTerrain = this.normalizeTerrainId(
-      worldData.defaultTerrain ?? realm.defaultTerrain ?? 'grassland'
+      realmMapData.defaultTerrain ?? realm.defaultTerrain ?? 'grassland'
     )
 
-    this.worldGrid = Array.from({ length: this.rowCount }, (_, y) =>
+    this.realmMapGrid = Array.from({ length: this.rowCount }, (_, y) =>
       Array.from({ length: this.columnCount }, (_, x) =>
         new Cell({ x, y, terrain: defaultTerrain })
       )
     )
 
     this.applyAsciiMap(
-      worldData.asciiMap ?? realm.asciiMap,
-      worldData.legend ?? realm.legend
+      realmMapData.asciiMap ?? realm.asciiMap,
+      realmMapData.legend ?? realm.legend
     )
-    this.applyTerrainRows(worldData.terrainRows ?? realm.terrainRows)
-    this.applyTerrainCells(worldData.cells ?? realm.cells)
+    this.applyTerrainRows(realmMapData.terrainRows ?? realm.terrainRows)
+    this.applyTerrainCells(realmMapData.cells ?? realm.cells)
   }
 
   at(x, y) {
-    return this.worldGrid[y]?.[x] ?? null
+    return this.realmMapGrid[y]?.[x] ?? null
   }
 
   contains(x, y) {
@@ -178,5 +178,5 @@ class World {
 }
 
 export {
-    World
+    RealmMap
 }

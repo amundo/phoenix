@@ -1,7 +1,7 @@
 class AdminDialog extends HTMLElement {
   #realmOptions = []
   #catalogs = null
-  #world = null
+  #game = null
   #realm = null
 
   constructor() {
@@ -61,9 +61,9 @@ class AdminDialog extends HTMLElement {
     this.dialog?.close()
   }
 
-  setData({ realmOptions = [], world = null, catalogs = null, realm = null } = {}) {
+  setData({ realmOptions = [], game = null, catalogs = null, realm = null } = {}) {
     this.#realmOptions = realmOptions
-    this.#world = world
+    this.#game = game
     this.#catalogs = catalogs
     this.#realm = realm
 
@@ -140,7 +140,7 @@ class AdminDialog extends HTMLElement {
 
   renderGameData() {
     const gameData = {
-      world: this.#world,
+      game: this.#game,
       catalogs: this.#catalogs,
       realm: this.#realm,
     }

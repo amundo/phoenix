@@ -1,6 +1,6 @@
 export { Camera } from './Camera.js'
 export { GameEngine } from './GameEngine.js'
-export { World } from './World.js'
+export { RealmMap } from './RealmMap.js'
 export { Player } from '../entities/Player.js'
 export { Bot } from '../entities/Bot.js'
 export { Item } from '../entities/Item.js'

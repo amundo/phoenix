@@ -51,7 +51,7 @@ class GameDataLoader {
     return catalogMap
   }
 
-  async loadWorld() {
+  async loadGameConfig() {
     const index = await this.loadIndex()
     const {
       startRealm = null,
@@ -77,18 +77,18 @@ class GameDataLoader {
   }
 
   async loadSharedData() {
-    const [world, catalogs] = await Promise.all([
-      this.loadWorld(),
+    const [game, catalogs] = await Promise.all([
+      this.loadGameConfig(),
       this.loadCatalogs(),
     ])
 
-    return { world, catalogs }
+    return { game, catalogs }
   }
 
   async loadGameData() {
     const sharedData = await this.loadSharedData()
 
-    const realmName = sharedData.world.startRealm
+    const realmName = sharedData.game.startRealm
 
     if (!realmName) {
       throw new Error('index.json is missing "startRealm"')

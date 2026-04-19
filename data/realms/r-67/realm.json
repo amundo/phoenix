@@ -3,7 +3,7 @@
     "name": "r 67",
     "rowCount": 6,
     "columnCount": 8,
-    "world": {
+    "realmMap": {
         "rowCount": 6,
         "columnCount": 8,
         "defaultTerrain": "grass",

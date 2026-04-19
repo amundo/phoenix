@@ -25,7 +25,7 @@ At a high level, a realm describes:
   "name": "Example Realm",
   "rowCount": 8,
   "columnCount": 10,
-  "world": {},
+  "realmMap": {},
   "camera": {},
   "entities": {}
 }
@@ -56,14 +56,14 @@ These are the main world dimensions used by the engine.
 
 ---
 
-# `world`
+# `realmMap`
 
-The `world` object describes the map itself.
+The `realmMap` object describes the map itself.
 
 Example:
 
 ```json
-"world": {
+"realmMap": {
   "rowCount": 8,
   "columnCount": 10,
   "asciiMap": [
@@ -84,14 +84,14 @@ Example:
 }
 ```
 
-## Supported `world` fields
+## Supported `realmMap` fields
 
 ### `rowCount`
 ### `columnCount`
 
-Optional numbers inside `world`.
+Optional numbers inside `realmMap`.
 
-These may appear, but the engine currently prefers the top-level `rowCount` and `columnCount` for the actual world size.
+These may appear, but the engine currently prefers the top-level `rowCount` and `columnCount` for the actual realm map size.
 
 ### `defaultTerrain`
 
@@ -399,16 +399,16 @@ Example:
 
 # Optional scenery outside `entities`
 
-Static scenery can come from the `world` object instead of `entities`.
+Static scenery can come from the `realmMap` object instead of `entities`.
 
 Examples:
 
 * `legend` entries with `scenery`
-* `world.cells` entries with `scenery`
+* `realmMap.cells` entries with `scenery`
 
 The engine converts that scenery into foreground entities internally.
 
-At the moment, you may also see optional realm-level scenery arrays in code paths, but the most established authored forms are the `world`-based ones.
+At the moment, you may also see optional realm-level scenery arrays in code paths, but the most established authored forms are the `realmMap`-based ones.
 
 ---
 
@@ -448,7 +448,7 @@ At the moment, you may also see optional realm-level scenery arrays in code path
 As the format exists now:
 
 * top-level `rowCount` / `columnCount` define the world size
-* `world` defines terrain, markers, and scenery
+* `realmMap` defines terrain, markers, and scenery
 * `camera` defines the viewport
 * `entities.player` defines the player
 * `entities.enemies` currently stores Bots

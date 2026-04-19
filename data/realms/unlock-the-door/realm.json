@@ -3,7 +3,7 @@
   "name": "Unlock the Door",
   "rowCount": 8,
   "columnCount": 10,
-  "world": {
+  "realmMap": {
     "rowCount": 8,
     "columnCount": 10
   },

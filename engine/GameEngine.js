@@ -1,4 +1,4 @@
-import { World } from './World.js'
+import { RealmMap } from './RealmMap.js'
 import { Camera } from './Camera.js'
 import { Item } from '../entities/index.js'
 import { Player } from '../entities/index.js'
@@ -11,7 +11,7 @@ class GameEngine {
   }
 
   initialize(gameData) {
-    this.world = new World(gameData.realm, gameData.catalogs.terrain)
+    this.realmMap = new RealmMap(gameData.realm, gameData.catalogs.terrain)
     this.camera = new Camera(gameData.realm.camera)
 
     this.emotions = gameData.catalogs.emotions
@@ -21,7 +21,7 @@ class GameEngine {
     this.player = new Player(gameData.realm.entities.player)
     this.player.emotions = gameData.catalogs.emotions
 
-    const playerMarker = this.world.findMarker('player')
+    const playerMarker = this.realmMap.findMarker('player')
     if (playerMarker) {
       this.player.moveTo(playerMarker)
     }
@@ -77,7 +77,7 @@ class GameEngine {
 
   createScenery(gameData) {
     const realmScenery = gameData.realm.entities.scenery ?? gameData.realm.scenery ?? []
-    const combined = [...this.world.scenery, ...realmScenery]
+    const combined = [...this.realmMap.scenery, ...realmScenery]
 
     return combined.map(data =>
       new Scenery(this.resolveSceneryEntity(gameData.catalogs, data))
@@ -118,7 +118,7 @@ class GameEngine {
 
   getState() {
     return {
-      world: this.world,
+      realmMap: this.realmMap,
       camera: this.camera,
       entities: this.entities,
       catalogs: this.catalogs,
@@ -189,17 +189,17 @@ class GameEngine {
     const nextX = actor.x + dx
     const nextY = actor.y + dy
 
-    if (!this.world.contains(nextX, nextY)) {
+    if (!this.realmMap.contains(nextX, nextY)) {
       return {
         stateChanged: false,
         effects: this.getBlockedByWorldEffects(actor)
       }
     }
 
-    if (!this.world.isWalkable(nextX, nextY)) {
+    if (!this.realmMap.isWalkable(nextX, nextY)) {
       return {
         stateChanged: false,
-        effects: this.getBlockedByTerrainEffects(actor, this.world.at(nextX, nextY))
+        effects: this.getBlockedByTerrainEffects(actor, this.realmMap.at(nextX, nextY))
       }
     }
 
@@ -417,8 +417,8 @@ class GameEngine {
   }
 
   centerCameraOnPlayer() {
-    if (!this.player || !this.camera || !this.world) return
-    this.camera.centerOn(this.player.x, this.player.y, this.world)
+    if (!this.player || !this.camera || !this.realmMap) return
+    this.camera.centerOn(this.player.x, this.player.y, this.realmMap)
   }
 }
 

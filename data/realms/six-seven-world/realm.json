@@ -3,7 +3,7 @@
     "name": "the six seven wrold",
     "rowCount": 6,
     "columnCount": 8,
-    "world": {
+    "realmMap": {
         "rowCount": 6,
         "columnCount": 8,
         "defaultTerrain": "grass",

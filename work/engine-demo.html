@@ -140,13 +140,13 @@
       }
     }
 
-    class World {
+    class RealmMap {
       constructor(gameData) {
-        const { rowCount, columnCount } = gameData.world
+        const { rowCount, columnCount } = gameData.realmMap
         this.rowCount = rowCount
         this.columnCount = columnCount
 
-        this.worldGrid = Array.from({ length: rowCount }, (_, y) =>
+        this.realmMapGrid = Array.from({ length: rowCount }, (_, y) =>
           Array.from({ length: columnCount }, (_, x) =>
             new Cell({ x, y, terrain: 'grassland' })
           )
@@ -154,7 +154,7 @@
       }
 
       at(x, y) {
-        return this.worldGrid[y]?.[x] ?? null
+        return this.realmMapGrid[y]?.[x] ?? null
       }
 
       contains(x, y) {
@@ -175,15 +175,15 @@
         this.columnCount = columnCount
       }
 
-      centerOn(x, y, world) {
+      centerOn(x, y, realmMap) {
         const halfWidth = Math.floor(this.columnCount / 2)
         const halfHeight = Math.floor(this.rowCount / 2)
 
         let nextX = x - halfWidth
         let nextY = y - halfHeight
 
-        nextX = Math.max(0, Math.min(nextX, world.columnCount - this.columnCount))
-        nextY = Math.max(0, Math.min(nextY, world.rowCount - this.rowCount))
+        nextX = Math.max(0, Math.min(nextX, realmMap.columnCount - this.columnCount))
+        nextY = Math.max(0, Math.min(nextY, realmMap.rowCount - this.rowCount))
 
         this.x = nextX
         this.y = nextY
@@ -224,16 +224,16 @@
 
       initialize(gameData) {
         console.log('[dev] Initializing game engine with data:', gameData)
-        console.log('[dev] Game data world config:', Object.keys(gameData.world))
+        console.log('[dev] Game data realmMap config:', Object.keys(gameData.realmMap))
 
-        this.world = new World(gameData)
+        this.realmMap = new RealmMap(gameData)
         this.camera = new Camera(gameData.camera)
 
         this.player = new Player(gameData.entities.player)
         this.enemies = gameData.entities.enemies.map(enemy => new Enemy(enemy))
         this.items = gameData.entities.items.map(item => new Item(item))
 
-        this.camera.centerOn(this.player.x, this.player.y, this.world)
+        this.camera.centerOn(this.player.x, this.player.y, this.realmMap)
       }
 
       get entities() {
@@ -242,7 +242,7 @@
 
       getState() {
         return {
-          world: this.world,
+          realmMap: this.realmMap,
           camera: this.camera,
           entities: this.entities,
         }
@@ -265,7 +265,7 @@
           result = this.movePlayerBy(command.dx, command.dy)
         }
 
-        this.camera.centerOn(this.player.x, this.player.y, this.world)
+        this.camera.centerOn(this.player.x, this.player.y, this.realmMap)
         return result
       }
 
@@ -275,7 +275,7 @@
         const nextX = this.player.x + dx
         const nextY = this.player.y + dy
 
-        if (!this.world.contains(nextX, nextY)) {
+        if (!this.realmMap.contains(nextX, nextY)) {
           effects.push({
             type: 'speak',
             actor: this.player,
@@ -321,7 +321,7 @@
     }
 
     const gameData = {
-      world: {
+      realmMap: {
         rowCount: 8,
         columnCount: 10,
       },
@@ -381,15 +381,15 @@
     }
 
     function renderWorld() {
-      const { world, camera } = engine.getState()
+      const { realmMap, camera } = engine.getState()
 
-      worldEl.style.gridTemplateColumns = `repeat(${world.columnCount}, 48px)`
+      worldEl.style.gridTemplateColumns = `repeat(${realmMap.columnCount}, 48px)`
 
       worldEl.replaceChildren()
 
-      for (let y = 0; y < world.rowCount; y++) {
-        for (let x = 0; x < world.columnCount; x++) {
-          const cell = world.at(x, y)
+      for (let y = 0; y < realmMap.rowCount; y++) {
+        for (let x = 0; x < realmMap.columnCount; x++) {
+          const cell = realmMap.at(x, y)
           const entity = getEntityAt(x, y)
 
           const el = document.createElement('div')
@@ -495,6 +495,6 @@
       stateChanged: false,
       effects: [],
     })
-  </script>
+</script>
 </body>
-</html>cd
+</html>

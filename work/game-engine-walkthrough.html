@@ -263,14 +263,14 @@ happens next?”</p>
 </section>
 <section id="the-imports" class="level1">
 <h1>The imports</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { World } <span class="im">from</span> <span class="st">&#39;./World.js&#39;</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { RealmMap } <span class="im">from</span> <span class="st">&#39;./RealmMap.js&#39;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Camera } <span class="im">from</span> <span class="st">&#39;./Camera.js&#39;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Item } <span class="im">from</span> <span class="st">&#39;../entities/index.js&#39;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Player  } <span class="im">from</span> <span class="st">&#39;../entities/index.js&#39;</span>  </span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Enemy } <span class="im">from</span> <span class="st">&#39;../entities/index.js&#39;</span></span></code></pre></div>
 <p>These lines pull in the other classes this file depends on.</p>
 <section id="world" class="level2">
-<h2><code>World</code></h2>
+<h2><code>RealmMap</code></h2>
 <p>This probably represents the map or grid. It likely knows things
 like:</p>
 <ul>
@@ -290,7 +290,7 @@ is large, the camera decides which part is currently on screen.</p>
 the raw <code>gameData</code>.</p>
 <p>So already we can see the architecture:</p>
 <ul>
-<li><strong>World</strong> = the map</li>
+<li><strong>RealmMap</strong> = the map</li>
 <li><strong>Camera</strong> = what portion is visible</li>
 <li><strong>Entities</strong> = things inside the world</li>
 <li><strong>GameEngine</strong> = the logic layer tying them
@@ -342,12 +342,12 @@ provided game data.”</p>
 <p>This is where the engine turns raw data into actual class
 instances.</p>
 <p>Let’s go line by line.</p>
-<section id="this.world-new-worldgamedata" class="level2">
-<h2><code>this.world = new World(gameData)</code></h2>
+<section id="this.realmmap-new-realmmap-gamedata" class="level2">
+<h2><code>this.realmMap = new RealmMap(gameData)</code></h2>
 <p>This creates the world.</p>
 <p>Interesting detail: you are passing the entire <code>gameData</code>
-object to <code>World</code>, not just <code>gameData.world</code>.</p>
-<p>That means <code>World</code> is probably expected to extract what it
+object to <code>RealmMap</code>, not just <code>gameData.realmMap</code>.</p>
+<p>That means <code>RealmMap</code> is probably expected to extract what it
 needs from the whole object. That can work, though some people might
 prefer:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">World</span>(gameData<span class="op">.</span><span class="at">world</span>)</span></code></pre></div>
@@ -362,7 +362,7 @@ prefer:</p>
 <h2><code>this.camera = new Camera(gameData.camera)</code></h2>
 <p>This creates the camera from the camera-specific part of the
 data.</p>
-<p>This is a nice contrast with <code>World</code>: here you are passing
+<p>This is a nice contrast with <code>RealmMap</code>: here you are passing
 only the relevant slice.</p>
 <p>So the camera gets something like:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{</span>
@@ -867,7 +867,7 @@ class="level2">
 <section id="a-couple-of-things-to-notice" class="level1">
 <h1>A couple of things to notice</h1>
 <section id="world-gets-all-of-gamedata" class="level2">
-<h2>1. <code>World</code> gets all of <code>gameData</code></h2>
+<h2>1. <code>RealmMap</code> gets all of <code>gameData</code></h2>
 <div class="sourceCode" id="cb41"><pre
 class="sourceCode js"><code class="sourceCode javascript"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">world</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">World</span>(gameData)</span></code></pre></div>
 <p>That may be intentional, but it stands out because the camera gets

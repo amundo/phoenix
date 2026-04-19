@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>World Demo</title>
+  <title>RealmMap Demo</title>
   <style>
     body {
       font-family: sans-serif;
@@ -44,11 +44,11 @@
     }
   }
 
-  class World {
+  class RealmMap {
     constructor({ rowCount, columnCount }) {
       this.rowCount = rowCount
       this.columnCount = columnCount
-      this.worldGrid = Array.from({ length: rowCount }, (_, y) =>
+      this.realmMapGrid = Array.from({ length: rowCount }, (_, y) =>
         Array.from({ length: columnCount }, (_, x) =>
           new Cell({ x, y, terrain: 'grassland' })
         )
@@ -56,7 +56,7 @@
     }
 
     at(x, y) {
-      return this.worldGrid[y]?.[x] ?? null
+      return this.realmMapGrid[y]?.[x] ?? null
     }
 
     contains(x, y) {
@@ -70,15 +70,15 @@
   }
 
   // --- Demo logic ---
-  const world = new World({ rowCount: 10, columnCount: 10 })
+  const realmMap = new RealmMap({ rowCount: 10, columnCount: 10 })
 
   const gridEl = document.createElement('div')
   gridEl.className = 'grid'
-  gridEl.style.gridTemplateColumns = `repeat(${world.columnCount}, 40px)`
+  gridEl.style.gridTemplateColumns = `repeat(${realmMap.columnCount}, 40px)`
 
-  for (let y = 0; y < world.rowCount; y++) {
-    for (let x = 0; x < world.columnCount; x++) {
-      const cellData = world.at(x, y)
+  for (let y = 0; y < realmMap.rowCount; y++) {
+    for (let x = 0; x < realmMap.columnCount; x++) {
+      const cellData = realmMap.at(x, y)
 
       const cellEl = document.createElement('div')
       cellEl.className = 'cell'

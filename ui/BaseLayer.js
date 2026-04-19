@@ -1,5 +1,5 @@
 class BaseLayer extends HTMLElement {
-  #world = null
+  #realmMap = null
   #camera = null
 
   constructor() {
@@ -11,13 +11,13 @@ class BaseLayer extends HTMLElement {
     this.style.gridTemplateRows = 'subgrid'
   }
 
-  setContext({ world = null, camera = null } = {}) {
-    this.#world = world
+  setContext({ realmMap = null, camera = null } = {}) {
+    this.#realmMap = realmMap
     this.#camera = camera
   }
 
-  get world() {
-    return this.#world
+  get realmMap() {
+    return this.#realmMap
   }
 
   get camera() {

@@ -82,7 +82,7 @@ That means:
 * paint the ground as `forest-floor`
 * place a `tree` scenery object on top
 
-The `World` class collects those scenery definitions, and then `GameEngine` turns them into `Scenery` instances.
+The `RealmMap` class collects those scenery definitions, and then `GameEngine` turns them into `Scenery` instances.
 
 ---
 

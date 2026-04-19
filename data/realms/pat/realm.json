@@ -3,7 +3,7 @@
   "name": "Pat was here",
   "rowCount": 24,
   "columnCount": 30,
-  "world": {
+  "realmMap": {
     "rowCount": 8,
     "columnCount": 10,
     "asciiMap": [
