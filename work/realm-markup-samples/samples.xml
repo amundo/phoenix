@@ -1,0 +1,131 @@
+<realm title="Dragon Wants A Cookie">
+  <bot emoji=dragon x=5 y=2 solid=true>
+    <requires item=cookie></requires>
+
+    <on blocked>
+      <say>Rooooar!</say>
+      <emote emoji=angry></emote>
+    </on>
+
+    <on success>
+      <say>Mmm. You may pass.</say>
+      <emote emoji=happy></emote>
+      <set solid=false></set>
+    </on>
+  </bot>
+</realm>
+
+<realm title="Wizard Trades A Hint For Coins">
+  <bot emoji=wizard x=4 y=1>
+    <requires item=gold-coin count=5></requires>
+
+    <on blocked>
+      <say>Bring me 5 gold coins.</say>
+      <emote emoji=thinking></emote>
+    </on>
+
+    <on success>
+      <say>Go to the spooky forest.</say>
+      <emote emoji=surprised></emote>
+    </on>
+  </bot>
+</realm>
+
+<realm title="Guard Checks For A Pass">
+  <bot emoji=guard x=7 y=3 solid=true>
+    <requires item=royal-pass></requires>
+
+    <on blocked>
+      <say>No pass, no entry.</say>
+      <emote emoji=angry></emote>
+    </on>
+
+    <on success>
+      <say>You may enter.</say>
+      <emote emoji=calm></emote>
+      <set solid=false></set>
+    </on>
+  </bot>
+</realm>
+
+<realm title="Portal Needs A Crystal">
+  <item emoji=portal x=6 y=4 solid=true>
+    <requires item=moon-crystal></requires>
+
+    <on blocked>
+      <say>The portal is asleep.</say>
+      <emote emoji=sleepy></emote>
+    </on>
+
+    <on success>
+      <say>The portal wakes up!</say>
+      <emote emoji=excited></emote>
+      <set solid=false></set>
+    </on>
+  </item>
+</realm>
+
+<realm title="Bird Wants Seeds">
+  <bot emoji=bird x=3 y=2>
+    <requires item=seeds></requires>
+
+    <on blocked>
+      <say>Chirp?</say>
+      <emote emoji=sad></emote>
+    </on>
+
+    <on success>
+      <say>Chirp chirp!</say>
+      <emote emoji=happy></emote>
+    </on>
+  </bot>
+</realm>
+
+<realm title="Broken Machine Needs A Gear">
+  <item emoji=machine x=5 y=5 solid=true>
+    <requires item=gear></requires>
+
+    <on blocked>
+      <say>The machine is missing a gear.</say>
+      <emote emoji=confused></emote>
+    </on>
+
+    <on success>
+      <say>The machine starts humming.</say>
+      <emote emoji=happy></emote>
+      <set solid=false></set>
+    </on>
+  </item>
+</realm>
+
+<realm title="Troll Wants A Riddle Answer">
+  <bot emoji=troll x=6 y=2 solid=true>
+    <requires flag=solved-riddle></requires>
+
+    <on blocked>
+      <say>Answer my riddle first!</say>
+      <emote emoji=smirk></emote>
+    </on>
+
+    <on success>
+      <say>Correct. Cross the bridge.</say>
+      <set solid=false></set>
+    </on>
+  </bot>
+</realm>
+
+<realm title="Baker Gives Bread If You Bring Apples">
+  <bot emoji=baker x=2 y=4>
+    <requires item=apple count=3></requires>
+
+    <on blocked>
+      <say>I need 3 apples for baking.</say>
+      <emote emoji=hopeful></emote>
+    </on>
+
+    <on success>
+      <say>Lovely apples! Here is some bread.</say>
+      <emote emoji=happy></emote>
+    </on>
+  </bot>
+</realm>
