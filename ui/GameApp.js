@@ -15,12 +15,13 @@ class GameApp extends HTMLElement {
   #sharedData = null
   #index = null
   #currentRealmName = null
+  #currentRealm = null
 
   constructor() {
     super()
-    this.initializeLayout()
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleRealmChange = this.handleRealmChange.bind(this)
+    this.initializeLayout()
   }
 
   enqueueCommand(command) {
@@ -49,6 +50,8 @@ class GameApp extends HTMLElement {
 
     if (result.stateChanged) {
       this.#gameBoard.render(this.#engine.getState())
+      this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
+      this.syncAdminData()
     }
 
     this.handleEffects(result.effects)
@@ -62,11 +65,9 @@ class GameApp extends HTMLElement {
     this.replaceChildren()
     this.#gameBoard = new GameBoard()
     this.#ui = new GameUI()
-    this.#ui.onRealmChange = (realmName) => {
-      this.handleRealmChange({ detail: { realmName } })
-    }
+    this.#ui.mountStageContent(this.#gameBoard)
     this.#ui.addEventListener('realmchange', this.handleRealmChange)
-    this.append(this.#gameBoard, this.#ui)
+    this.append(this.#ui)
   }
 
   get src() {
@@ -113,23 +114,17 @@ class GameApp extends HTMLElement {
 
   start(gameData) {
     if (this.#engine) {
+      this.stopLoop()
       this.initializeLayout()
     }
 
     this.#engine = new GameEngine(gameData)
+    this.#currentRealm = gameData.realm
     this.#commandQueue = []
     this.render()
     this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
     this.#ui?.setCurrentRealm(this.#currentRealmName ?? gameData.realm?.id ?? '')
-    this.#ui?.setAdminData({
-      realmOptions: this.getRealmOptions(),
-      game: gameData.game,
-      catalogs: gameData.catalogs,
-      realm: {
-        ...gameData.realm,
-        id: this.#currentRealmName ?? gameData.realm?.id,
-      },
-    })
+    this.syncAdminData(gameData.realm)
     this.startLoop()
 
     removeEventListener('keydown', this.handleKeyDown)
@@ -141,6 +136,29 @@ class GameApp extends HTMLElement {
     this.#gameBoard.render(this.#engine.getState())
     this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
     this.#ui?.setCurrentRealm(this.#currentRealmName ?? this.#engine?.realmMap?.id ?? '')
+    this.syncAdminData()
+  }
+
+  syncAdminData(realm = null) {
+    if (!this.#ui || !this.#engine) return
+    const currentRealm = realm ?? this.#currentRealm
+
+    this.#ui.setAdminData({
+      realmOptions: this.getRealmOptions(),
+      game: this.#sharedData?.game ?? null,
+      catalogs: this.#engine.catalogs,
+      realm: {
+        ...(currentRealm ?? {}),
+        id: this.#currentRealmName ?? currentRealm?.id,
+      },
+      runtime: {
+        player: this.#engine.player,
+        bots: this.#engine.bots,
+        items: this.#engine.items,
+        scenery: this.#engine.scenery,
+        camera: this.#engine.camera,
+      },
+    })
   }
 
   handleKeyDown(event) {
@@ -190,6 +208,7 @@ class GameApp extends HTMLElement {
   async handleRealmChange(event) {
     const realmName = event.detail?.realmName
     if (!realmName || !this.#loader || !this.#sharedData) return
+    if (realmName === this.#currentRealmName && this.#engine) return
 
     this.#isLoading = true
 

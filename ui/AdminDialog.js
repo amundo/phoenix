@@ -3,6 +3,8 @@ class AdminDialog extends HTMLElement {
   #catalogs = null
   #game = null
   #realm = null
+  #runtime = null
+  #selectedCatalogName = null
 
   constructor() {
     super()
@@ -61,11 +63,12 @@ class AdminDialog extends HTMLElement {
     this.dialog?.close()
   }
 
-  setData({ realmOptions = [], game = null, catalogs = null, realm = null } = {}) {
+  setData({ realmOptions = [], game = null, catalogs = null, realm = null, runtime = null } = {}) {
     this.#realmOptions = realmOptions
     this.#game = game
     this.#catalogs = catalogs
     this.#realm = realm
+    this.#runtime = runtime
 
     this.renderRealmOptions()
     this.renderCatalogTabs()
@@ -111,6 +114,7 @@ class AdminDialog extends HTMLElement {
     const selectTab = (name) => {
       const catalog = byName.get(name)
       if (!catalog) return
+      this.#selectedCatalogName = name
 
       for (const button of this.tabs.querySelectorAll('.admin-tab')) {
         button.setAttribute('aria-selected', String(button.dataset.catalog === name))
@@ -121,7 +125,7 @@ class AdminDialog extends HTMLElement {
       this.catalogTree.replaceChildren(this.makeNode(name, items))
     }
 
-    entries.forEach(([name], index) => {
+    entries.forEach(([name]) => {
       const button = document.createElement('button')
       button.type = 'button'
       button.className = 'admin-tab'
@@ -131,21 +135,60 @@ class AdminDialog extends HTMLElement {
       button.textContent = name
       button.addEventListener('click', () => selectTab(name))
       this.tabs.append(button)
-
-      if (index === 0) {
-        selectTab(name)
-      }
     })
+
+    const selectedName = byName.has(this.#selectedCatalogName)
+      ? this.#selectedCatalogName
+      : entries[0]?.[0]
+
+    if (selectedName) {
+      selectTab(selectedName)
+    }
   }
 
   renderGameData() {
     const gameData = {
       game: this.#game,
-      catalogs: this.#catalogs,
+      catalogs: this.normalizeForTree(this.#catalogs),
       realm: this.#realm,
+      runtime: this.normalizeForTree(this.#runtime),
     }
 
     this.gameTree.replaceChildren(this.makeNode('gameData', gameData))
+  }
+
+  normalizeForTree(value, seen = new WeakSet()) {
+    if (!value || typeof value !== 'object') {
+      return value
+    }
+
+    if (seen.has(value)) {
+      return '[Circular]'
+    }
+
+    seen.add(value)
+
+    if (typeof value.values === 'function' && !Array.isArray(value)) {
+      const normalized = this.normalizeForTree(value.values(), seen)
+      seen.delete(value)
+      return normalized
+    }
+
+    if (Array.isArray(value)) {
+      const normalized = value.map(item => this.normalizeForTree(item, seen))
+      seen.delete(value)
+      return normalized
+    }
+
+    const normalized = Object.fromEntries(
+      Object.entries(value).map(([key, childValue]) => [
+        key,
+        this.normalizeForTree(childValue, seen),
+      ])
+    )
+
+    seen.delete(value)
+    return normalized
   }
 
   getCatalogItems(catalog) {
