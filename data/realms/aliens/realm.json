@@ -1,9 +1,9 @@
 {
-    "id": "kidnapped",
-    "name": "Kidnapped",
+    "id": "aliens",
+    "name": "aliens",
     "rowCount": 6,
     "columnCount": 8,
-    "realmMap": {
+    "world": {
         "rowCount": 6,
         "columnCount": 8,
         "defaultTerrain": "grass",
@@ -19,42 +19,42 @@
         "player": {
             "id": "player",
             "kind": "player",
-            "name": "Keylin",
-            "emoji": "👧",
-            "x": 2,
-            "y": 3
+            "name": "Nicholas",
+            "emoji": "👱",
+            "x": 5,
+            "y": 1
         },
         "bots": [
             {
-                "id": "man-1",
-                "kind": "man",
+                "id": "alien-1",
+                "kind": "alien",
                 "name": "Bot 1",
-                "emoji": "👨",
-                "x": 0,
+                "emoji": "👽",
+                "x": 2,
                 "y": 2,
-                "speech": "Hello!"
+                "speech": ""
             }
         ],
         "items": [
             {
-                "id": "key-1",
-                "kind": "key",
-                "name": "Key",
-                "emoji": "🔑",
+                "id": "alien-1",
+                "kind": "alien",
+                "name": "Alien",
+                "emoji": "👽",
                 "x": 3,
                 "y": 2,
-                "portable": true,
+                "portable": false,
                 "solid": false
             },
             {
-                "id": "door-2",
-                "kind": "door",
-                "name": "Door",
-                "emoji": "🚪",
+                "id": "crystal-ball-2",
+                "kind": "crystal-ball",
+                "name": "Crystal Ball",
+                "emoji": "🔮",
                 "x": 6,
                 "y": 1,
-                "portable": false,
-                "solid": true
+                "portable": true,
+                "solid": false
             }
         ]
     }
