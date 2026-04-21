@@ -39,7 +39,7 @@ function parseRealmMarkup(text, {
   }
 
   const root = realmEl
-  const playerEls = [...root.querySelectorAll(':scope > player')]
+  const playerEls = getDirectChildrenByTag(root, 'player')
   const playerEl = playerEls[0]
 
   if (playerEls.length === 0) {
@@ -62,13 +62,19 @@ function parseRealmMarkup(text, {
     playerName: parserContext.playerName,
     background: realmEl.getAttribute('background')?.trim() || DEFAULT_TERRAIN,
     player: parsePlayer(playerEl, parserContext),
-    bots: [...root.querySelectorAll(':scope > bot')].map((el, index) =>
+    bots: getDirectChildrenByTag(root, 'bot').map((el, index) =>
       parseBot(el, index, parserContext)
     ),
-    items: [...root.querySelectorAll(':scope > item')].map((el, index) =>
+    items: getDirectChildrenByTag(root, 'item').map((el, index) =>
       parseItem(el, index, parserContext)
     ),
   }
+}
+
+function getDirectChildrenByTag(root, tagName) {
+  return [...root.children].filter(child =>
+    child.tagName?.toLowerCase() === tagName
+  )
 }
 
 function parsePlayer(el, context) {
