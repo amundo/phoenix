@@ -506,9 +506,14 @@
   </dialog>
 
   <script type="module">
-    const DEFAULT_COLUMNS = 8
-    const DEFAULT_ROWS = 6
-    const DEFAULT_TERRAIN = 'grass'
+    import {
+      DEFAULT_COLUMNS,
+      DEFAULT_ROWS,
+      compileRealm,
+      parseRealmMarkup,
+      slugify,
+    } from './editor/realmMarkup.js'
+
     const FALLBACK_EMOJI = {
       player: [
         { emoji: '🧒', label: 'child' },
@@ -540,17 +545,6 @@
         { emoji: '🦉', label: 'owl' },
         { emoji: '🦄', label: 'unicorn' },
       ],
-    }
-
-    const ITEM_DEFAULTS = {
-      key: { emoji: '🗝️', portable: true },
-      door: { emoji: '🚪', solid: true },
-      scroll: { emoji: '📜', portable: true },
-      flower: { emoji: '🌼', portable: true },
-      apple: { emoji: '🍎', portable: true },
-      lantern: { emoji: '🏮', portable: true },
-      coin: { emoji: '🪙', portable: true },
-      'crystal-ball': { emoji: '🔮', portable: true },
     }
 
     const realmTitle = document.querySelector('#realmTitle')
@@ -674,118 +668,17 @@
     function render() {
       clearEntities()
       try {
-        validateMarkup(source.value)
-        const parsed = parseSource(source.value)
+        const parsed = parseRealmMarkup(source.value, {
+          title: realmTitle.value,
+          playerName: playerName.value,
+          emojiAliases,
+        })
         latestRealm = compileRealm(parsed)
         renderBoard(parsed)
         status.textContent = ''
       } catch (error) {
         latestRealm = null
         status.textContent = error.message
-      }
-    }
-
-    function parseSource(text) {
-      const doc = new DOMParser().parseFromString(text, 'text/html')
-      const realmEl = doc.querySelector('realm')
-
-      if (!realmEl) {
-        throw new Error('Add one <realm> tag around everything.')
-      }
-
-      if (doc.querySelectorAll('realm').length > 1) {
-        throw new Error('You can only have one <realm> tag.')
-      }
-
-      const root = realmEl
-      const playerEls = [...root.querySelectorAll(':scope > player')]
-      const playerEl = playerEls[0]
-
-      if (playerEls.length === 0) {
-        throw new Error('Add one <player> tag.')
-      }
-
-      if (playerEls.length > 1) {
-        throw new Error('You can only have one <player> tag.')
-      }
-
-      return {
-        title: realmTitle.value.trim() || 'My realm',
-        playerName: playerName.value.trim() || 'Player',
-        background: realmEl.getAttribute('background')?.trim() || DEFAULT_TERRAIN,
-        player: parsePlayer(playerEl),
-        bots: [...root.querySelectorAll(':scope > bot')].map((el, index) => parseBot(el, index)),
-        items: [...root.querySelectorAll(':scope > item')].map((el, index) => parseItem(el, index)),
-      }
-    }
-
-    function parsePlayer(el) {
-      return {
-        id: 'player',
-        kind: 'player',
-        name: playerName.value.trim() || 'Player',
-        emoji: resolveEmojiValue(el.getAttribute('emoji') || 'child', 'player'),
-        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
-        y: readCoordinate(el, 'y', DEFAULT_ROWS),
-      }
-    }
-
-    function parseBot(el, index) {
-      const kind = el.getAttribute('kind')?.trim() || slugify(el.getAttribute('emoji') || 'bot') || 'bot'
-      return {
-        id: `${slugify(kind)}-${index + 1}`,
-        kind,
-        name: el.getAttribute('name')?.trim() || `Bot ${index + 1}`,
-        emoji: resolveEmojiValue(el.getAttribute('emoji') || kind || 'robot', 'bot'),
-        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
-        y: readCoordinate(el, 'y', DEFAULT_ROWS),
-        speech: el.querySelector('speech')?.textContent?.trim() ?? '',
-      }
-    }
-
-    function parseItem(el, index) {
-      const emojiName = el.getAttribute('emoji')?.trim()
-      if (!emojiName) {
-        throw new Error('Every <item> needs an emoji.')
-      }
-
-      const kind = el.getAttribute('kind')?.trim() || slugify(emojiName)
-      const defaults = ITEM_DEFAULTS[kind] ?? {}
-      return {
-        id: el.getAttribute('id')?.trim() || `${slugify(kind)}-${index + 1}`,
-        kind,
-        name: el.getAttribute('name')?.trim() || titleCase(kind),
-        emoji: resolveEmojiValue(emojiName || defaults.emoji || kind, 'item'),
-        x: readCoordinate(el, 'x', DEFAULT_COLUMNS),
-        y: readCoordinate(el, 'y', DEFAULT_ROWS),
-        portable: readBoolean(el.getAttribute('portable'), defaults.portable ?? false),
-        solid: readBoolean(el.getAttribute('solid'), defaults.solid ?? false),
-      }
-    }
-
-    function compileRealm(parsed) {
-      return {
-        id: slugify(parsed.title),
-        name: parsed.title,
-        rowCount: DEFAULT_ROWS,
-        columnCount: DEFAULT_COLUMNS,
-        realmMap: {
-          rowCount: DEFAULT_ROWS,
-          columnCount: DEFAULT_COLUMNS,
-          defaultTerrain: DEFAULT_TERRAIN,
-          background: parsed.background,
-        },
-        camera: {
-          x: 0,
-          y: 0,
-          rowCount: DEFAULT_ROWS,
-          columnCount: DEFAULT_COLUMNS,
-        },
-        entities: {
-          player: parsed.player,
-          bots: parsed.bots,
-          items: parsed.items,
-        },
       }
     }
 

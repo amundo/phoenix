@@ -269,7 +269,7 @@ happens next?”</p>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Player  } <span class="im">from</span> <span class="st">&#39;../entities/index.js&#39;</span>  </span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Enemy } <span class="im">from</span> <span class="st">&#39;../entities/index.js&#39;</span></span></code></pre></div>
 <p>These lines pull in the other classes this file depends on.</p>
-<section id="world" class="level2">
+<section id="realmmap" class="level2">
 <h2><code>RealmMap</code></h2>
 <p>This probably represents the map or grid. It likely knows things
 like:</p>
@@ -332,7 +332,7 @@ provided game data.”</p>
 <section id="the-initialize-method" class="level1">
 <h1>The <code>initialize</code> method</h1>
 <div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">initialize</span>(gameData) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">world</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">World</span>(gameData)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">RealmMap</span>(gameData)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">camera</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Camera</span>(gameData<span class="op">.</span><span class="at">camera</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">player</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Player</span>(gameData<span class="op">.</span><span class="at">entities</span><span class="op">.</span><span class="at">player</span>)</span>
@@ -342,15 +342,16 @@ provided game data.”</p>
 <p>This is where the engine turns raw data into actual class
 instances.</p>
 <p>Let’s go line by line.</p>
-<section id="this.realmmap-new-realmmap-gamedata" class="level2">
+<section id="this.realmmap-new-realmmapgamedata" class="level2">
 <h2><code>this.realmMap = new RealmMap(gameData)</code></h2>
 <p>This creates the world.</p>
 <p>Interesting detail: you are passing the entire <code>gameData</code>
-object to <code>RealmMap</code>, not just <code>gameData.realmMap</code>.</p>
-<p>That means <code>RealmMap</code> is probably expected to extract what it
-needs from the whole object. That can work, though some people might
+object to <code>RealmMap</code>, not just
+<code>gameData.realmMap</code>.</p>
+<p>That means <code>RealmMap</code> is probably expected to extract what
+it needs from the whole object. That can work, though some people might
 prefer:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">World</span>(gameData<span class="op">.</span><span class="at">world</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">RealmMap</span>(gameData<span class="op">.</span><span class="at">realmMap</span>)</span></code></pre></div>
 <p>because it is more explicit.</p>
 <p>But as written, the idea is:</p>
 <blockquote>
@@ -362,8 +363,8 @@ prefer:</p>
 <h2><code>this.camera = new Camera(gameData.camera)</code></h2>
 <p>This creates the camera from the camera-specific part of the
 data.</p>
-<p>This is a nice contrast with <code>RealmMap</code>: here you are passing
-only the relevant slice.</p>
+<p>This is a nice contrast with <code>RealmMap</code>: here you are
+passing only the relevant slice.</p>
 <p>So the camera gets something like:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
@@ -491,7 +492,7 @@ view.</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode js"><code class="sourceCode javascript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">getState</span>() {</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">world</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">world</span><span class="op">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">realmMap</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span><span class="op">,</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">camera</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">,</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">entities</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">entities</span><span class="op">,</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    }</span>
@@ -503,7 +504,7 @@ class="sourceCode js"><code class="sourceCode javascript"><span id="cb18-1"><a h
 <p>and receive everything it needs for rendering.</p>
 <p>The returned object contains:</p>
 <ul>
-<li><code>world</code></li>
+<li><code>realmMap</code></li>
 <li><code>camera</code></li>
 <li><code>entities</code></li>
 </ul>
@@ -535,7 +536,7 @@ class="sourceCode js"><code class="sourceCode javascript"><span id="cb19-1"><a h
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      result <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="fu">movePlayerBy</span>(command<span class="op">.</span><span class="at">dx</span><span class="op">,</span> command<span class="op">.</span><span class="at">dy</span>)</span>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">.</span><span class="fu">centerOn</span>(<span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">x</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">y</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">world</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">.</span><span class="fu">centerOn</span>(<span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">x</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">y</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span>)</span>
 <span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
 <span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
 <p>This is one of the most important methods in the file.</p>
@@ -607,7 +608,7 @@ and readable.</p>
 <section id="step-4-recenter-the-camera" class="level2">
 <h2>Step 4: recenter the camera</h2>
 <div class="sourceCode" id="cb26"><pre
-class="sourceCode js"><code class="sourceCode javascript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">.</span><span class="fu">centerOn</span>(<span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">x</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">y</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">world</span>)</span></code></pre></div>
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">camera</span><span class="op">.</span><span class="fu">centerOn</span>(<span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">x</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">.</span><span class="at">y</span><span class="op">,</span> <span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span>)</span></code></pre></div>
 <p>After the command is processed, the camera is centered on the
 player.</p>
 <p>This means the visible viewport follows the player.</p>
@@ -659,7 +660,7 @@ as:</p>
 <section id="boundary-check-edge-of-the-world" class="level1">
 <h1>Boundary check: edge of the world</h1>
 <div class="sourceCode" id="cb30"><pre
-class="sourceCode js"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span><span class="kw">this</span><span class="op">.</span><span class="at">world</span><span class="op">.</span><span class="fu">contains</span>(nextX<span class="op">,</span> nextY)) {</span>
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span><span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span><span class="op">.</span><span class="fu">contains</span>(nextX<span class="op">,</span> nextY)) {</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>      effects<span class="op">.</span><span class="fu">push</span>({</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;speak&#39;</span><span class="op">,</span></span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">actor</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="at">player</span><span class="op">,</span></span>
@@ -866,15 +867,15 @@ class="level2">
 </section>
 <section id="a-couple-of-things-to-notice" class="level1">
 <h1>A couple of things to notice</h1>
-<section id="world-gets-all-of-gamedata" class="level2">
+<section id="realmmap-gets-all-of-gamedata" class="level2">
 <h2>1. <code>RealmMap</code> gets all of <code>gameData</code></h2>
 <div class="sourceCode" id="cb41"><pre
-class="sourceCode js"><code class="sourceCode javascript"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">world</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">World</span>(gameData)</span></code></pre></div>
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">RealmMap</span>(gameData)</span></code></pre></div>
 <p>That may be intentional, but it stands out because the camera gets
 only <code>gameData.camera</code>.</p>
 <p>You may eventually want consistency, like:</p>
 <div class="sourceCode" id="cb42"><pre
-class="sourceCode js"><code class="sourceCode javascript"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">world</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">World</span>(gameData<span class="op">.</span><span class="at">world</span>)</span></code></pre></div>
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">realmMap</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">RealmMap</span>(gameData<span class="op">.</span><span class="at">realmMap</span>)</span></code></pre></div>
 <p>if the world only needs the world config.</p>
 </section>
 <section id="items-are-created-but-not-used-yet" class="level2">

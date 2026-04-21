@@ -1,9 +1,9 @@
 import { Cell } from "./Cell.js"
 
 class RealmMap {
-  #terrainCatalog = null
-  #markers = new Map()
-  #scenery = new Map()
+  #terrainCatalog = null // This is a reference to the terrain catalog, used for resolving terrain properties 
+  #markers = new Map()  // Markers are named locations on the map, defined in the legend and referenced by entities and effects
+  #scenery = new Map()  // Scenery are static entities placed on the map, defined in the legend and directly on the map 
 
   constructor(realm = {}, terrainCatalog = null) {
     const realmMapData = realm.realmMap ?? realm.world ?? realm

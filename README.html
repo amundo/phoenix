@@ -174,6 +174,72 @@
 <h1 class="title">Phoenix RPG Game Project</h1>
 <p class="author">Patrick Hall</p>
 </header>
-<p>This is the README.md</p>
+<p>This project is a small browser-based Zelda-style prototype built
+with vanilla Javascript, with no frameworks. Rather than using
+<code>&lt;canvas&gt;</code>, the game uses standard <code>DOM</code>
+elements for rendering. The app boots from <a
+href="./index.html">index.html</a>, which mounts a
+<code>&lt;game-app&gt;</code> element pointed at the <code>data/</code>
+folder; <a href="./phoenix.js">phoenix.js</a> just registers the UI
+components.</p>
+<section id="initialization" class="level2">
+<h2>Initialization</h2>
+<p><a href="./ui/GameApp.js">ui/GameApp.js</a> is the client-side entry
+point and top-level controller.</p>
+</section>
+<section id="game-data-structure" class="level2">
+<h2>Game Data Structure</h2>
+<p><code>GameApp.js</code> uses <a
+href="./engine/GameDataLoader.js">engine/GameDataLoader.js</a> to load
+<a href="./data/index.json">data/index.json</a>, which contains
+references to all data files, including shared data catalogs
+(<code>actors.json</code>, <code>animations.json</code>,
+<code>effects.json</code>, <code>emoji.json</code>,
+<code>emotions.json</code>, <code>items.json</code>,
+<code>props.json</code>, <code>terrain.json</code>) plus the current
+realm JSON. The data catalogs contain reusable definitions for terrain
+types, items, emotions, and animations. Graphics are all emoji, which
+keeps things simple and fun.</p>
+</section>
+<section id="realm" class="level2">
+<h2>Realm</h2>
+<p>A realm defines the map size, camera, player, bots, items, and
+terrain layout, while the catalogs provide reusable definitions for
+terrain, items, emotions, and animations. The realm JSON defines the map
+layout, bots, items, and scripted interactions.</p>
+</section>
+<section id="game-engine-and-rules" class="level2">
+<h2>Game Engine and Rules</h2>
+<p>The game rules live in <a
+href="./engine/GameEngine.js">engine/GameEngine.js</a>. It builds a <a
+href="./engine/RealmMap.js">RealmMap</a>, creates entity objects for the
+player, bots, scenery, and items, then processes queued commands like
+movement and interaction on a 250ms loop. Movement checks map bounds,
+terrain walkability, collisions, pickup behavior, and simple scripted
+effects such as speech and emotes. The player inventory is just an
+in-memory array on the <a href="./entities/Player.js">Player</a>
+entity.</p>
+</section>
+<section id="rendering-and-ui" class="level2">
+<h2>Rendering and UI</h2>
+<p>Rendering is split into layers inside <a
+href="./ui/GameBoard.js">ui/GameBoard.js</a>: <a
+href="./ui/TerrainLayer.js">TerrainLayer</a> draws visible cells from
+the camera window, <a href="./ui/AvatarLayer.js">AvatarLayer</a> places
+entity avatars, and <a href="./ui/EffectLayer.js">EffectLayer</a>
+animates floating emoji/emotion effects. The terrain visuals are
+data-driven too: <a href="./ui/GameCell.js">ui/GameCell.js</a> reads
+palette info from terrain catalog entries and generates per-tile
+variation with seeded randomness.</p>
+</section>
+<section id="section" class="level2">
+<h2></h2>
+<p>The side UI in <a href="./ui/GameUI.js">ui/GameUI.js</a> shows
+inventory and opens <a href="./ui/AdminDialog.js">ui/AdminDialog.js</a>,
+which acts like an in-game inspector. That dialog can switch realms and
+browse the loaded catalogs and game data tree, so the project doubles as
+both a playable prototype and a lightweight data-driven world
+editor/debug viewer.</p>
+</section>
 </body>
 </html>

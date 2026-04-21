@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2024-04-21" />
+  <title>How to Build a Realm Editor for Your Game</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">How to Build a Realm Editor for Your Game</h1>
+<p class="date">2024-04-21</p>
+</header>
+<p>The easiest decent path is to build the realm editor as another
+<code>main.stage</code> mode inside the app, not as a totally separate
+editor. You already have the right architecture for it now:
+<code>GameUI</code> owns the shell, <code>GameBoard</code> renders a
+realm, and <code>AdminDialog</code> can inspect data. The editor can
+reuse most of that.</p>
+<p>I’d implement it in layers.</p>
+<p><strong>Recommended Approach</strong> Create an
+<code>EditorMode</code>/<code>RealmEditor</code> component that mounts
+into the same <code>main.stage</code> area where <code>game-board</code>
+lives. It should edit a plain mutable realm draft object, then render
+that draft through the existing board/engine pipeline.</p>
+<p>Basic shape:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">main</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;game-stage&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">realm-editor</span><span class="dt">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">game-board</span><span class="dt">&gt;&lt;/</span><span class="kw">game-board</span><span class="dt">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">realm-editor</span><span class="dt">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">main</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Or, if you want to keep <code>GameBoard</code> generic:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ui<span class="op">.</span><span class="fu">mountStageContent</span>(editor)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>editor<span class="op">.</span><span class="fu">mountBoard</span>(gameBoard)</span></code></pre></div>
+<p>The important idea is: editor mode owns tools and draft data;
+<code>GameBoard</code> remains the visual board.</p>
+<p><strong>Data Model</strong> Use a draft realm object as the source of
+truth while editing:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="at">draftRealm</span> <span class="op">=</span> <span class="fu">structuredClone</span>(currentRealm)</span></code></pre></div>
+<p>Then editor actions mutate the draft:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setTerrain</span>(x<span class="op">,</span> y<span class="op">,</span> terrainId)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">placeItem</span>(x<span class="op">,</span> y<span class="op">,</span> itemData)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">moveEntity</span>(id<span class="op">,</span> x<span class="op">,</span> y)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">updateEntity</span>(id<span class="op">,</span> patch)</span></code></pre></div>
+<p>Do not mutate the live engine state directly. Instead, after each
+edit, rebuild or refresh from the draft. At first, rebuilding is
+simplest and probably fine for your map sizes.</p>
+<p><strong>Terrain Painting</strong> Start with click-to-paint and
+drag-to-paint.</p>
+<p>You need <code>GameCell</code> clicks to report world coordinates.
+Your <code>TerrainLayer</code> already gives each cell:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>worldX<span class="op">,</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>worldY<span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>terrain</span></code></pre></div>
+<p>So the simplest addition is dispatching a custom event from
+<code>GameCell</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">this</span><span class="op">.</span><span class="fu">dispatchEvent</span>(<span class="kw">new</span> <span class="bu">CustomEvent</span>(<span class="st">&#39;cellclick&#39;</span><span class="op">,</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">bubbles</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">detail</span><span class="op">:</span> {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span>#<span class="at">cell</span><span class="op">.</span><span class="at">worldX</span><span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span>#<span class="at">cell</span><span class="op">.</span><span class="at">worldY</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">cell</span><span class="op">:</span> <span class="kw">this</span><span class="op">.</span>#<span class="at">cell</span><span class="op">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}))</span></code></pre></div>
+<p>Then <code>RealmEditor</code> listens for <code>cellclick</code> or
+pointer events and applies the selected tool.</p>
+<p><strong>Object Placement</strong> Treat bots/items/scenery as
+selectable palettes.</p>
+<p>A minimal editor toolbar could have:</p>
+<ul>
+<li>tool: <code>paint-terrain</code></li>
+<li>tool: <code>place-item</code></li>
+<li>tool: <code>place-bot</code></li>
+<li>tool: <code>place-scenery</code></li>
+<li>tool: <code>select</code></li>
+<li>selected terrain/catalog object</li>
+</ul>
+<p>On cell click:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (tool <span class="op">===</span> <span class="st">&#39;paint-terrain&#39;</span>) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  draft<span class="op">.</span><span class="at">realmMap</span><span class="op">.</span><span class="at">cells</span><span class="op">.</span><span class="fu">push</span>({ x<span class="op">,</span> y<span class="op">,</span> <span class="dt">terrain</span><span class="op">:</span> selectedTerrain })</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (tool <span class="op">===</span> <span class="st">&#39;place-item&#39;</span>) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  draft<span class="op">.</span><span class="at">entities</span><span class="op">.</span><span class="at">items</span><span class="op">.</span><span class="fu">push</span>({</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>selectedItemDefaults<span class="op">,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    x<span class="op">,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    y<span class="op">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Later you can normalize duplicate terrain cells, but don’t overbuild
+that first.</p>
+<p><strong>Object Editing</strong> Start with selection. Clicking an
+avatar selects the underlying entity and shows a side panel.</p>
+<p>The panel can edit common fields:</p>
+<ul>
+<li><code>name</code></li>
+<li><code>emoji</code></li>
+<li><code>x</code></li>
+<li><code>y</code></li>
+<li><code>solid</code></li>
+<li><code>portable</code></li>
+<li><code>kind</code></li>
+<li><code>catalogId</code></li>
+<li><code>on.pickup.message</code></li>
+<li><code>on.bump.message</code></li>
+</ul>
+<p>This can just be a form bound to the selected object:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>selectedEntity<span class="op">.</span><span class="at">name</span> <span class="op">=</span> input<span class="op">.</span><span class="at">value</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>editor<span class="op">.</span><span class="fu">renderDraft</span>()</span></code></pre></div>
+<p>At first, object editing can live in the right sidebar. That is
+exactly what your new shell layout is good for.</p>
+<p><strong>Save/Export</strong> The simplest save system is “export
+JSON” first.</p>
+<p>Add buttons:</p>
+<ul>
+<li><code>Copy realm JSON</code></li>
+<li><code>Download realm.json</code></li>
+<li>maybe <code>Reset draft</code></li>
+</ul>
+<p>Browser apps generally cannot write back to your repo files without a
+backend or local file picker permissions, so export/copy is the easiest
+low-friction route.</p>
+<p>Later, if you want real file saving, add a tiny local dev server
+endpoint or use the File System Access API in supported browsers.</p>
+<p><strong>Suggested Build Order</strong> 1. Add editor mode toggle from
+hamburger menu. 2. Add <code>RealmEditor</code> component with a toolbar
+and a draft realm. 3. Make <code>GameCell</code> emit world-coordinate
+click/pointer events. 4. Implement terrain painting. 5. Add object
+selection by clicking avatars. 6. Add object placement from catalogs. 7.
+Add right-sidebar property editor. 8. Add export/copy JSON.</p>
+<p><strong>Key Design Choice</strong> Keep three concepts separate:</p>
+<ul>
+<li><code>realm.json</code>: authored source data</li>
+<li><code>RealmMap</code>: runtime map model built from realm data</li>
+<li><code>RealmEditor</code>: draft mutation tools for authoring realm
+data</li>
+</ul>
+<p>That separation will keep the editor from turning into a tangled mix
+of runtime state and file format concerns.</p>
+<p>If you want the fastest useful first version, I’d start with terrain
+painting plus JSON export. That gives you immediate value and proves the
+editor architecture before adding object editing.</p>
+</body>
+</html>
