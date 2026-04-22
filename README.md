@@ -11,7 +11,7 @@ This project is a small browser-based Zelda-style prototype built with vanilla J
 
 ## Game Data Structure
 
- `GameApp.js` uses [engine/GameDataLoader.js](./engine/GameDataLoader.js) to load [data/index.json](./data/index.json), which contains references to all data files, including shared data catalogs (`actors.json`, `animations.json`, `effects.json`, `emoji.json`, `emotions.json`, `items.json`, `props.json`, `terrain.json`) plus the current realm JSON. The data catalogs contain reusable definitions for terrain types, items, emotions, and animations. Graphics are all emoji, which keeps things simple and fun.
+ `GameApp.js` uses [engine/GameDataLoader.js](./engine/GameDataLoader.js) to load [data/index.json](./data/index.json), which contains references to all data files, including shared data catalogs (`actors.json`, `animations.json`, `effects.json`, `emoji.json`, `emotions.json`, `items.json`, `terrain.json`) plus the current realm JSON. The data catalogs contain reusable definitions for terrain types, items, emotions, and animations. Graphics are all emoji, which keeps things simple and fun.
 
 ## Realm
 
