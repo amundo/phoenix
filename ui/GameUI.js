@@ -10,9 +10,14 @@ class GameUI extends HTMLElement {
             <span>Realm</span>
             <select class="realm-select"></select>
           </label>
+          <div class="mode-indicator" role="status" aria-live="polite" hidden>
+            <span class="mode-dot"></span>
+            <span class="mode-label">Editing</span>
+          </div>
           <details class="game-menu">
             <summary class="menu-toggle" aria-label="Open menu">☰</summary>
             <div class="menu-panel">
+              <button type="button" class="menu-action editor-link">Edit Realm</button>
               <button type="button" class="menu-action admin-link">Admin Inspector</button>
             </div>
           </details>
@@ -32,13 +37,12 @@ class GameUI extends HTMLElement {
       </main>
       <aside class="game-sidebar game-sidebar-right">
         <section class="ui-panel status-panel">
-          <h2>Status</h2>
-          <p class="status-empty">Health, quests, and other status widgets can live here.</p>
+          <p class="status-empty">sidebar</p>
         </section>
       </aside>
       <footer class="game-footer">
         <section class="ui-panel footer-panel">
-          <p class="footer-copy">Notifications, dialogue, and action prompts can live here.</p>
+          <p class="footer-copy">footer</p>
         </section>
       </footer>
       <admin-dialog></admin-dialog>
@@ -48,9 +52,14 @@ class GameUI extends HTMLElement {
     this.menu = this.querySelector('.game-menu')
     this.realmSelect = this.querySelector('.realm-select')
     this.stageSlot = this.querySelector('.stage-slot')
+    this.rightSidebar = this.querySelector('.game-sidebar-right')
 
     this.handleRealmChange = this.handleRealmChange.bind(this)
 
+    this.querySelector('.editor-link')?.addEventListener('click', () => {
+      this.closeMenu()
+      this.dispatchEvent(new CustomEvent('editoropen', { bubbles: true }))
+    })
     this.querySelector('.admin-link')?.addEventListener('click', () => {
       this.closeMenu()
       this.adminDialog?.open()
@@ -89,6 +98,28 @@ class GameUI extends HTMLElement {
   mountStageContent(node) {
     if (!this.stageSlot || !node) return
     this.stageSlot.replaceChildren(node)
+  }
+
+  mountRightSidebarContent(node) {
+    if (!this.rightSidebar || !node) return
+    this.rightSidebar.replaceChildren(node)
+  }
+
+  restoreStatusPanel() {
+    if (!this.rightSidebar) return
+    this.rightSidebar.innerHTML = `
+      <section class="ui-panel status-panel">
+        <h2>Status</h2>
+        <p class="status-empty">Health, quests, and other status widgets can live here.</p>
+      </section>
+    `
+  }
+
+  setMode(mode) {
+    const isEditing = mode === 'editor'
+    this.querySelector('.editor-link')?.toggleAttribute('hidden', isEditing)
+    this.querySelector('.mode-indicator')?.toggleAttribute('hidden', !isEditing)
+    this.classList.toggle('is-editing', isEditing)
   }
 
   setInventory(items) {

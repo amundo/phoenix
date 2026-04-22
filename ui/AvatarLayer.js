@@ -80,10 +80,25 @@ class AvatarLayer extends BaseLayer {
   }
 
   createAvatar(entity) {
-    if (entity instanceof Scenery) return new SceneryAvatar()
-    if (entity instanceof Player) return new PlayerAvatar()
-    if (entity instanceof Bot) return new BotAvatar()
-    if (entity instanceof Item) return new ItemAvatar()
+    let avatar = null
+
+    if (entity instanceof Scenery) avatar = new SceneryAvatar()
+    if (entity instanceof Player) avatar = new PlayerAvatar()
+    if (entity instanceof Bot) avatar = new BotAvatar()
+    if (entity instanceof Item) avatar = new ItemAvatar()
+
+    if (avatar) {
+      avatar.addEventListener('click', event => {
+        event.stopPropagation()
+        avatar.dispatchEvent(new CustomEvent('avatarselect', {
+          bubbles: true,
+          composed: true,
+          detail: { entity },
+        }))
+      })
+      return avatar
+    }
+
     throw new Error(`No avatar class for entity: ${entity?.constructor?.name}`)
   }
 }

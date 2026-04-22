@@ -2,6 +2,7 @@ import { GameEngine } from '../engine/GameEngine.js'
 import { GameDataLoader } from '../engine/GameDataLoader.js'
 import { GameBoard } from './GameBoard.js'
 import { GameUI } from './GameUI.js'
+import { RealmEditor } from './RealmEditor.js'
 
 /*
 
@@ -30,12 +31,18 @@ class GameApp extends HTMLElement {
   #index = null
   #currentRealmName = null
   #currentRealm = null
+  #realmEditor = null
+  #isEditing = false
 
   constructor() {
     super()
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleRealmChange = this.handleRealmChange.bind(this)
+    this.handleEditorOpen = this.handleEditorOpen.bind(this)
+    this.handleEditorInspect = this.handleEditorInspect.bind(this)
+    this.handleDraftSave = this.handleDraftSave.bind(this)
+    this.handleDraftCancel = this.handleDraftCancel.bind(this)
 
     this.initializeLayout()
   }
@@ -67,10 +74,13 @@ class GameApp extends HTMLElement {
     removeEventListener('keydown', this.handleKeyDown)
   }
 
+  get ui(){ return this.#ui }
+
   // Build the UI shell and mount a fresh board into the stage.
   initializeLayout() {
     if (this.#ui) {
       this.#ui.removeEventListener('realmchange', this.handleRealmChange)
+      this.#ui.removeEventListener('editoropen', this.handleEditorOpen)
     }
 
     this.replaceChildren()
@@ -78,6 +88,7 @@ class GameApp extends HTMLElement {
     this.#ui = new GameUI()
     this.#ui.mountStageContent(this.#gameBoard)
     this.#ui.addEventListener('realmchange', this.handleRealmChange)
+    this.#ui.addEventListener('editoropen', this.handleEditorOpen)
     this.append(this.#ui)
   }
 
@@ -108,6 +119,8 @@ class GameApp extends HTMLElement {
       this.initializeLayout()
     }
 
+    this.#isEditing = false
+    this.#realmEditor = null
     this.#engine = new GameEngine(gameData)
     this.#currentRealm = gameData.realm
     this.#commandQueue = []
@@ -119,6 +132,50 @@ class GameApp extends HTMLElement {
 
     removeEventListener('keydown', this.handleKeyDown)
     addEventListener('keydown', this.handleKeyDown)
+  }
+
+  handleEditorOpen() {
+    if (!this.#sharedData || !this.#currentRealm) return
+
+    this.stopLoop()
+    removeEventListener('keydown', this.handleKeyDown)
+
+    this.#isEditing = true
+    this.#realmEditor = new RealmEditor()
+    this.#realmEditor.addEventListener('editorinspect', this.handleEditorInspect)
+    this.#realmEditor.addEventListener('draftsave', this.handleDraftSave)
+    this.#realmEditor.addEventListener('draftcancel', this.handleDraftCancel)
+    this.#realmEditor.setData({
+      game: this.#sharedData.game,
+      catalogs: this.#sharedData.catalogs,
+      realm: this.#currentRealm,
+    })
+
+    this.#ui?.setMode('editor')
+    this.#ui?.mountStageContent(this.#realmEditor)
+  }
+
+  handleDraftCancel() {
+    if (!this.#currentRealm || !this.#sharedData) return
+
+    this.start({
+      ...this.#sharedData,
+      realm: this.#currentRealm,
+    })
+  }
+
+  handleEditorInspect(event) {
+    this.#ui?.mountRightSidebarContent(event.detail?.node)
+  }
+
+  handleDraftSave(event) {
+    if (!event.detail?.realm || !this.#sharedData) return
+
+    this.#currentRealm = event.detail.realm
+    this.start({
+      ...this.#sharedData,
+      realm: this.#currentRealm,
+    })
   }
 
   // Respond to realm selector changes by loading the requested realm.
@@ -177,7 +234,7 @@ class GameApp extends HTMLElement {
 
   // Advance the engine one tick and apply any changed state or effects.
   step() {
-    if (!this.#engine) return
+    if (!this.#engine || this.#isEditing) return
 
     const commands = this.#commandQueue.splice(0)
     const result = this.#engine.update(commands)
@@ -226,11 +283,11 @@ class GameApp extends HTMLElement {
         camera: this.#engine.camera,
       },
     })
-  }12
+  }
 
   // Convert keyboard input into engine commands.
   handleKeyDown(event) {
-    if (!this.#engine) return
+    if (!this.#engine || this.#isEditing) return
 
     const actor = this.#engine.player
     let command = null

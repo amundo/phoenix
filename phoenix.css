@@ -16,6 +16,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  min-height: 0;
 }
 
 body {
@@ -29,6 +30,8 @@ body {
 game-app {
   display: block;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 game-ui {
@@ -39,6 +42,8 @@ game-ui {
     "footer footer footer" auto
     / minmax(14rem, 18rem) minmax(0, 1fr) minmax(14rem, 18rem);
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .game-header {
@@ -74,14 +79,60 @@ game-ui {
   padding: 0.9rem 1rem;
 }
 
+.mode-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.2rem;
+  margin-left: auto;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgb(36 72 55 / 0.3);
+  border-radius: 999px;
+  background: #eaf7ef;
+  color: #17313b;
+  font-weight: 800;
+  box-shadow: 0 0.4rem 1.2rem rgb(0 0 0 / 0.12);
+}
+
+.mode-indicator[hidden] {
+  display: none;
+}
+
+.mode-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: #1d7f4f;
+  box-shadow: 0 0 0 0.2rem rgb(29 127 79 / 0.18);
+}
+
+.mode-label {
+  font-size: 0.85rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+game-ui.is-editing .header-panel {
+  background: rgb(234 247 239 / 0.42);
+  border-bottom: 1px solid rgb(29 127 79 / 0.25);
+}
+
 .game-sidebar {
+  display: grid;
   min-height: 0;
+  overflow: hidden;
 }
 
 .game-sidebar > .ui-panel,
 .game-footer > .ui-panel {
   height: 100%;
+  min-height: 0;
   padding: 1rem;
+}
+
+.game-sidebar > .ui-panel {
+  overflow: auto;
 }
 
 .status-panel,
@@ -102,6 +153,14 @@ game-ui {
   border: 1px solid rgb(255 255 255 / 0.45);
   border-radius: 1.25rem;
   background: rgb(255 255 255 / 0.16);
+}
+
+game-ui.is-editing .stage-frame {
+  border-color: rgb(29 127 79 / 0.65);
+  background: rgb(234 247 239 / 0.24);
+  box-shadow:
+    inset 0 0 0 2px rgb(29 127 79 / 0.28),
+    0 0.8rem 2.4rem rgb(23 49 59 / 0.14);
 }
 
 .stage-slot {
@@ -326,6 +385,16 @@ game-cell {
   width: 100%;
   overflow: visible;
   z-index: 2;
+  cursor: pointer;
+}
+
+game-ui.is-editing .avatar {
+  cursor: crosshair;
+}
+
+game-ui.is-editing .avatar:hover .avatar-emoji,
+game-ui.is-editing .avatar:focus-visible .avatar-emoji {
+  filter: drop-shadow(0 0 0.35rem white);
 }
 
 .avatar-emoji {
@@ -591,6 +660,143 @@ summary {
 .footer-copy,
 .current-realm {
   color: #395767;
+}
+
+realm-editor {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.realm-editor-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.realm-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editor-toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.editor-action,
+.editor-icon-action {
+  border: 1px solid rgb(0 0 0 / 0.18);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.94);
+  color: #17313b;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.editor-icon-action {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0.55rem 0;
+}
+
+.editor-action:hover,
+.editor-action:focus-visible,
+.editor-icon-action:hover,
+.editor-icon-action:focus-visible,
+.editor-action[aria-pressed="true"] {
+  background: white;
+  outline: 2px solid rgb(23 49 59 / 0.22);
+}
+
+.editor-action[aria-pressed="true"] {
+  border-color: rgb(29 127 79 / 0.65);
+  background: #eaf7ef;
+}
+
+.editor-camera-status {
+  min-width: 9rem;
+  color: #17313b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.realm-editor-board {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  container-type: size;
+}
+
+.editor-inspector {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: auto;
+  border-left: 4px solid #1d7f4f;
+  background: rgb(234 247 239 / 0.42);
+}
+
+.editor-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.editor-field {
+  display: grid;
+  gap: 0.25rem;
+  color: #17313b;
+}
+
+.editor-field span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #395767;
+}
+
+.editor-field input,
+.editor-field textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgb(0 0 0 / 0.18);
+  border-radius: 0.45rem;
+  background: rgb(255 255 255 / 0.92);
+  color: #17313b;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+}
+
+.editor-field input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.editor-field textarea {
+  min-height: 18rem;
+  resize: vertical;
+  font: 0.82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.editor-field textarea.is-invalid {
+  border-color: #b3261e;
+  outline: 2px solid rgb(179 38 30 / 0.16);
 }
 
 @media (max-width: 900px) {
