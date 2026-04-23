@@ -1,6 +1,8 @@
 import { GameEngine } from '../engine/GameEngine.js'
 import { Camera } from '../engine/Camera.js'
 import { GameBoard } from './GameBoard.js'
+import { SearchEmoji } from './search-emoji/SearchEmoji.js'
+import { setTerrainOverride } from '../editor/terrainEditing.js'
 
 class RealmEditor extends HTMLElement {
   #draft = null
@@ -8,10 +10,13 @@ class RealmEditor extends HTMLElement {
   #catalogs = null
   #engine = null
   #board = null
-  #selectedRef = null
+  #selectedEntitySelection = null
   #sourceRealm = null
   #camera = null
   #tool = 'select'
+  #selectedTerrain = 'grass'
+  #isPaintingTerrain = false
+  #lastPaintedCellKey = null
 
   constructor() {
     super()
@@ -23,6 +28,21 @@ class RealmEditor extends HTMLElement {
     })
     this.#board.addEventListener('click', event => {
       this.handleBoardClick(event)
+    })
+    this.#board.addEventListener('pointerdown', event => {
+      this.handleBoardPointerDown(event)
+    })
+    this.#board.addEventListener('pointermove', event => {
+      this.handleBoardPointerMove(event)
+    })
+    this.#board.addEventListener('pointerup', event => {
+      this.handleBoardPointerUp(event)
+    })
+    this.#board.addEventListener('pointercancel', event => {
+      this.handleBoardPointerUp(event)
+    })
+    this.#board.addEventListener('pointerleave', event => {
+      this.handleBoardPointerUp(event)
     })
 
     this.innerHTML = `
@@ -43,6 +63,13 @@ class RealmEditor extends HTMLElement {
             <button type="button" class="editor-action add-item">Add Item</button>
             <button type="button" class="editor-action add-bot">Add Bot</button>
             <button type="button" class="editor-action place-player" data-tool="place-player" aria-pressed="false">Place Player</button>
+            <button type="button" class="editor-action paint-terrain" data-tool="paint-terrain" aria-pressed="false">Paint Terrain</button>
+          </div>
+          <div class="editor-toolbar-group">
+            <label class="editor-toolbar-field">
+              <span>Terrain</span>
+              <select class="terrain-select" aria-label="Selected terrain"></select>
+            </label>
           </div>
           <div class="editor-camera-status" aria-live="polite"></div>
         </div>
@@ -70,6 +97,10 @@ class RealmEditor extends HTMLElement {
     this.querySelector('.add-item')?.addEventListener('click', () => this.addEntity('items'))
     this.querySelector('.add-bot')?.addEventListener('click', () => this.addEntity('bots'))
     this.querySelector('.place-player')?.addEventListener('click', () => this.setTool('place-player'))
+    this.querySelector('.paint-terrain')?.addEventListener('click', () => this.setTool('paint-terrain'))
+    this.querySelector('.terrain-select')?.addEventListener('input', event => {
+      this.setSelectedTerrain(event.target.value)
+    })
     this.addEventListener('keydown', event => this.handleKeyDown(event))
     this.addEventListener('click', () => this.focus())
   }
@@ -80,7 +111,8 @@ class RealmEditor extends HTMLElement {
     this.#sourceRealm = realm
     this.#draft = structuredClone(realm)
     this.#camera = this.createEditorCamera(this.#draft)
-    this.#selectedRef = null
+    this.#selectedEntitySelection = null
+    this.populateTerrainOptions()
     this.setTool('select')
     this.renderDraft()
     this.showEmptyInspector()
@@ -155,14 +187,35 @@ class RealmEditor extends HTMLElement {
 
   setTool(tool) {
     this.#tool = tool
+    this.dataset.tool = tool
+    this.#board.dataset.editorTool = tool
     this.querySelectorAll('[data-tool]').forEach(button => {
       button.toggleAttribute('aria-pressed', button.dataset.tool === tool)
     })
+
+    if (tool === 'paint-terrain') {
+      this.showTerrainInspector()
+      return
+    }
+
+    this.#isPaintingTerrain = false
+
+    if (this.#selectedEntitySelection) {
+      this.dispatchInspector(this.buildInspector(this.#selectedEntitySelection))
+      return
+    }
+
+    this.showEmptyInspector()
   }
 
   handleBoardClick(event) {
     const cell = event.target.closest?.('game-cell')
     if (!cell?.data) return
+
+    if (this.#tool === 'paint-terrain') {
+      this.paintTerrainAt(cell.data.worldX, cell.data.worldY)
+      return
+    }
 
     if (this.#tool === 'place-player') {
       this.movePlayerTo(cell.data.worldX, cell.data.worldY)
@@ -170,12 +223,95 @@ class RealmEditor extends HTMLElement {
     }
   }
 
+  handleBoardPointerDown(event) {
+    if (this.#tool !== 'paint-terrain' || event.button !== 0) return
+
+    const cell = event.target.closest?.('game-cell')
+    if (!cell?.data) return
+
+    this.#isPaintingTerrain = true
+    this.#lastPaintedCellKey = null
+    this.paintTerrainAt(cell.data.worldX, cell.data.worldY)
+  }
+
+  handleBoardPointerMove(event) {
+    if (this.#tool !== 'paint-terrain' || !this.#isPaintingTerrain) return
+
+    const cell = event.target.closest?.('game-cell')
+    if (!cell?.data) return
+
+    this.paintTerrainAt(cell.data.worldX, cell.data.worldY)
+  }
+
+  handleBoardPointerUp(event) {
+    if (this.#tool !== 'paint-terrain') return
+
+    this.#isPaintingTerrain = false
+    this.#lastPaintedCellKey = null
+  }
+
+  populateTerrainOptions() {
+    const select = this.querySelector('.terrain-select')
+    if (!select) return
+
+    const terrainEntries = [...(this.#catalogs?.terrain?.values?.() ?? [])]
+      .sort((a, b) =>
+        `${a.category ?? ''}:${a.name ?? a.id}`.localeCompare(`${b.category ?? ''}:${b.name ?? b.id}`)
+      )
+
+    select.replaceChildren()
+
+    for (const terrain of terrainEntries) {
+      const option = document.createElement('option')
+      option.value = terrain.id
+      option.textContent = terrain.name ?? terrain.id
+      select.append(option)
+    }
+
+    const preferredTerrain = terrainEntries.some(terrain => terrain.id === this.#selectedTerrain)
+      ? this.#selectedTerrain
+      : terrainEntries[0]?.id ?? 'grass'
+
+    this.setSelectedTerrain(preferredTerrain)
+  }
+
+  setSelectedTerrain(terrainId) {
+    this.#selectedTerrain = terrainId || 'grass'
+    const select = this.querySelector('.terrain-select')
+    if (select && select.value !== this.#selectedTerrain) {
+      select.value = this.#selectedTerrain
+    }
+
+    if (this.#tool === 'paint-terrain') {
+      this.showTerrainInspector()
+    }
+  }
+
+  paintTerrainAt(x, y) {
+    if (!this.#draft) return
+
+    const cellKey = `${x},${y}`
+    if (cellKey === this.#lastPaintedCellKey) return
+
+    const changed = setTerrainOverride(this.#draft, {
+      x,
+      y,
+      terrain: this.#selectedTerrain,
+    })
+
+    this.#lastPaintedCellKey = cellKey
+    if (!changed) return
+
+    this.renderDraft()
+    this.showTerrainInspector(x, y)
+  }
+
   movePlayerTo(x, y) {
     if (!this.#draft?.entities?.player) return
     this.#draft.entities.player.x = x
     this.#draft.entities.player.y = y
     this.renderDraft()
-    this.selectDraftRef({
+    this.selectEntitySelection({
       label: 'Player',
       entity: this.#draft.entities.player,
       collection: 'player',
@@ -192,7 +328,7 @@ class RealmEditor extends HTMLElement {
 
     this.#draft.entities[collection].push(entity)
     this.renderDraft()
-    this.selectDraftRef({
+    this.selectEntitySelection({
       label: collection === 'bots' ? 'Bot' : 'Item',
       collection,
       index: this.#draft.entities[collection].length - 1,
@@ -237,22 +373,22 @@ class RealmEditor extends HTMLElement {
   }
 
   selectEntity(runtimeEntity) {
-    const ref = this.findDraftEntity(runtimeEntity)
-    if (!ref) {
+    const entitySelection = this.findEntitySelection(runtimeEntity)
+    if (!entitySelection) {
       this.showEmptyInspector('This avatar comes from generated map scenery and is not directly editable yet.')
       return
     }
 
-    this.#selectedRef = ref
-    this.dispatchInspector(this.buildInspector(ref))
+    this.#selectedEntitySelection = entitySelection
+    this.dispatchInspector(this.buildInspector(entitySelection))
   }
 
-  selectDraftRef(ref) {
-    this.#selectedRef = ref
-    this.dispatchInspector(this.buildInspector(ref))
+  selectEntitySelection(entitySelection) {
+    this.#selectedEntitySelection = entitySelection
+    this.dispatchInspector(this.buildInspector(entitySelection))
   }
 
-  findDraftEntity(runtimeEntity) {
+  findEntitySelection(runtimeEntity) {
     if (!runtimeEntity || !this.#draft?.entities) return null
 
     if (runtimeEntity === this.#engine?.player) {
@@ -299,6 +435,32 @@ class RealmEditor extends HTMLElement {
     this.dispatchInspector(panel)
   }
 
+  showTerrainInspector(x = null, y = null) {
+    const terrain = this.#catalogs?.terrain?.get?.(this.#selectedTerrain)
+    const panel = document.createElement('section')
+    panel.className = 'ui-panel editor-inspector'
+
+    const title = document.createElement('h2')
+    title.textContent = 'Terrain Brush'
+
+    const status = document.createElement('p')
+    status.className = 'status-empty'
+    status.textContent = x == null || y == null
+      ? `Painting ${terrain?.name ?? this.#selectedTerrain}. Drag across visible tiles to stamp terrain overrides.`
+      : `Painted ${terrain?.name ?? this.#selectedTerrain} at ${x},${y}.`
+
+    const details = document.createElement('div')
+    details.className = 'editor-terrain-summary'
+    details.innerHTML = `
+      <p><strong>Selected:</strong> ${terrain?.name ?? this.#selectedTerrain}</p>
+      <p><strong>Id:</strong> ${this.#selectedTerrain}</p>
+      <p>${terrain?.description ?? 'No description available.'}</p>
+    `
+
+    panel.append(title, status, details)
+    this.dispatchInspector(panel)
+  }
+
   dispatchInspector(node) {
     this.dispatchEvent(new CustomEvent('editorinspect', {
       bubbles: true,
@@ -306,20 +468,20 @@ class RealmEditor extends HTMLElement {
     }))
   }
 
-  buildInspector(ref) {
-    const { entity } = ref
+  buildInspector(entitySelection) {
+    const { entity } = entitySelection
     const panel = document.createElement('section')
     panel.className = 'ui-panel editor-inspector'
 
     const title = document.createElement('h2')
-    title.textContent = ref.label
+    title.textContent = entitySelection.label
     panel.append(title)
 
     const form = document.createElement('form')
     form.className = 'editor-form'
     form.addEventListener('submit', event => event.preventDefault())
 
-    for (const field of this.getEditableFields(ref)) {
+    for (const field of this.getEditableFields(entitySelection)) {
       form.append(this.createField(entity, field))
     }
 
@@ -331,7 +493,7 @@ class RealmEditor extends HTMLElement {
 
     const markupInput = document.createElement('textarea')
     markupInput.spellcheck = false
-    markupInput.value = this.entityToMarkup(ref)
+    markupInput.value = this.entityToMarkup(entitySelection)
     markupInput.addEventListener('change', () => {
       try {
         this.applySelectedMarkup(markupInput.value)
@@ -347,7 +509,7 @@ class RealmEditor extends HTMLElement {
     return panel
   }
 
-  getEditableFields(ref) {
+  getEditableFields(entitySelection) {
     const fields = [
       { key: 'id', type: 'text' },
       { key: 'kind', type: 'text' },
@@ -357,7 +519,7 @@ class RealmEditor extends HTMLElement {
       { key: 'y', type: 'number' },
     ]
 
-    if (ref.collection === 'items' || ref.collection === 'scenery') {
+    if (entitySelection.collection === 'items' || entitySelection.collection === 'scenery') {
       fields.push(
         { key: 'portable', type: 'checkbox' },
         { key: 'solid', type: 'checkbox' },
@@ -368,7 +530,7 @@ class RealmEditor extends HTMLElement {
   }
 
   createField(entity, field) {
-    const label = document.createElement('label')
+    const label = document.createElement(field.key === 'emoji' ? 'div' : 'label')
     label.className = 'editor-field'
 
     const text = document.createElement('span')
@@ -388,7 +550,25 @@ class RealmEditor extends HTMLElement {
       this.updateSelectedField(field.key, this.readFieldValue(input, field))
     })
 
-    label.append(text, input)
+    if (field.key === 'emoji') {
+      label.classList.add('editor-field-emoji')
+      const inputLabel = document.createElement('label')
+      inputLabel.className = 'editor-field-main'
+      inputLabel.append(text, input)
+
+      const search = new SearchEmoji()
+      search.data = this.#catalogs?.emoji ?? []
+      search.value = entity[field.key] ?? ''
+      search.addEventListener('emojiselect', event => {
+        const emoji = event.detail?.emoji ?? ''
+        input.value = emoji
+        this.updateSelectedField(field.key, emoji)
+      })
+      label.append(inputLabel, search)
+    } else {
+      label.append(text, input)
+    }
+
     return label
   }
 
@@ -399,40 +579,40 @@ class RealmEditor extends HTMLElement {
   }
 
   updateSelectedField(key, value) {
-    const ref = this.#selectedRef
-    if (!ref) return
-    ref.entity[key] = value
+    const entitySelection = this.#selectedEntitySelection
+    if (!entitySelection) return
+    entitySelection.entity[key] = value
     this.renderDraft()
   }
 
   replaceSelectedEntity(nextEntity) {
-    const ref = this.#selectedRef
-    if (!ref) return
+    const entitySelection = this.#selectedEntitySelection
+    if (!entitySelection) return
 
-    if (ref.collection === 'player') {
+    if (entitySelection.collection === 'player') {
       this.#draft.entities.player = nextEntity
-      ref.entity = this.#draft.entities.player
+      entitySelection.entity = this.#draft.entities.player
     } else {
-      this.#draft.entities[ref.collection][ref.index] = nextEntity
-      ref.entity = this.#draft.entities[ref.collection][ref.index]
+      this.#draft.entities[entitySelection.collection][entitySelection.index] = nextEntity
+      entitySelection.entity = this.#draft.entities[entitySelection.collection][entitySelection.index]
     }
 
     this.renderDraft()
-    this.dispatchInspector(this.buildInspector(ref))
+    this.dispatchInspector(this.buildInspector(entitySelection))
   }
 
   applySelectedMarkup(markup) {
-    const ref = this.#selectedRef
-    if (!ref) return
+    const entitySelection = this.#selectedEntitySelection
+    if (!entitySelection) return
 
-    const parsed = this.parseEntityMarkup(markup, ref)
+    const parsed = this.parseEntityMarkup(markup, entitySelection)
     this.replaceSelectedEntity({
-      ...ref.entity,
+      ...entitySelection.entity,
       ...parsed,
     })
   }
 
-  parseEntityMarkup(markup, ref) {
+  parseEntityMarkup(markup, entitySelection) {
     const parser = new DOMParser()
     const doc = parser.parseFromString(`<realm>${markup}</realm>`, 'text/html')
     const el = doc.body.querySelector('player, bot, item')
@@ -441,20 +621,20 @@ class RealmEditor extends HTMLElement {
       throw new Error('Use a <player>, <bot>, or <item> tag.')
     }
 
-    const expected = this.getMarkupTag(ref)
+    const expected = this.getMarkupTag(entitySelection)
     if (el.tagName.toLowerCase() !== expected) {
-      throw new Error(`Use a <${expected}> tag for this ${ref.label.toLowerCase()}.`)
+      throw new Error(`Use a <${expected}> tag for this ${entitySelection.label.toLowerCase()}.`)
     }
 
     const next = {}
 
-    for (const field of this.getEditableFields(ref)) {
+    for (const field of this.getEditableFields(entitySelection)) {
       if (!el.hasAttribute(field.key)) continue
       next[field.key] = this.readAttributeValue(el.getAttribute(field.key), field)
     }
 
     const speech = el.querySelector('speech')?.textContent?.trim()
-    if (speech && ref.collection === 'bots') {
+    if (speech && entitySelection.collection === 'bots') {
       next.speech = speech
     }
 
@@ -467,10 +647,10 @@ class RealmEditor extends HTMLElement {
     return value
   }
 
-  entityToMarkup(ref) {
-    const tag = this.getMarkupTag(ref)
-    const entity = ref.entity
-    const attrs = this.getEditableFields(ref)
+  entityToMarkup(entitySelection) {
+    const tag = this.getMarkupTag(entitySelection)
+    const entity = entitySelection.entity
+    const attrs = this.getEditableFields(entitySelection)
       .filter(field => entity[field.key] !== undefined && entity[field.key] !== null && entity[field.key] !== '')
       .map(field => `${field.key}="${this.escapeAttribute(entity[field.key])}"`)
       .join(' ')
@@ -483,9 +663,9 @@ class RealmEditor extends HTMLElement {
     return `${openTag}\n</${tag}>`
   }
 
-  getMarkupTag(ref) {
-    if (ref.collection === 'player') return 'player'
-    if (ref.collection === 'bots') return 'bot'
+  getMarkupTag(entitySelection) {
+    if (entitySelection.collection === 'player') return 'player'
+    if (entitySelection.collection === 'bots') return 'bot'
     return 'item'
   }
 

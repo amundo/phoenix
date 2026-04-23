@@ -692,6 +692,29 @@ realm-editor {
   gap: 0.35rem;
 }
 
+.editor-toolbar-field {
+  display: grid;
+  gap: 0.2rem;
+  color: #17313b;
+}
+
+.editor-toolbar-field span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #395767;
+}
+
+.editor-toolbar-field select {
+  min-width: 10rem;
+  border: 1px solid rgb(0 0 0 / 0.18);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.94);
+  color: #17313b;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
 .editor-action,
 .editor-icon-action {
   border: 1px solid rgb(0 0 0 / 0.18);
@@ -741,6 +764,19 @@ realm-editor {
   container-type: size;
 }
 
+realm-editor[data-tool="paint-terrain"] avatar-layer {
+  pointer-events: none;
+}
+
+realm-editor[data-tool="paint-terrain"] game-cell {
+  cursor: crosshair;
+}
+
+realm-editor[data-tool="paint-terrain"] game-cell:hover {
+  outline: 2px solid rgb(255 255 255 / 0.96);
+  outline-offset: -2px;
+}
+
 .editor-inspector {
   display: grid;
   align-content: start;
@@ -783,6 +819,67 @@ realm-editor {
   font: inherit;
 }
 
+.editor-field-emoji {
+  gap: 0.45rem;
+}
+
+.editor-field-main {
+  display: grid;
+  gap: 0.25rem;
+}
+
+search-emoji {
+  display: block;
+  min-width: 0;
+}
+
+.search-emoji-control {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.search-emoji-input {
+  width: 100%;
+}
+
+.search-emoji-status {
+  min-height: 1rem;
+  color: #395767;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.search-emoji-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.4rem, 1fr));
+  gap: 0.35rem;
+  max-height: 10.5rem;
+  overflow: auto;
+  padding: 0.35rem;
+  border: 1px solid rgb(0 0 0 / 0.14);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.72);
+}
+
+.search-emoji-result {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+  background: transparent;
+  font: 1.35rem/1 Noto Color Emoji, sans-serif;
+  cursor: pointer;
+}
+
+.search-emoji-result:hover,
+.search-emoji-result:focus-visible {
+  border-color: rgb(29 127 79 / 0.35);
+  background: #eaf7ef;
+  outline: none;
+}
+
 .editor-field input[type="checkbox"] {
   width: 1.2rem;
   height: 1.2rem;
@@ -797,6 +894,12 @@ realm-editor {
 .editor-field textarea.is-invalid {
   border-color: #b3261e;
   outline: 2px solid rgb(179 38 30 / 0.16);
+}
+
+.editor-terrain-summary {
+  display: grid;
+  gap: 0.45rem;
+  color: #17313b;
 }
 
 @media (max-width: 900px) {

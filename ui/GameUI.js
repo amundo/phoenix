@@ -17,8 +17,8 @@ class GameUI extends HTMLElement {
           <details class="game-menu">
             <summary class="menu-toggle" aria-label="Open menu">☰</summary>
             <div class="menu-panel">
-              <button type="button" class="menu-action editor-link">Edit Realm</button>
-              <button type="button" class="menu-action admin-link">Admin Inspector</button>
+              <button type="button" class="menu-action editor-link">🖋 Edit your realm!</button>
+              <button type="button" class="menu-action admin-link">🔬 Admin Inspector</button>
             </div>
           </details>
         </div>

@@ -155,6 +155,10 @@ class GameApp extends HTMLElement {
     this.#ui?.mountStageContent(this.#realmEditor)
   }
 
+  get currentRealm(){
+    return this.#currentRealm
+  }
+  
   handleDraftCancel() {
     if (!this.#currentRealm || !this.#sharedData) return
 
