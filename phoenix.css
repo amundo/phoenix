@@ -46,6 +46,14 @@ game-ui {
   overflow: hidden;
 }
 
+game-ui.is-editing {
+  grid-template:
+    "header header header" auto
+    "left stage right" minmax(0, 1fr)
+    "footer footer footer" minmax(5rem, auto)
+    / minmax(16rem, 22rem) minmax(0, 1.4fr) minmax(18rem, 26rem);
+}
+
 .game-header {
   grid-area: header;
 }
@@ -124,14 +132,21 @@ game-ui.is-editing .header-panel {
   overflow: hidden;
 }
 
-.game-sidebar > .ui-panel,
-.game-footer > .ui-panel {
+.sidebar-slot,
+.footer-slot {
+  display: grid;
+  min-height: 0;
+}
+
+.game-sidebar > .sidebar-slot > .ui-panel,
+.game-footer > .footer-slot > .ui-panel {
   height: 100%;
   min-height: 0;
   padding: 1rem;
 }
 
-.game-sidebar > .ui-panel {
+.game-sidebar > .sidebar-slot > .ui-panel,
+.game-footer > .footer-slot > .ui-panel {
   overflow: auto;
 }
 
@@ -140,6 +155,31 @@ game-ui.is-editing .header-panel {
   display: grid;
   align-content: start;
   gap: 0.75rem;
+}
+
+.editor-sidebar-panel,
+.editor-footer-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+}
+
+.editor-summary-list,
+.editor-summary-section {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.editor-summary-section h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #395767;
+}
+
+.editor-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.5rem 1rem;
 }
 
 .stage-frame {
@@ -662,30 +702,6 @@ summary {
   color: #395767;
 }
 
-realm-editor {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-}
-
-.realm-editor-shell {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 0.75rem;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-}
-
-.realm-editor-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .editor-toolbar-group {
   display: inline-flex;
   align-items: center;
@@ -757,22 +773,15 @@ realm-editor {
   text-align: center;
 }
 
-.realm-editor-board {
-  display: grid;
-  place-items: center;
-  min-height: 0;
-  container-type: size;
-}
-
-realm-editor[data-tool="paint-terrain"] avatar-layer {
+game-board[data-editor-tool="paint-terrain"] avatar-layer {
   pointer-events: none;
 }
 
-realm-editor[data-tool="paint-terrain"] game-cell {
+game-board[data-editor-tool="paint-terrain"] game-cell {
   cursor: crosshair;
 }
 
-realm-editor[data-tool="paint-terrain"] game-cell:hover {
+game-board[data-editor-tool="paint-terrain"] game-cell:hover {
   outline: 2px solid rgb(255 255 255 / 0.96);
   outline-offset: -2px;
 }
