@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>animate emoji demo</title>
+  <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+    body {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        place-items: center;
+    }
+    main {
+        text-align: center;
+    }
+    emoji-avatar {
+      display: inline-block;
+      font-size: 5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    button {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+    <header>
+
+        <h1>animate emoji demo</h1>
+        <p>Click the buttons to animate the emoji.</p>
+    </header>
+
+  <main>
+
+    <emoji-avatar id="demo">😀</emoji-avatar>
+    <p id="controls"></p>
+</main>
+    <script type="module">
+        let response = await fetch('./animations.json');
+        window.animations = await response.json();
+   
+      class EmojiAvatar extends HTMLElement {
+playAnimation(name) {
+  const animation = window.animations[name];
+
+  if (!animation) {
+    console.warn(`Missing animation: ${name}`);
+    return;
+  }
+
+  const [keyframes, options = {}] = animation;
+
+  if (options.iterations === "Infinity") {
+    options.iterations = Infinity;
+  }
+
+  super.animate(keyframes, options);
+}
+      }
+
+      customElements.define('emoji-avatar', EmojiAvatar);
+
+      function renderAnimationButtons(animations) {
+        Object.entries(animations).forEach(([name]) => {
+          const button = document.createElement('button');
+          button.textContent = name;
+          button.addEventListener('click', () => {
+            document.querySelector('emoji-avatar').playAnimation(name);
+          });
+          document.getElementById('controls').appendChild(button);
+        });
+      }
+
+      renderAnimationButtons(window.animations);
+    </script>
+  </main>
+</body>
+</html>

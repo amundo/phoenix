@@ -1,0 +1,96 @@
+{
+  "shake": [
+    [
+      { "translate": "0 0" },
+      { "translate": "-10px 0" },
+      { "translate": "10px 0" },
+      { "translate": "-10px 0" },
+      { "translate": "10px 0" },
+      { "translate": "0 0" }
+    ],
+    {
+      "duration": 500
+    }
+  ],
+
+  "bounce": [
+    [
+      { "translate": "0 0" },
+      { "translate": "0 -20px" },
+      { "translate": "0 0" }
+    ],
+    {
+      "duration": 450
+    }
+  ],
+
+  "jump": [
+    [
+      { "translate": "0 0", "scale": "1" },
+      { "translate": "0 -35px", "scale": "1.05" },
+      { "translate": "0 0", "scale": "1" }
+    ],
+    {
+      "duration": 500
+    }
+  ],
+
+  "spin": [
+    [
+      { "rotate": "0deg" },
+      { "rotate": "360deg" }
+    ],
+    {
+      "duration": 700
+    }
+  ],
+
+  "pulse": [
+    [
+      { "scale": "1" },
+      { "scale": "1.25" },
+      { "scale": "1" }
+    ],
+    {
+      "duration": 450
+    }
+  ],
+
+  "float": [
+    [
+      { "translate": "0 0" },
+      { "translate": "0 -10px" },
+      { "translate": "0 0" }
+    ],
+    {
+      "duration": 1200,
+      "iterations": "Infinity"
+    }
+  ],
+
+  "spin3d": [
+    [
+      { "perspective": "500px", "rotate": "y 0deg" },
+      { "perspective": "500px", "rotate": "y 90deg" },
+      { "perspective": "500px", "rotate": "y 180deg" },
+      { "perspective": "500px", "rotate": "y 270deg" },
+      { "perspective": "500px", "rotate": "y 360deg" }
+    ],
+    {
+      "duration": 900,
+      "easing": "ease-in-out"
+    }
+  ],
+
+  "hurt": [
+    [
+      { "scale": "1" },
+      { "scale": "0.8" },
+      { "scale": "1.1" },
+      { "scale": "1" }
+    ],
+    {
+      "duration": 250
+    }
+  ]
+}
