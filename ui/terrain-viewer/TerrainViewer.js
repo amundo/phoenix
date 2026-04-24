@@ -49,13 +49,13 @@ class TerrainViewer extends HTMLElement {
 
   renderTerrainCard(terrain){
     let card = document.createElement('article')
-    card.classList.add('card')
+    card.classList.add('terrain-card')
     const hue = Number(terrain.oklchHue ?? 132)
     card.innerHTML = `
 
-      <h3>${terrain.name}</h3>
+      <h3 class="terrain-name">${terrain.name}</h3>
       <div class="color-swatch" style="background-color: oklch(70% 0.12 ${hue}deg)"></div>
-      <p>${terrain.description}</p>
+      <p class="terrain-description">${terrain.description}</p>
     `
     return card
     
@@ -63,7 +63,6 @@ class TerrainViewer extends HTMLElement {
 
   render(){
     this.#data.forEach(terrain => {
-      console.log(terrain)
       let card = this.renderTerrainCard(terrain)
       this.appendChild(card)
     })

@@ -1,4 +1,31 @@
 
 terrain-viewer {
-  display: block;
+  display: grid;
+  
+
+  .terrain-card {
+    display: grid;
+    grid-template: 
+      "swatch name" 1fr
+      "swatch description" 1fr
+      / 1fr 5fr;
+    gap: 0 .5rem;
+    border:1px solid;
+    border-radius: 1rem;
+    .color-swatch {
+      grid-area: swatch;
+      aspect-ratio: 1;
+      border-start-start-radius: 1rem;
+      border-end-start-radius: 1rem;      
+    }
+    .terrain-name {
+      grid-area: name;
+      font-weight: bold;
+    }
+    .terrain-description {
+      grid-area: description;
+      font-size: smaller;
+    }
+  }
+  
 }
