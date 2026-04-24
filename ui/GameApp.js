@@ -2,7 +2,7 @@ import { GameEngine } from '../engine/GameEngine.js'
 import { GameDataLoader } from '../engine/GameDataLoader.js'
 import { GameBoard } from './GameBoard.js'
 import { GameUI } from './GameUI.js'
-import { RealmEditor } from './RealmEditor.js'
+import { RealmEditController } from './RealmEditController.js'
 
 /*
 
@@ -31,7 +31,7 @@ class GameApp extends HTMLElement {
   #index = null
   #currentRealmName = null
   #currentRealm = null
-  #realmEditor = null
+  #realmEditController = null
   #isEditing = false
 
   constructor() {
@@ -120,7 +120,7 @@ class GameApp extends HTMLElement {
     }
 
     this.#isEditing = false
-    this.#realmEditor = null
+    this.#realmEditController = null
     this.#engine = new GameEngine(gameData)
     this.#currentRealm = gameData.realm
     this.#commandQueue = []
@@ -141,18 +141,21 @@ class GameApp extends HTMLElement {
     removeEventListener('keydown', this.handleKeyDown)
 
     this.#isEditing = true
-    this.#realmEditor = new RealmEditor()
-    this.#realmEditor.addEventListener('editorinspect', this.handleEditorInspect)
-    this.#realmEditor.addEventListener('draftsave', this.handleDraftSave)
-    this.#realmEditor.addEventListener('draftcancel', this.handleDraftCancel)
-    this.#realmEditor.setData({
+    this.#realmEditController = new RealmEditController()
+    this.#realmEditController.addEventListener('editorinspect', this.handleEditorInspect)
+    this.#realmEditController.addEventListener('draftsave', this.handleDraftSave)
+    this.#realmEditController.addEventListener('draftcancel', this.handleDraftCancel)
+
+    this.#ui?.setMode('editor')
+    this.#ui?.mountLeftSidebarContent(this.#realmEditController.buildToolsPanel())
+    this.#ui?.mountStageContent(this.#realmEditController.getBoardNode())
+    this.#ui?.mountRightSidebarContent(this.#realmEditController.buildInitialInspectorPanel())
+    this.#ui?.mountFooterContent(this.#realmEditController.buildFooterPanel())
+    this.#realmEditController.setData({
       game: this.#sharedData.game,
       catalogs: this.#sharedData.catalogs,
       realm: this.#currentRealm,
     })
-
-    this.#ui?.setMode('editor')
-    this.#ui?.mountStageContent(this.#realmEditor)
   }
 
   get currentRealm(){

@@ -24,11 +24,7 @@ class GameUI extends HTMLElement {
         </div>
       </header>
       <aside class="game-sidebar game-sidebar-left">
-        <section id="inventory" class="ui-panel">
-          <h2>Inventory</h2>
-          <div class="current-realm"></div>
-          <div id="inventory-items"></div>
-        </section>
+        <div class="sidebar-slot sidebar-slot-left"></div>
       </aside>
       <main class="game-stage">
         <section class="stage-frame">
@@ -36,14 +32,10 @@ class GameUI extends HTMLElement {
         </section>
       </main>
       <aside class="game-sidebar game-sidebar-right">
-        <section class="ui-panel status-panel">
-          <p class="status-empty">sidebar</p>
-        </section>
+        <div class="sidebar-slot sidebar-slot-right"></div>
       </aside>
       <footer class="game-footer">
-        <section class="ui-panel footer-panel">
-          <p class="footer-copy">footer</p>
-        </section>
+        <div class="footer-slot"></div>
       </footer>
       <admin-dialog></admin-dialog>
     `
@@ -52,7 +44,9 @@ class GameUI extends HTMLElement {
     this.menu = this.querySelector('.game-menu')
     this.realmSelect = this.querySelector('.realm-select')
     this.stageSlot = this.querySelector('.stage-slot')
-    this.rightSidebar = this.querySelector('.game-sidebar-right')
+    this.leftSidebarSlot = this.querySelector('.sidebar-slot-left')
+    this.rightSidebarSlot = this.querySelector('.sidebar-slot-right')
+    this.footerSlot = this.querySelector('.footer-slot')
 
     this.handleRealmChange = this.handleRealmChange.bind(this)
 
@@ -75,6 +69,8 @@ class GameUI extends HTMLElement {
         detail: event.detail,
       }))
     })
+
+    this.restorePlayPanels()
   }
 
   disconnectedCallback() {
@@ -100,19 +96,56 @@ class GameUI extends HTMLElement {
     this.stageSlot.replaceChildren(node)
   }
 
-  mountRightSidebarContent(node) {
-    if (!this.rightSidebar || !node) return
-    this.rightSidebar.replaceChildren(node)
+  mountLeftSidebarContent(node) {
+    if (!this.leftSidebarSlot || !node) return
+    this.leftSidebarSlot.replaceChildren(node)
   }
 
-  restoreStatusPanel() {
-    if (!this.rightSidebar) return
-    this.rightSidebar.innerHTML = `
-      <section class="ui-panel status-panel">
-        <h2>Status</h2>
-        <p class="status-empty">Health, quests, and other status widgets can live here.</p>
-      </section>
+  mountRightSidebarContent(node) {
+    if (!this.rightSidebarSlot || !node) return
+    this.rightSidebarSlot.replaceChildren(node)
+  }
+
+  mountFooterContent(node) {
+    if (!this.footerSlot || !node) return
+    this.footerSlot.replaceChildren(node)
+  }
+
+  restorePlayPanels() {
+    this.mountLeftSidebarContent(this.createInventoryPanel())
+    this.mountRightSidebarContent(this.createStatusPanel())
+    this.mountFooterContent(this.createFooterPanel())
+  }
+
+  createInventoryPanel() {
+    const panel = document.createElement('section')
+    panel.id = 'inventory'
+    panel.className = 'ui-panel'
+    panel.innerHTML = `
+      <h2>Inventory</h2>
+      <div class="current-realm"></div>
+      <div id="inventory-items"></div>
     `
+    return panel
+  }
+
+  createStatusPanel() {
+    const panel = document.createElement('section')
+    panel.className = 'ui-panel status-panel'
+    panel.innerHTML = `
+      <h2>Status</h2>
+      <p class="status-empty">Health, quests, and other status widgets can live here.</p>
+    `
+    return panel
+  }
+
+  createFooterPanel() {
+    const panel = document.createElement('section')
+    panel.className = 'ui-panel footer-panel'
+    panel.innerHTML = `
+      <p class="footer-copy">footer</p>
+    `
+    return panel
   }
 
   setMode(mode) {
@@ -124,6 +157,7 @@ class GameUI extends HTMLElement {
 
   setInventory(items) {
     const container = this.querySelector('#inventory-items')
+    if (!container) return
     container.replaceChildren()
 
     items.forEach(item => {

@@ -5,6 +5,8 @@ import { Player } from '../entities/index.js'
 import { Bot } from '../entities/index.js'
 import { Scenery } from '../entities/index.js'
 
+window.commands = [] // Expose commands for debugging/testing purposes
+
 class GameEngine {
   constructor(gameData) {
     this.initialize(gameData)
@@ -169,6 +171,7 @@ class GameEngine {
     let stateChanged = false
     let effects = []
 
+    window.commands.push(...commands) // Expose commands for debugging/testing purposes
     const generatedCommands = this.getAutonomousCommands()
 
     for (const command of [...commands, ...generatedCommands]) {
