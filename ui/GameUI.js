@@ -1,6 +1,10 @@
 import { AdminDialog } from './AdminDialog.js'
 
 class GameUI extends HTMLElement {
+  #infoMessageTimer = null
+  #infoFadeTimer = null
+  #defaultInfoMessage = 'Walk the world and discover what is here.'
+
   constructor() {
     super()
     this.innerHTML = `
@@ -75,6 +79,7 @@ class GameUI extends HTMLElement {
 
   disconnectedCallback() {
     this.realmSelect?.removeEventListener('change', this.handleRealmChange)
+    this.clearInfoMessageTimers()
   }
 
   handleRealmChange(event) {
@@ -143,9 +148,27 @@ class GameUI extends HTMLElement {
     const panel = document.createElement('section')
     panel.className = 'ui-panel footer-panel'
     panel.innerHTML = `
-      <p class="footer-copy">footer</p>
+      <div class="info-banner-shell" hidden>
+        <info-banner
+          class="info-banner"
+          role="status"
+          aria-live="polite"
+        >${this.#defaultInfoMessage}</info-banner>
+      </div>
     `
     return panel
+  }
+
+  clearInfoMessageTimers() {
+    if (this.#infoMessageTimer) {
+      clearTimeout(this.#infoMessageTimer)
+      this.#infoMessageTimer = null
+    }
+
+    if (this.#infoFadeTimer) {
+      clearTimeout(this.#infoFadeTimer)
+      this.#infoFadeTimer = null
+    }
   }
 
   setMode(mode) {
@@ -221,6 +244,36 @@ class GameUI extends HTMLElement {
     this.setRealmOptions(data?.realmOptions ?? [])
     this.setCurrentRealm(data?.realm?.id ?? '')
     this.adminDialog?.setData(data)
+  }
+
+  setDefaultInfoMessage(message) {
+    this.#defaultInfoMessage = message || 'Walk the world and discover what is here.'
+  }
+
+  setInfoMessage(message) {
+    const bubble = this.querySelector('.info-banner')
+    const shell = this.querySelector('.info-banner-shell')
+    if (!bubble || !shell) return
+
+    const nextMessage = message || this.#defaultInfoMessage
+    this.clearInfoMessageTimers()
+    shell.hidden = false
+    shell.classList.remove('is-fading')
+    bubble.setText?.(nextMessage)
+
+    const visibleDuration = Math.max(4800, 2200 + nextMessage.length * 90)
+    const fadeDuration = 520
+
+    this.#infoFadeTimer = setTimeout(() => {
+      shell.classList.add('is-fading')
+      this.#infoFadeTimer = null
+    }, visibleDuration)
+
+    this.#infoMessageTimer = setTimeout(() => {
+      shell.hidden = true
+      shell.classList.remove('is-fading')
+      this.#infoMessageTimer = null
+    }, visibleDuration + fadeDuration)
   }
 }
 customElements.define('game-ui', GameUI)

@@ -93,6 +93,12 @@ class SpeechBubble extends HTMLElement {
 
   getKeyframes(name) {
     switch (name) {
+      case 'type':
+        return [
+          { transform: 'translateY(0.12em) scale(0.92)', opacity: 0 },
+          { transform: 'translateY(0) scale(1)', opacity: 1 }
+        ]
+
       case 'pop':
         return [
           { transform: 'scale(0.6)', opacity: 0 },

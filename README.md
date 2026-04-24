@@ -1,6 +1,8 @@
 ---
 title: Phoenix RPG Game Project
-author: Patrick Hall
+authors: 
+    - Patrick Hall
+    - Ed Dorrington
 ---
 
 This project is a small browser-based Zelda-style prototype built with vanilla Javascript, with no frameworks. Rather than using `<canvas>`, the game uses standard `DOM` elements for rendering. The app boots from [index.html](./index.html), which mounts a `<game-app>` element pointed at the `data/` folder; [phoenix.js](./phoenix.js) just registers the UI components.
@@ -28,3 +30,15 @@ Rendering is split into layers inside [ui/GameBoard.js](./ui/GameBoard.js): [Ter
 ## 
 
 The side UI in [ui/GameUI.js](./ui/GameUI.js) shows inventory and opens [ui/AdminDialog.js](./ui/AdminDialog.js), which acts like an in-game inspector. That dialog can switch realms and browse the loaded catalogs and game data tree, so the project doubles as both a playable prototype and a lightweight data-driven world editor/debug viewer.
+
+## Realm CLI
+
+There is also a Deno CLI in [realms.js](./realms.js) for working with the remote realm API.
+
+```sh
+deno task realms list
+deno task realms get tiny --output ./tiny.json
+deno task realms create --file ./data/realms/tiny/realm.json
+deno task realms update tiny --file ./data/realms/tiny/realm.json
+deno task realms delete tiny
+```

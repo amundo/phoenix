@@ -84,10 +84,12 @@
         "y": 25
       },
       {
+        "kind": "imp",
         "name": "Imp",
         "emoji": "😈",
         "x": 22,
-        "y": 22
+        "y": 22,
+        "speech": "Heh heh heh..."
       }
     ],
     "items": [
@@ -885,5 +887,6 @@
         "terrain": "dirt"
       }
     ]
-  }
+  },
+  "description": "A magical world"
 }

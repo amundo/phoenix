@@ -28,7 +28,9 @@ class GameEngine {
       this.player.moveTo(playerMarker)
     }
 
-    this.bots = gameData.realm.entities.bots.map(bot => new Bot(bot))
+    this.bots = gameData.realm.entities.bots.map(bot =>
+      new Bot(this.resolveCatalogEntity(gameData.catalogs.actors, bot))
+    )
     this.scenery = this.createScenery(gameData)
     this.items = gameData.realm.entities.items.map(item =>
       new Item(this.resolveCatalogEntity(gameData.catalogs.items, item))
@@ -211,13 +213,18 @@ class GameEngine {
     )
 
     if (bot) {
+      const bumpSound = this.getBotSound(bot, 'bump')
       return {
         stateChanged: false,
         effects: [
+          ...(bumpSound ? [{
+            type: 'play-sound',
+            sound: bumpSound,
+          }] : []),
           {
             type: 'speak',
             actor,
-            message: `Look out! ${bot.name}!`,
+            message: this.getEntityInfoMessage(bot),
           },
           {
             type: 'emote',
@@ -257,7 +264,32 @@ class GameEngine {
 
   }
   handleInteract(actor) {
-    return { stateChanged: false, effects: [] }
+    const nearbyBot = this.bots.find(bot =>
+      Math.abs(bot.x - actor.x) + Math.abs(bot.y - actor.y) === 1
+    )
+
+    if (!nearbyBot) {
+      return { stateChanged: false, effects: [] }
+    }
+
+    const effects = []
+    const talkSound = this.getBotSound(nearbyBot, 'talk')
+    const speech = nearbyBot.speech?.trim()
+
+    if (talkSound) {
+      effects.push({
+        type: 'play-sound',
+        sound: talkSound,
+      })
+    }
+
+    effects.push({
+      type: 'speak',
+      actor: speech ? nearbyBot : actor,
+      message: speech || `${nearbyBot.name} stares back.`,
+    })
+
+    return { stateChanged: false, effects }
   }
 
   getItemsAt(x, y) {
@@ -475,6 +507,20 @@ class GameEngine {
     if (category === 'hazard' || kind.includes('cactus')) return 'fail'
     if (kind.includes('door') || item?.emoji === '🚪') return 'door-squeak'
     return 'bump'
+  }
+
+  getBotSound(bot, eventName) {
+    return bot?.sound?.[eventName] ?? bot?.sounds?.[eventName] ?? null
+  }
+
+  getEntityInfoMessage(entity) {
+    const description = String(entity?.description ?? '').trim()
+    if (description) {
+      return `Behold, ${description}!`
+    }
+
+    const name = String(entity?.name ?? entity?.kind ?? entity?.id ?? 'something').trim()
+    return `Behold, ${name}!`
   }
 
   centerCameraOnPlayer() {

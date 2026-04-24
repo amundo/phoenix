@@ -1,8 +1,12 @@
 {
-    "tasks": {
-        "deploy": {
-            "description": "deploy prototype to ruphus.com",
-            "command": "sh deploy.sh"
-        }
+  "tasks": {
+    "deploy": {
+      "description": "deploy prototype to ruphus.com",
+      "command": "sh deploy.sh"
+    },
+    "realms": {
+      "description": "manage remote realms through the minicurso.me API",
+      "command": "deno run --allow-net --allow-read --allow-write ./realms.js"
     }
+  }
 }

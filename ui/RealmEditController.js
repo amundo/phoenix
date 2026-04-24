@@ -24,6 +24,8 @@ class RealmEditController extends EventTarget {
   #footerStatus = null
   #terrainSummary = null
   #toolButtons = new Set()
+  #saveDialog = null
+  #saveDialogOutput = null
 
   constructor() {
     super()
@@ -64,7 +66,7 @@ class RealmEditController extends EventTarget {
     this.renderDraft()
     this.populateTerrainOptions()
     this.setTool('select')
-    this.showEmptyInspector()
+    this.showRealmInspector()
     this.updateFooterPanel()
   }
 
@@ -123,11 +125,7 @@ class RealmEditController extends EventTarget {
     const actions = document.createElement('div')
     actions.className = 'editor-toolbar-group editor-footer-actions'
     actions.append(
-      this.createActionButton('Save', () => {
-        this.dispatchEvent(new CustomEvent('draftsave', {
-          detail: { realm: structuredClone(this.#draft) },
-        }))
-      }),
+      this.createActionButton('Save', () => this.openSaveDialog()),
       this.createActionButton('Cancel', () => {
         this.dispatchEvent(new CustomEvent('draftcancel'))
       }),
@@ -155,7 +153,8 @@ class RealmEditController extends EventTarget {
     this.#footerStatus = document.createElement('p')
     this.#footerStatus.className = 'status-empty editor-footer-status'
 
-    panel.append(actions, navRow, movementHint, this.#cameraStatus, this.#footerStatus)
+    this.#saveDialog = this.buildSaveDialog()
+    panel.append(actions, navRow, movementHint, this.#cameraStatus, this.#footerStatus, this.#saveDialog)
     this.#footerPanel = panel
     this.updateCameraStatus()
     this.updateFooterPanel()
@@ -164,9 +163,7 @@ class RealmEditController extends EventTarget {
 
   buildInitialInspectorPanel() {
     if (this.#inspectorNode) return this.#inspectorNode
-    return this.createEntityPanel({
-      message: 'Select a player, bot, or item on the board to edit it.',
-    })
+    return this.buildRealmInspector()
   }
 
   createActionButton(label, onClick) {
@@ -188,6 +185,66 @@ class RealmEditController extends EventTarget {
     return button
   }
 
+  buildSaveDialog() {
+    const dialog = document.createElement('dialog')
+    dialog.className = 'editor-save-dialog'
+    dialog.setAttribute('closedby', 'any')
+
+    const shell = document.createElement('form')
+    shell.className = 'editor-save-shell'
+    shell.method = 'dialog'
+
+    const header = document.createElement('header')
+    header.className = 'editor-save-header'
+
+    const title = document.createElement('h2')
+    title.textContent = 'Realm JSON'
+
+    const closeButton = document.createElement('button')
+    closeButton.type = 'submit'
+    closeButton.className = 'admin-close'
+    closeButton.textContent = 'Close'
+
+    header.append(title, closeButton)
+
+    const summary = document.createElement('p')
+    summary.className = 'admin-summary'
+    summary.textContent = 'Review the current realm data before saving.'
+
+    this.#saveDialogOutput = document.createElement('textarea')
+    this.#saveDialogOutput.className = 'editor-save-output'
+    this.#saveDialogOutput.readOnly = true
+    this.#saveDialogOutput.spellcheck = false
+
+    const actions = document.createElement('div')
+    actions.className = 'editor-toolbar-group editor-save-actions'
+
+    const downloadButton = document.createElement('button')
+    downloadButton.type = 'button'
+    downloadButton.className = 'editor-action'
+    downloadButton.textContent = 'Download File'
+    downloadButton.addEventListener('click', () => {
+      this.downloadRealmFile()
+    })
+
+    const confirmButton = document.createElement('button')
+    confirmButton.type = 'button'
+    confirmButton.className = 'editor-action'
+    confirmButton.textContent = 'Save Realm'
+    confirmButton.addEventListener('click', () => {
+      dialog.close()
+      this.dispatchEvent(new CustomEvent('draftsave', {
+        detail: { realm: structuredClone(this.#draft) },
+      }))
+    })
+
+    actions.append(downloadButton, confirmButton)
+    shell.append(header, summary, this.#saveDialogOutput, actions)
+    dialog.append(shell)
+
+    return dialog
+  }
+
   createToolButton(tool, label) {
     const button = document.createElement('button')
     button.type = 'button'
@@ -197,6 +254,37 @@ class RealmEditController extends EventTarget {
     button.addEventListener('click', () => this.setTool(tool))
     this.#toolButtons.add(button)
     return button
+  }
+
+  openSaveDialog() {
+    if (!this.#draft || !this.#saveDialog || !this.#saveDialogOutput) return
+
+    this.#saveDialogOutput.value = JSON.stringify(this.#draft, null, 2)
+    this.#saveDialog.showModal()
+  }
+
+  downloadRealmFile() {
+    if (!this.#draft) return
+
+    const contents = JSON.stringify(this.#draft, null, 2)
+    const blob = new Blob([contents], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = this.getRealmDownloadFilename()
+    anchor.click()
+    setTimeout(() => URL.revokeObjectURL(url), 0)
+  }
+
+  getRealmDownloadFilename() {
+    const realm = this.#draft ?? {}
+    const stem = String(realm.id || realm.name || 'realm')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+
+    return `${stem || 'realm'}.json`
   }
 
   renderDraft() {
@@ -453,9 +541,7 @@ class RealmEditController extends EventTarget {
     const index = (this.#draft.entities.items?.length ?? 0) + 1
     return {
       id: `item-${index}`,
-      kind: 'item',
-      name: `Item ${index}`,
-      emoji: '📦',
+      kind: 'coin',
       x,
       y,
       portable: false,
@@ -468,9 +554,7 @@ class RealmEditController extends EventTarget {
     const index = (this.#draft.entities.bots?.length ?? 0) + 1
     return {
       id: `bot-${index}`,
-      kind: 'bot',
-      name: `Bot ${index}`,
-      emoji: '🙂',
+      kind: 'villager',
       x,
       y,
       speech: '',
@@ -546,6 +630,7 @@ class RealmEditController extends EventTarget {
     const actions = document.createElement('div')
     actions.className = 'editor-toolbar-group editor-entity-actions'
     actions.append(
+      this.createActionButton('Realm', () => this.showRealmInspector()),
       this.createActionButton('Add Bot', () => this.addEntity('bots')),
       this.createActionButton('Add Item', () => this.addEntity('items')),
       this.createToolButton('place-player', 'Place Player'),
@@ -568,6 +653,10 @@ class RealmEditController extends EventTarget {
     this.dispatchInspector(this.createEntityPanel({
       message,
     }))
+  }
+
+  showRealmInspector() {
+    this.dispatchInspector(this.buildRealmInspector())
   }
 
   dispatchInspector(node) {
@@ -616,10 +705,46 @@ class RealmEditController extends EventTarget {
     })
   }
 
+  get entitySelection(){
+    return this.#selectedEntitySelection
+  }
+
+  buildRealmInspector() {
+    const form = document.createElement('form')
+    form.className = 'editor-form'
+    form.addEventListener('submit', event => event.preventDefault())
+
+    form.append(
+      this.createRealmField({
+        key: 'name',
+        label: 'Level Title',
+        value: this.#draft?.name ?? '',
+      }),
+      this.createRealmField({
+        key: 'description',
+        label: 'Welcome Description',
+        value: this.#draft?.description ?? '',
+        multiline: true,
+        placeholder: 'Tell players what this place is about when they arrive.',
+      }),
+    )
+
+    const hint = document.createElement('p')
+    hint.className = 'status-empty'
+    hint.textContent = 'This welcome text appears in the info banner when the level loads.'
+    form.append(hint)
+
+    return this.createEntityPanel({
+      title: 'Realm',
+      message: 'Set the title and welcome text for this level.',
+      body: form,
+    })
+  }
+
   getEditableFields(entitySelection) {
     const fields = [
       { key: 'id', type: 'text' },
-      { key: 'kind', type: 'text' },
+      this.getKindField(entitySelection),
       { key: 'name', type: 'text' },
       { key: 'emoji', type: 'text' },
       { key: 'x', type: 'number' },
@@ -636,6 +761,44 @@ class RealmEditController extends EventTarget {
     return fields
   }
 
+  getKindField(entitySelection) {
+    if (entitySelection.collection === 'bots') {
+      return this.getCatalogKindField(entitySelection, this.#catalogs?.actors)
+    }
+
+    if (entitySelection.collection === 'items') {
+      return this.getCatalogKindField(entitySelection, this.#catalogs?.items)
+    }
+
+    if (entitySelection.collection !== 'bots') {
+      return { key: 'kind', type: 'text' }
+    }
+  }
+
+  getCatalogKindField(entitySelection, catalog) {
+    const options = [...(catalog?.values?.() ?? [])]
+      .filter(entry => entry?.id)
+      .map(entry => ({
+        value: entry.id,
+        label: entry.name ?? entry.id,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+
+    const currentKind = entitySelection.entity?.kind
+    if (currentKind && !options.some(option => option.value === currentKind)) {
+      options.unshift({
+        value: currentKind,
+        label: `${currentKind} (custom)`,
+      })
+    }
+
+    return {
+      key: 'kind',
+      type: 'select',
+      options,
+    }
+  }
+
   createField(entity, field) {
     const label = document.createElement(field.key === 'emoji' ? 'div' : 'label')
     label.className = 'editor-field'
@@ -643,9 +806,24 @@ class RealmEditController extends EventTarget {
     const text = document.createElement('span')
     text.textContent = field.key
 
-    const input = document.createElement('input')
+    const input = field.type === 'select'
+      ? document.createElement('select')
+      : document.createElement('input')
+
     input.name = field.key
-    input.type = field.type
+
+    if (field.type === 'select') {
+      input.replaceChildren(
+        ...(field.options ?? []).map(option => {
+          const element = document.createElement('option')
+          element.value = option.value
+          element.textContent = option.label
+          return element
+        })
+      )
+    } else {
+      input.type = field.type
+    }
 
     if (field.type === 'checkbox') {
       input.checked = Boolean(entity[field.key])
@@ -679,6 +857,34 @@ class RealmEditController extends EventTarget {
     return label
   }
 
+  createRealmField({
+    key,
+    label,
+    value = '',
+    multiline = false,
+    placeholder = '',
+  }) {
+    const field = document.createElement('label')
+    field.className = `editor-field${multiline ? ' editor-field-compact' : ''}`
+
+    const caption = document.createElement('span')
+    caption.textContent = label
+
+    const input = document.createElement(multiline ? 'textarea' : 'input')
+    if (!multiline) {
+      input.type = 'text'
+    }
+
+    input.value = value
+    input.placeholder = placeholder
+    input.addEventListener('input', () => {
+      this.updateRealmField(key, input.value)
+    })
+
+    field.append(caption, input)
+    return field
+  }
+
   readFieldValue(input, field) {
     if (field.type === 'checkbox') return input.checked
     if (field.type === 'number') return Number(input.value)
@@ -688,7 +894,54 @@ class RealmEditController extends EventTarget {
   updateSelectedField(key, value) {
     const entitySelection = this.#selectedEntitySelection
     if (!entitySelection) return
+
+    if (key === 'kind' && entitySelection.collection === 'bots') {
+      this.updateSelectedBotKind(value)
+      return
+    }
+
+    if (key === 'kind' && entitySelection.collection === 'items') {
+      this.updateSelectedItemKind(value)
+      return
+    }
+
     entitySelection.entity[key] = value
+    this.renderDraft()
+  }
+
+  updateSelectedBotKind(kind) {
+    const entitySelection = this.#selectedEntitySelection
+    const entity = entitySelection?.entity
+    if (!entitySelection || entitySelection.collection !== 'bots' || !entity) return
+
+    const actorCatalog = this.#catalogs?.actors
+    const nextActor = actorCatalog?.get?.(kind) ?? null
+
+    entity.kind = kind
+    entity.emoji = nextActor?.emoji ?? entity.emoji ?? ''
+
+    this.renderDraft()
+    this.dispatchInspector(this.buildInspector(entitySelection))
+  }
+
+  updateSelectedItemKind(kind) {
+    const entitySelection = this.#selectedEntitySelection
+    const entity = entitySelection?.entity
+    if (!entitySelection || entitySelection.collection !== 'items' || !entity) return
+
+    const itemCatalog = this.#catalogs?.items
+    const nextItem = itemCatalog?.get?.(kind) ?? null
+
+    entity.kind = kind
+    entity.emoji = nextItem?.emoji ?? entity.emoji ?? ''
+
+    this.renderDraft()
+    this.dispatchInspector(this.buildInspector(entitySelection))
+  }
+
+  updateRealmField(key, value) {
+    if (!this.#draft) return
+    this.#draft[key] = value
     this.renderDraft()
   }
 

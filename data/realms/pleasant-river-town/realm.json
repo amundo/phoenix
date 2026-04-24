@@ -18,10 +18,12 @@
     },
     "bots": [
       {
+        "kind": "villager",
         "name": "Villager",
         "emoji": "🙂",
         "x": 4,
-        "y": 4
+        "y": 4,
+        "speech": "Lovely weather for wandering."
       }
     ],
     "items": [

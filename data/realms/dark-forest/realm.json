@@ -18,10 +18,12 @@
     },
     "bots": [
       {
+        "kind": "goblin",
         "name": "Goblin",
         "emoji": "👺",
         "x": 5,
-        "y": 5
+        "y": 5,
+        "speech": "Grrr..."
       }
     ],
     "items": [

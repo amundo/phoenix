@@ -129,14 +129,21 @@ class GameApp extends HTMLElement {
     this.#engine = new GameEngine(gameData)
     this.#currentRealm = gameData.realm
     this.#commandQueue = []
+    const realmWelcomeMessage = this.getRealmWelcomeMessage(gameData.realm)
     this.render()
     this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
     this.#ui?.setCurrentRealm(this.#currentRealmName ?? gameData.realm?.id ?? '')
+    this.#ui?.setDefaultInfoMessage(realmWelcomeMessage)
     this.syncAdminData(gameData.realm)
+    this.#ui?.setInfoMessage(realmWelcomeMessage)
     this.startLoop()
 
     removeEventListener('keydown', this.handleKeyDown)
     addEventListener('keydown', this.handleKeyDown)
+  }
+
+  get realmEditController(){
+    return this.#realmEditController
   }
 
   handleEditorOpen() {
@@ -334,7 +341,11 @@ class GameApp extends HTMLElement {
   handleEffects(effects = []) {
     for (const effect of effects) {
       if (effect.type === 'speak') {
-        this.#gameBoard.speak(effect.actor, effect.message)
+        if (effect.actor === this.#engine?.player) {
+          this.#ui?.setInfoMessage(effect.message)
+        } else {
+          this.#gameBoard.speak(effect.actor, effect.message)
+        }
       }
 
       if (effect.type === 'emote') {
@@ -345,6 +356,25 @@ class GameApp extends HTMLElement {
         this.#audioPlayer?.play(effect.sound)
       }
     }
+  }
+
+  getRealmWelcomeMessage(realm) {
+    const title = String(realm?.name ?? '').trim()
+    const description = String(realm?.description ?? '').trim()
+
+    if (title && description) {
+      return `${title}. ${description}`
+    }
+
+    if (title) {
+      return `Welcome to ${title}.`
+    }
+
+    if (description) {
+      return description
+    }
+
+    return 'Welcome to my realm!'
   }
 }
 

@@ -691,6 +691,63 @@ summary {
   color: #395767;
 }
 
+.footer-panel {
+  display: grid;
+  place-items: center;
+  overflow: visible !important;
+}
+
+.info-banner-shell {
+  width: min(44rem, 100%);
+  display: grid;
+  place-items: center;
+  padding-block: 0.25rem 0.65rem;
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease,
+    filter 420ms ease;
+  transform-origin: center bottom;
+}
+
+.info-banner-shell[hidden] {
+  display: none;
+}
+
+.info-banner-shell.is-fading {
+  opacity: 0;
+  transform: translateY(0.45rem) scale(0.985);
+  filter: blur(0.08rem);
+}
+
+info-banner.info-banner {
+  position: relative;
+  display: inline-block;
+  inline-size: min(100%, 42rem);
+  padding: 1rem 1.5rem 1.15rem;
+  border: 3px solid color-mix(in srgb, #17313b 72%, #7a5b2e 28%);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(circle at top, rgb(255 255 255 / 0.7), transparent 56%),
+    linear-gradient(180deg, #fff6c7 0%, #ffe292 100%);
+  box-shadow:
+    0 0.8rem 1.8rem rgb(0 0 0 / 0.14),
+    inset 0 -0.18rem 0 rgb(162 111 28 / 0.18),
+    inset 0 0 0 1px rgb(255 255 255 / 0.45);
+  color: #2c2416;
+  text-align: center;
+  font: 700 clamp(1rem, 0.8rem + 0.8vw, 1.55rem) / 1.2 ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", sans-serif;
+}
+
+info-banner.info-banner .word {
+  display: inline;
+  white-space: normal;
+}
+
+info-banner.info-banner .letter {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
 .editor-toolbar-group {
   display: inline-flex;
   align-items: center;
@@ -892,9 +949,59 @@ search-emoji {
   font: 0.82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.editor-field-compact textarea {
+  min-height: 7rem;
+  font: inherit;
+}
+
 .editor-field textarea.is-invalid {
   border-color: #b3261e;
   outline: 2px solid rgb(179 38 30 / 0.16);
+}
+
+.editor-save-dialog {
+  width: min(64rem, calc(100vw - 3rem));
+  max-height: min(85dvh, 52rem);
+  border: none;
+  border-radius: 1rem;
+  margin: auto;
+  padding: 0;
+  background: #f8fbfd;
+  color: #123;
+  box-shadow: 0 1.4rem 4rem rgb(0 0 0 / 0.28);
+}
+
+.editor-save-dialog::backdrop {
+  background: rgb(0 0 0 / 0.3);
+}
+
+.editor-save-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.editor-save-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.editor-save-output {
+  width: 100%;
+  min-height: 24rem;
+  resize: vertical;
+  border: 1px solid rgb(0 0 0 / 0.16);
+  border-radius: 0.75rem;
+  background: white;
+  color: #17313b;
+  padding: 0.85rem 1rem;
+  font: 0.84rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.editor-save-actions {
+  justify-content: flex-end;
 }
 
 .editor-terrain-summary {

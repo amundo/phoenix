@@ -34,6 +34,8 @@ class BaseAvatar extends HTMLElement {
   }
 
   speak(message) {
+    if (!this.supportsSpeechBubble()) return
+
     const bubble = this.querySelector('.avatar-speech-bubble')
     if (!bubble) return
 
@@ -97,6 +99,10 @@ class BaseAvatar extends HTMLElement {
     this.style.gridRow = localY + 1
   }
 
+  supportsSpeechBubble() {
+    return this.tagName.toLowerCase() === 'bot-avatar'
+  }
+
   render() {
     if (!this.data) return
 
@@ -120,6 +126,11 @@ class BaseAvatar extends HTMLElement {
     const label = this.data.description ?? this.data.name ?? this.data.kind ?? ''
     this.title = label
     this.setAttribute('aria-label', label)
+
+    const bubble = this.querySelector('.avatar-speech-bubble')
+    if (bubble && !this.supportsSpeechBubble()) {
+      bubble.hidden = true
+    }
   }
 }
 

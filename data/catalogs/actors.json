@@ -1,14 +1,254 @@
 [
   {
+    "id": "bot",
+    "name": "Bot",
+    "emoji": "🙂",
+    "description": "a friendly bot",
+    "sound": {
+      "talk": "notification",
+      "bump": "oops"
+    }
+  },
+  {
     "id": "villager",
     "name": "Villager",
     "emoji": "🙂",
-    "onInteract": ["say-hello"]
+    "description": "a friendly villager",
+    "onInteract": [
+      "say-hello"
+    ],
+    "sound": {
+      "talk": "notification",
+      "bump": "oops"
+    }
   },
   {
     "id": "goblin",
     "name": "Goblin",
     "emoji": "👺",
-    "tags": ["hostile"]
+    "description": "a grumpy goblin",
+    "tags": [
+      "hostile"
+    ],
+    "sound": {
+      "talk": "monster",
+      "bump": "monster"
+    }
+  },
+  {
+    "id": "imp",
+    "name": "Imp",
+    "emoji": "😈",
+    "description": "a cackling imp",
+    "tags": [
+      "hostile",
+      "trickster"
+    ],
+    "sound": {
+      "talk": "laugh",
+      "bump": "laugh"
+    }
+  },
+  {
+    "id": "robot",
+    "name": "Robot",
+    "emoji": "🤖",
+    "description": "a chirping robot",
+    "sound": {
+      "talk": "robot",
+      "bump": "click"
+    }
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "emoji": "🧙",
+    "description": "a mysterious wizard",
+    "tags": [
+      "magic",
+      "guide"
+    ],
+    "sound": {
+      "talk": "notification-2",
+      "bump": "click"
+    }
+  },
+  {
+    "id": "ghost",
+    "name": "Ghost",
+    "emoji": "👻",
+    "description": "a floating ghost",
+    "tags": [
+      "spooky"
+    ],
+    "sound": {
+      "talk": "notification-3",
+      "bump": "oops-2"
+    }
+  },
+  {
+    "id": "frog",
+    "name": "Frog",
+    "emoji": "🐸",
+    "description": "a bouncy frog friend",
+    "tags": [
+      "friendly"
+    ],
+    "sound": {
+      "talk": "notification-4",
+      "bump": "squeaktoy"
+    }
+  },
+  {
+    "id": "pirate",
+    "name": "Pirate",
+    "emoji": "🏴‍☠️",
+    "description": "a dramatic pirate captain",
+    "tags": [
+      "adventure"
+    ],
+    "sound": {
+      "talk": "yay",
+      "bump": "bang"
+    }
+  },
+  {
+    "id": "merchant",
+    "name": "Merchant",
+    "emoji": "🧺",
+    "description": "a cheerful traveling merchant",
+    "tags": [
+      "shopkeeper"
+    ],
+    "sound": {
+      "talk": "pickup-coin",
+      "bump": "notification"
+    }
+  },
+  {
+    "id": "dragon",
+    "name": "Dragon",
+    "emoji": "🐉",
+    "description": "a mighty dragon",
+    "tags": [
+      "boss",
+      "flying"
+    ],
+    "sound": {
+      "talk": "monster",
+      "bump": "bang"
+    }
+  },
+  {
+    "id": "alien",
+    "name": "Alien",
+    "emoji": "👽",
+    "description": "a curious alien visitor",
+    "tags": [
+      "space",
+      "mysterious"
+    ],
+    "sound": {
+      "talk": "mute-synth-game",
+      "bump": "click"
+    }
+  },
+  {
+    "id": "knight",
+    "name": "Knight",
+    "emoji": "🛡️",
+    "description": "a brave castle knight",
+    "tags": [
+      "guard",
+      "heroic"
+    ],
+    "sound": {
+      "talk": "door-lock-open",
+      "bump": "picking-up-something-metal"
+    }
+  },
+  {
+    "id": "princess",
+    "name": "Princess",
+    "emoji": "👸",
+    "description": "a kind princess",
+    "tags": [
+      "royal",
+      "friendly"
+    ],
+    "sound": {
+      "talk": "notification-2",
+      "bump": "yay"
+    }
+  },
+  {
+    "id": "scientist",
+    "name": "Scientist",
+    "emoji": "🥼",
+    "description": "a curious scientist",
+    "tags": [
+      "smart",
+      "lab"
+    ],
+    "sound": {
+      "talk": "robot",
+      "bump": "click"
+    }
+  },
+  {
+    "id": "fairy",
+    "name": "Fairy",
+    "emoji": "🧚",
+    "description": "a sparkling little fairy",
+    "tags": [
+      "magic",
+      "tiny"
+    ],
+    "sound": {
+      "talk": "notification-4",
+      "bump": "powerup"
+    }
+  },
+  {
+    "id": "ninja",
+    "name": "Ninja",
+    "emoji": "🥷",
+    "description": "a sneaky ninja",
+    "tags": [
+      "stealth",
+      "fast"
+    ],
+    "sound": {
+      "talk": "click",
+      "bump": "door-squeak"
+    }
+  },
+  {
+    "id": "astronaut",
+    "name": "Astronaut",
+    "emoji": "🧑‍🚀",
+    "description": "a brave space explorer",
+    "tags": [
+      "space",
+      "explorer"
+    ],
+    "sound": {
+      "talk": "mute-synth-game",
+      "bump": "notification-3"
+    }
+  },
+  {
+    "id": "dinosaur",
+    "name": "Dinosaur",
+    "emoji": "🦖",
+    "description": "a stompy dinosaur",
+    "tags": [
+      "wild",
+      "big"
+    ],
+    "sound": {
+      "talk": "monster",
+      "bump": "hard-splat-videogamevideo"
+    }
   }
 ]
