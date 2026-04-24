@@ -378,7 +378,7 @@ class GameEngine {
 
   getBlockedByWorldEffects(actor) {
     return [
-      { type: 'speak', actor, message: 'D’oh!' },
+      { type: 'speak', actor, message: 'It’s the edge of the world!' },
       { type: 'emote', actor, emotion: 'pain' },
     ]
   }

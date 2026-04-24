@@ -4,76 +4,32 @@
     "name": "Grass",
     "category": "field",
     "description": "Open grassy ground for general exploration.",
-    "color": "var(--color-grass)",
     "walkable": true,
-    "palette": {
-      "lightness1": 62,
-      "lightness2": 54,
-      "chroma1": 0.13,
-      "chroma2": 0.11,
-      "hue1": 132,
-      "hue2": 128,
-      "lightnessVariance": 5,
-      "chromaVariance": 0.016,
-      "hueVariance": 10
-    }
+    "oklchHue": 132
   },
   {
     "id": "meadow",
     "name": "Meadow",
     "category": "field",
     "description": "A softer, brighter grassy field.",
-    "color": "var(--color-meadow)",
     "walkable": true,
-    "palette": {
-      "lightness1": 72,
-      "lightness2": 66,
-      "chroma1": 0.14,
-      "chroma2": 0.12,
-      "hue1": 136,
-      "hue2": 130,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 8
-    }
+    "oklchHue": 136
   },
   {
     "id": "forest-floor",
     "name": "Forest Floor",
     "category": "forest",
     "description": "Dark leafy ground beneath dense tree cover.",
-    "color": "var(--color-forest-floor)",
     "walkable": true,
-    "palette": {
-      "lightness1": 46,
-      "lightness2": 34,
-      "chroma1": 0.11,
-      "chroma2": 0.09,
-      "hue1": 136,
-      "hue2": 128,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.014,
-      "hueVariance": 8
-    }
+    "oklchHue": 136
   },
   {
     "id": "moss",
     "name": "Moss",
     "category": "forest",
     "description": "Soft moss-covered earth with cool green tones.",
-    "color": "var(--color-moss)",
     "walkable": true,
-    "palette": {
-      "lightness1": 56,
-      "lightness2": 46,
-      "chroma1": 0.1,
-      "chroma2": 0.08,
-      "hue1": 150,
-      "hue2": 142,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 8
-    }
+    "oklchHue": 150
   },
   {
     "id": "tree",
@@ -81,171 +37,72 @@
     "category": "forest",
     "description": "Dense tree cover that blocks movement.",
     "emoji": "🌲",
-    "color": "var(--color-tree)",
     "walkable": false,
-    "palette": {
-      "lightness1": 42,
-      "lightness2": 30,
-      "chroma1": 0.1,
-      "chroma2": 0.08,
-      "hue1": 134,
-      "hue2": 126,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 8
-    }
+    "oklchHue": 134
   },
   {
     "id": "water",
     "name": "Water",
     "category": "water",
     "description": "Deep water that cannot be walked across.",
-    "color": "var(--color-water)",
     "walkable": false,
-    "palette": {
-      "lightness1": 54,
-      "lightness2": 42,
-      "chroma1": 0.19,
-      "chroma2": 0.17,
-      "hue1": 268,
-      "hue2": 258,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 6
-    }
+    "oklchHue": 268
   },
   {
     "id": "shallow-water",
     "name": "Shallow Water",
     "category": "water",
     "description": "Gentle water along a shore or stream edge.",
-    "color": "var(--color-shallow-water)",
     "walkable": false,
-    "palette": {
-      "lightness1": 66,
-      "lightness2": 56,
-      "chroma1": 0.15,
-      "chroma2": 0.13,
-      "hue1": 232,
-      "hue2": 222,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 8
-    }
+    "oklchHue": 232
   },
   {
     "id": "ice",
     "name": "Ice",
     "category": "water",
     "description": "Frozen water with pale blue tones.",
-    "color": "var(--color-ice)",
     "walkable": true,
-    "palette": {
-      "lightness1": 86,
-      "lightness2": 78,
-      "chroma1": 0.05,
-      "chroma2": 0.04,
-      "hue1": 220,
-      "hue2": 210,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.008,
-      "hueVariance": 6
-    }
+    "oklchHue": 220
   },
   {
     "id": "sand",
     "name": "Sand",
     "category": "earth",
     "description": "Warm sandy ground for beaches and deserts.",
-    "color": "var(--color-sand)",
     "walkable": true,
-    "palette": {
-      "lightness1": 80,
-      "lightness2": 72,
-      "chroma1": 0.08,
-      "chroma2": 0.07,
-      "hue1": 92,
-      "hue2": 86,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.01,
-      "hueVariance": 6
-    }
+    "oklchHue": 92
   },
   {
     "id": "dirt",
     "name": "Dirt",
     "category": "earth",
     "description": "Packed dirt suitable for trails and worn areas.",
-    "color": "var(--color-dirt)",
     "walkable": true,
-    "palette": {
-      "lightness1": 58,
-      "lightness2": 48,
-      "chroma1": 0.08,
-      "chroma2": 0.07,
-      "hue1": 60,
-      "hue2": 52,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.01,
-      "hueVariance": 6
-    }
+    "oklchHue": 60
   },
   {
     "id": "mud",
     "name": "Mud",
     "category": "earth",
     "description": "Wet muddy ground with heavier brown tones.",
-    "color": "var(--color-mud)",
     "walkable": true,
-    "palette": {
-      "lightness1": 48,
-      "lightness2": 38,
-      "chroma1": 0.07,
-      "chroma2": 0.06,
-      "hue1": 52,
-      "hue2": 46,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.008,
-      "hueVariance": 5
-    }
+    "oklchHue": 52
   },
   {
     "id": "path",
     "name": "Path",
     "category": "road",
     "description": "A simple footpath worn through the land.",
-    "color": "var(--color-path)",
     "walkable": true,
-    "palette": {
-      "lightness1": 66,
-      "lightness2": 58,
-      "chroma1": 0.07,
-      "chroma2": 0.06,
-      "hue1": 74,
-      "hue2": 68,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.008,
-      "hueVariance": 5
-    }
+    "oklchHue": 74
   },
   {
     "id": "road",
     "name": "Road",
     "category": "road",
     "description": "A broader built route through the world.",
-    "color": "var(--color-road)",
     "walkable": true,
-    "palette": {
-      "lightness1": 62,
-      "lightness2": 54,
-      "chroma1": 0.05,
-      "chroma2": 0.04,
-      "hue1": 72,
-      "hue2": 66,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.007,
-      "hueVariance": 4
-    }
+    "oklchHue": 72
   },
   {
     "id": "bridge",
@@ -253,38 +110,16 @@
     "category": "structure",
     "description": "Wooden bridge decking over water or a gap.",
     "emoji": "🪵",
-    "color": "var(--color-bridge)",
     "walkable": true,
-    "palette": {
-      "lightness1": 60,
-      "lightness2": 50,
-      "chroma1": 0.07,
-      "chroma2": 0.06,
-      "hue1": 58,
-      "hue2": 52,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.008,
-      "hueVariance": 5
-    }
+    "oklchHue": 58
   },
   {
     "id": "stone",
     "name": "Stone",
     "category": "rock",
     "description": "Neutral stone paving or exposed rock ground.",
-    "color": "var(--color-stone)",
     "walkable": true,
-    "palette": {
-      "lightness1": 70,
-      "lightness2": 60,
-      "chroma1": 0.03,
-      "chroma2": 0.02,
-      "hue1": 98,
-      "hue2": 90,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.004,
-      "hueVariance": 4
-    }
+    "oklchHue": 98
   },
   {
     "id": "rock",
@@ -292,19 +127,8 @@
     "category": "rock",
     "description": "Solid rocky terrain that blocks movement.",
     "emoji": "🪨",
-    "color": "var(--color-rock)",
     "walkable": false,
-    "palette": {
-      "lightness1": 52,
-      "lightness2": 42,
-      "chroma1": 0.03,
-      "chroma2": 0.02,
-      "hue1": 94,
-      "hue2": 88,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.004,
-      "hueVariance": 4
-    }
+    "oklchHue": 94
   },
   {
     "id": "cliff",
@@ -312,19 +136,8 @@
     "category": "rock",
     "description": "A steep cliff edge or wall of stone.",
     "emoji": "🪨",
-    "color": "var(--color-cliff)",
     "walkable": false,
-    "palette": {
-      "lightness1": 46,
-      "lightness2": 34,
-      "chroma1": 0.04,
-      "chroma2": 0.03,
-      "hue1": 72,
-      "hue2": 64,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.004,
-      "hueVariance": 5
-    }
+    "oklchHue": 72
   },
   {
     "id": "wall",
@@ -332,94 +145,39 @@
     "category": "structure",
     "description": "Built stone or brick wall that blocks passage.",
     "emoji": "🧱",
-    "color": "var(--color-wall)",
     "walkable": false,
-    "palette": {
-      "lightness1": 44,
-      "lightness2": 34,
-      "chroma1": 0.04,
-      "chroma2": 0.03,
-      "hue1": 50,
-      "hue2": 44,
-      "lightnessVariance": 3,
-      "chromaVariance": 0.004,
-      "hueVariance": 4
-    }
+    "oklchHue": 50
   },
   {
     "id": "snow",
     "name": "Snow",
     "category": "cold",
     "description": "Bright snowy ground with a crisp white-blue cast.",
-    "color": "var(--color-snow)",
     "walkable": true,
-    "palette": {
-      "lightness1": 94,
-      "lightness2": 88,
-      "chroma1": 0.03,
-      "chroma2": 0.02,
-      "hue1": 114,
-      "hue2": 106,
-      "lightnessVariance": 2,
-      "chromaVariance": 0.003,
-      "hueVariance": 4
-    }
+    "oklchHue": 114
   },
   {
     "id": "lava",
     "name": "Lava",
     "category": "hazard",
     "description": "Molten lava that absolutely should not be walked on.",
-    "color": "var(--color-lava)",
     "walkable": false,
-    "palette": {
-      "lightness1": 68,
-      "lightness2": 52,
-      "chroma1": 0.2,
-      "chroma2": 0.18,
-      "hue1": 32,
-      "hue2": 20,
-      "lightnessVariance": 5,
-      "chromaVariance": 0.014,
-      "hueVariance": 8
-    }
+    "oklchHue": 32
   },
   {
     "id": "swamp",
     "name": "Swamp",
     "category": "hazard",
     "description": "Murky swamp ground in sickly green-brown tones.",
-    "color": "var(--color-swamp)",
     "walkable": true,
-    "palette": {
-      "lightness1": 44,
-      "lightness2": 36,
-      "chroma1": 0.08,
-      "chroma2": 0.07,
-      "hue1": 106,
-      "hue2": 96,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.01,
-      "hueVariance": 8
-    }
+    "oklchHue": 106
   },
   {
     "id": "flowers",
     "name": "Flowers",
     "category": "field",
     "description": "Flowering grassland with a warmer, brighter feel.",
-    "color": "var(--color-flowers)",
     "walkable": true,
-    "palette": {
-      "lightness1": 76,
-      "lightness2": 68,
-      "chroma1": 0.12,
-      "chroma2": 0.1,
-      "hue1": 126,
-      "hue2": 118,
-      "lightnessVariance": 4,
-      "chromaVariance": 0.012,
-      "hueVariance": 10
-    }
+    "oklchHue": 126
   }
 ]

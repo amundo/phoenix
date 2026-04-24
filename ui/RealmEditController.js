@@ -22,6 +22,7 @@ class RealmEditController extends EventTarget {
   #terrainSelect = null
   #cameraStatus = null
   #footerStatus = null
+  #terrainSummary = null
   #toolButtons = new Set()
 
   constructor() {
@@ -81,15 +82,12 @@ class RealmEditController extends EventTarget {
     const panel = document.createElement('section')
     panel.className = 'ui-panel editor-sidebar-panel editor-tools-panel'
 
-    const actionRow = document.createElement('div')
-    actionRow.className = 'editor-toolbar-group'
+    const title = document.createElement('h2')
+    title.textContent = 'Terrain'
 
-    actionRow.append(
-      this.createActionButton('Add Item', () => this.addEntity('items')),
-      this.createActionButton('Add Bot', () => this.addEntity('bots')),
-      this.createToolButton('place-player', 'Place Player'),
-      this.createToolButton('paint-terrain', 'Paint Terrain'),
-    )
+    const toolRow = document.createElement('div')
+    toolRow.className = 'editor-toolbar-group'
+    toolRow.append(this.createToolButton('paint-terrain', 'Paint Terrain'))
 
     const terrainField = document.createElement('label')
     terrainField.className = 'editor-toolbar-field'
@@ -105,33 +103,14 @@ class RealmEditController extends EventTarget {
 
     terrainField.append(terrainLabel, this.#terrainSelect)
 
-    const navRow = document.createElement('div')
-    navRow.className = 'editor-toolbar-group editor-nav-controls'
-    navRow.setAttribute('aria-label', 'Map navigation')
-    navRow.append(
-      this.createIconButton('↑', 'Pan up', () => this.panCamera(0, -1)),
-      this.createIconButton('←', 'Pan left', () => this.panCamera(-1, 0)),
-      this.createIconButton('↓', 'Pan down', () => this.panCamera(0, 1)),
-      this.createIconButton('→', 'Pan right', () => this.panCamera(1, 0)),
-      this.createActionButton('Player', () => this.centerCameraOnPlayer()),
-    )
+    this.#terrainSummary = document.createElement('div')
+    this.#terrainSummary.className = 'editor-summary-section'
 
-    this.#cameraStatus = document.createElement('div')
-    this.#cameraStatus.className = 'editor-camera-status'
-    this.#cameraStatus.setAttribute('aria-live', 'polite')
-
-    const workspaceSection = document.createElement('div')
-    workspaceSection.className = 'editor-summary-section'
-    workspaceSection.innerHTML = `
-      <h3>Workspace</h3>
-      <p class="status-empty">Use the board to paint terrain or select entities. Metadata and layer controls can expand here next.</p>
-    `
-
-    panel.append(actionRow, terrainField, navRow, this.#cameraStatus, workspaceSection)
+    panel.append(title, toolRow, terrainField, this.#terrainSummary)
     this.#toolsPanel = panel
     this.populateTerrainOptions()
     this.syncToolUI()
-    this.updateCameraStatus()
+    this.updateTerrainPanel()
     return panel
   }
 
@@ -154,27 +133,40 @@ class RealmEditController extends EventTarget {
       }),
     )
 
-    const details = document.createElement('div')
-    details.className = 'editor-footer-grid'
-    details.innerHTML = `
-      <p><strong>Mode:</strong> Editor workspace</p>
-      <p><strong>Center:</strong> Shared game board canvas</p>
-      <p><strong>Left:</strong> Tools and camera controls</p>
-      <p><strong>Right:</strong> Inspector and selection details</p>
-    `
+    const navRow = document.createElement('div')
+    navRow.className = 'editor-toolbar-group editor-nav-controls'
+    navRow.setAttribute('aria-label', 'Map navigation')
+    navRow.append(
+      this.createIconButton('↑', 'Pan up', () => this.panCamera(0, -1)),
+      this.createIconButton('←', 'Pan left', () => this.panCamera(-1, 0)),
+      this.createIconButton('↓', 'Pan down', () => this.panCamera(0, 1)),
+      this.createIconButton('→', 'Pan right', () => this.panCamera(1, 0)),
+      this.createActionButton('Player', () => this.centerCameraOnPlayer()),
+    )
+
+    const movementHint = document.createElement('p')
+    movementHint.className = 'status-empty'
+    movementHint.textContent = 'Use arrow keys or the footer buttons to move around.'
+
+    this.#cameraStatus = document.createElement('div')
+    this.#cameraStatus.className = 'editor-camera-status'
+    this.#cameraStatus.setAttribute('aria-live', 'polite')
 
     this.#footerStatus = document.createElement('p')
     this.#footerStatus.className = 'status-empty editor-footer-status'
 
-    panel.append(actions, details, this.#footerStatus)
+    panel.append(actions, navRow, movementHint, this.#cameraStatus, this.#footerStatus)
     this.#footerPanel = panel
+    this.updateCameraStatus()
     this.updateFooterPanel()
     return panel
   }
 
   buildInitialInspectorPanel() {
     if (this.#inspectorNode) return this.#inspectorNode
-    return this.createEmptyInspector('Select a tool target on the board to edit terrain, entities, or map details.')
+    return this.createEntityPanel({
+      message: 'Select a player, bot, or item on the board to edit it.',
+    })
   }
 
   createActionButton(label, onClick) {
@@ -218,6 +210,7 @@ class RealmEditController extends EventTarget {
     this.#engine.camera = this.#camera
     this.#board.render(this.#engine.getState())
     this.updateCameraStatus()
+    this.updateTerrainPanel()
     this.updateFooterPanel()
   }
 
@@ -285,6 +278,20 @@ class RealmEditController extends EventTarget {
       `${toolLabel}. Explicit terrain overrides: ${overrideCount}.`
   }
 
+  updateTerrainPanel() {
+    if (!this.#terrainSummary) return
+
+    const terrain = this.#catalogs?.terrain?.get?.(this.#selectedTerrain)
+    const overrideCount = this.#draft?.realmMap?.cells?.filter(cell => cell.terrain === this.#selectedTerrain).length ?? 0
+
+    this.#terrainSummary.innerHTML = `
+      <h3>${terrain?.name ?? this.#selectedTerrain}</h3>
+      <p><strong>Id:</strong> ${this.#selectedTerrain}</p>
+      <p><strong>Overrides:</strong> ${overrideCount}</p>
+      <p>${terrain?.description ?? 'Choose a terrain swatch and paint directly on the board.'}</p>
+    `
+  }
+
   syncToolUI() {
     this.#board.dataset.editorTool = this.#tool
     for (const button of this.#toolButtons) {
@@ -295,9 +302,10 @@ class RealmEditController extends EventTarget {
   setTool(tool) {
     this.#tool = tool
     this.syncToolUI()
+    this.updateFooterPanel()
 
     if (tool === 'paint-terrain') {
-      this.showTerrainInspector()
+      this.updateTerrainPanel()
       return
     }
 
@@ -384,8 +392,10 @@ class RealmEditController extends EventTarget {
       this.#terrainSelect.value = this.#selectedTerrain
     }
 
+    this.updateTerrainPanel()
+
     if (this.#tool === 'paint-terrain') {
-      this.showTerrainInspector()
+      this.updateFooterPanel()
     }
   }
 
@@ -405,7 +415,7 @@ class RealmEditController extends EventTarget {
     if (!changed) return
 
     this.renderDraft()
-    this.showTerrainInspector(x, y)
+    this.updateFooterPanel()
   }
 
   movePlayerTo(x, y) {
@@ -526,45 +536,38 @@ class RealmEditController extends EventTarget {
     return null
   }
 
-  createEmptyInspector(message) {
+  createEntityPanel({ title = 'Entities', message = '', body = null } = {}) {
     const panel = document.createElement('section')
     panel.className = 'ui-panel editor-inspector'
-    panel.innerHTML = `
-      <h2>Inspector</h2>
-      <p class="status-empty"></p>
-    `
-    panel.querySelector('p').textContent = message
+
+    const heading = document.createElement('h2')
+    heading.textContent = title
+
+    const actions = document.createElement('div')
+    actions.className = 'editor-toolbar-group editor-entity-actions'
+    actions.append(
+      this.createActionButton('Add Bot', () => this.addEntity('bots')),
+      this.createActionButton('Add Item', () => this.addEntity('items')),
+      this.createToolButton('place-player', 'Place Player'),
+    )
+
+    const hint = document.createElement('p')
+    hint.className = 'status-empty'
+    hint.textContent = message
+
+    panel.append(heading, actions, hint)
+
+    if (body) {
+      panel.append(body)
+    }
+
     return panel
   }
 
   showEmptyInspector(message = 'Click an avatar to edit its source entity.') {
-    this.dispatchInspector(this.createEmptyInspector(message))
-  }
-
-  showTerrainInspector(x = null, y = null) {
-    const terrain = this.#catalogs?.terrain?.get?.(this.#selectedTerrain)
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel editor-inspector'
-
-    const title = document.createElement('h2')
-    title.textContent = 'Terrain Brush'
-
-    const status = document.createElement('p')
-    status.className = 'status-empty'
-    status.textContent = x == null || y == null
-      ? `Painting ${terrain?.name ?? this.#selectedTerrain}. Drag across visible tiles to stamp terrain overrides.`
-      : `Painted ${terrain?.name ?? this.#selectedTerrain} at ${x},${y}.`
-
-    const details = document.createElement('div')
-    details.className = 'editor-terrain-summary'
-    details.innerHTML = `
-      <p><strong>Selected:</strong> ${terrain?.name ?? this.#selectedTerrain}</p>
-      <p><strong>Id:</strong> ${this.#selectedTerrain}</p>
-      <p>${terrain?.description ?? 'No description available.'}</p>
-    `
-
-    panel.append(title, status, details)
-    this.dispatchInspector(panel)
+    this.dispatchInspector(this.createEntityPanel({
+      message,
+    }))
   }
 
   dispatchInspector(node) {
@@ -576,12 +579,6 @@ class RealmEditController extends EventTarget {
 
   buildInspector(entitySelection) {
     const { entity } = entitySelection
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel editor-inspector'
-
-    const title = document.createElement('h2')
-    title.textContent = entitySelection.label
-    panel.append(title)
 
     const form = document.createElement('form')
     form.className = 'editor-form'
@@ -611,8 +608,12 @@ class RealmEditController extends EventTarget {
 
     markupField.append(markupLabel, markupInput)
     form.append(markupField)
-    panel.append(form)
-    return panel
+
+    return this.createEntityPanel({
+      title: entitySelection.label,
+      message: `Editing ${entitySelection.label.toLowerCase()} details.`,
+      body: form,
+    })
   }
 
   getEditableFields(entitySelection) {

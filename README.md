@@ -23,7 +23,7 @@ The game rules live in [engine/GameEngine.js](./engine/GameEngine.js). It builds
 
 ## Rendering and UI
 
-Rendering is split into layers inside [ui/GameBoard.js](./ui/GameBoard.js): [TerrainLayer](./ui/TerrainLayer.js) draws visible cells from the camera window, [AvatarLayer](./ui/AvatarLayer.js) places entity avatars, and [EffectLayer](./ui/EffectLayer.js) animates floating emoji/emotion effects. The terrain visuals are data-driven too: [ui/GameCell.js](./ui/GameCell.js) reads palette info from terrain catalog entries and generates per-tile variation with seeded randomness.
+Rendering is split into layers inside [ui/GameBoard.js](./ui/GameBoard.js): [TerrainLayer](./ui/TerrainLayer.js) draws visible cells from the camera window, [AvatarLayer](./ui/AvatarLayer.js) places entity avatars, and [EffectLayer](./ui/EffectLayer.js) animates floating emoji/emotion effects. The terrain visuals are data-driven too: [ui/GameCell.js](./ui/GameCell.js) reads a single `oklchHue` from terrain catalog entries and generates per-tile variation with seeded randomness.
 
 ## 
 

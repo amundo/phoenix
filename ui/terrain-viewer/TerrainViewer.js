@@ -41,19 +41,8 @@ class TerrainViewer extends HTMLElement {
     "name": "Grass",
     "category": "field",
     "description": "Open grassy ground for general exploration.",
-    "color": "var(--color-grass)",
     "walkable": true,
-    "palette": {
-      "lightness1": 62,
-      "lightness2": 54,
-      "chroma1": 0.13,
-      "chroma2": 0.11,
-      "hue1": 132,
-      "hue2": 128,
-      "lightnessVariance": 5,
-      "chromaVariance": 0.016,
-      "hueVariance": 10
-    }
+    "oklchHue": 132
   },
 
   */
@@ -61,10 +50,11 @@ class TerrainViewer extends HTMLElement {
   renderTerrainCard(terrain){
     let card = document.createElement('article')
     card.classList.add('card')
+    const hue = Number(terrain.oklchHue ?? 132)
     card.innerHTML = `
 
       <h3>${terrain.name}</h3>
-      <div class="color-swatch" style="background-color: ${terrain.color}"></div>
+      <div class="color-swatch" style="background-color: oklch(70% 0.12 ${hue}deg)"></div>
       <p>${terrain.description}</p>
     `
     return card
