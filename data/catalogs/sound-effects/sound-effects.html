@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sound Index</title>
+
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.4;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+}
+
+.sound {
+  border-bottom: 1px solid #ddd;
+  padding: 1rem 0;
+}
+
+.filename {
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.sound-id {
+  font-family: monospace;
+  background: #eee;
+
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+.meta {
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.tags {
+  margin-top: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  background: #eee;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin: 0 0.25rem 0.25rem 0;
+}
+
+button {
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#error {
+  color: firebrick;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Sound Effects</h1>
+<div id="status">Loading...</div>
+<div id="error"></div>
+<main id="sounds"></main>
+
+<script type="module">
+const statusEl = document.querySelector("#status")
+const errorEl = document.querySelector("#error")
+const soundsEl = document.querySelector("#sounds")
+
+const sortByName = (a, b) => a.label.localeCompare(b.label)
+
+async function loadSounds() {
+  try {
+    const indexUrl = new URL("./sound-effects.json", import.meta.url)
+    const response = await fetch(indexUrl)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const sounds = await response.json()
+
+    sounds.sort(sortByName)
+
+    statusEl.textContent = `${sounds.length} sounds loaded`
+
+    for (const sound of sounds) {
+      const section = document.createElement("section")
+      section.className = "sound"
+
+      section.innerHTML = `
+        <div class="filename">${sound.label} <code class="sound-id">${sound.id}</code></div>
+        <div class="meta">${sound.filename}</div>
+
+        <div class="meta">
+          ${
+            sound.url
+              ? `<a href="${sound.url}" target="_blank" rel="noopener">source</a>`
+              : ""
+          }
+        </div>
+
+        <div class="tags">
+          ${(sound.tags || [])
+            .map(tag => `<span class="tag">${tag}</span>`)
+            .join("")}
+        </div>
+      `
+
+      const url = new URL(`../sound-effects/${sound.filename}`, import.meta.url)
+      const audio = document.createElement("audio")
+      audio.src = url
+      audio.controls = true
+
+      section.append(audio)
+      soundsEl.append(section)
+    }
+
+  } catch (error) {
+    statusEl.textContent = ""
+    errorEl.textContent = `Could not load sound-effects.json (${error.message})`
+  }
+}
+
+loadSounds()
+</script>
+
+</body>
+</html>
