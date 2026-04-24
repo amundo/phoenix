@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character editor design</title>
+</head>
+<body>
+
+  <h1>Character editor design</h1>
+  <section class="ui-panel editor-inspector"><h2>Player</h2><div class="editor-toolbar-group editor-entity-actions"><button type="button" class="editor-action">Add Bot</button><button type="button" class="editor-action">Add Item</button><button type="button" class="editor-action" data-tool="place-player">Place Player</button></div><p class="status-empty">Editing player details.</p><form class="editor-form"><label class="editor-field"><span>id</span><input name="id" type="text"></label><label class="editor-field"><span>kind</span><input name="kind" type="text"></label><label class="editor-field"><span>name</span><input name="name" type="text"></label><div class="editor-field editor-field-emoji"><label class="editor-field-main"><span>emoji</span><input name="emoji" type="text"></label><search-emoji value="🧝">
+      <div class="search-emoji-control">
+        <input class="search-emoji-input" type="search" placeholder="Search emoji..." autocomplete="off">
+        <div class="search-emoji-status" aria-live="polite">Type to search.</div>
+        <div class="search-emoji-results" role="listbox" aria-label="Emoji results"></div>
+      </div>
+    </search-emoji></div><label class="editor-field"><span>x</span><input name="x" type="number"></label><label class="editor-field"><span>y</span><input name="y" type="number"></label><label class="editor-field editor-field-markup"><span>Entity Markup</span><textarea spellcheck="false"></textarea></label></form></section>

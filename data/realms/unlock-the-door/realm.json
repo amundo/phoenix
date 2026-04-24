@@ -5,7 +5,159 @@
   "columnCount": 10,
   "realmMap": {
     "rowCount": 8,
-    "columnCount": 10
+    "columnCount": 10,
+    "cells": [
+      {
+        "x": 4,
+        "y": 2,
+        "terrain": "sand"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "terrain": "sand"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "terrain": "sand"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "terrain": "sand"
+      },
+      {
+        "x": 6,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 6,
+        "y": 2,
+        "terrain": "sand"
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "terrain": "sand"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "terrain": "sand"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "terrain": "sand"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "terrain": "sand"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "terrain": "sand"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "terrain": "sand"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "terrain": "sand"
+      }
+    ]
   },
   "camera": {
     "x": 0,
@@ -28,7 +180,8 @@
         "id": "cactus-1",
         "kind": "cactus",
         "x": 4,
-        "y": 3
+        "y": 3,
+        "emoji": "🌵"
       },
       {
         "id": "bronze-key-1",

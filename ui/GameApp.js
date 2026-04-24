@@ -1,5 +1,6 @@
 import { GameEngine } from '../engine/GameEngine.js'
 import { GameDataLoader } from '../engine/GameDataLoader.js'
+import { AudioPlayer } from './AudioPlayer.js'
 import { GameBoard } from './GameBoard.js'
 import { GameUI } from './GameUI.js'
 import { RealmEditController } from './RealmEditController.js'
@@ -33,6 +34,7 @@ class GameApp extends HTMLElement {
   #currentRealm = null
   #realmEditController = null
   #isEditing = false
+  #audioPlayer = null
 
   constructor() {
     super()
@@ -45,6 +47,7 @@ class GameApp extends HTMLElement {
     this.handleDraftCancel = this.handleDraftCancel.bind(this)
 
     this.initializeLayout()
+    this.#audioPlayer = new AudioPlayer()
   }
 
   // Resolve the data root URL from the element's `src` attribute.
@@ -104,6 +107,8 @@ class GameApp extends HTMLElement {
       ])
       this.#index = index
       this.#sharedData = sharedData
+      this.#audioPlayer?.setCatalog(sharedData.catalogs.soundEffects ?? null)
+      this.#audioPlayer?.setDataRoot(dataRoot)
       await this.loadRealmIntoGame(sharedData.game.startRealm)
     } catch (error) {
       console.error('[GameApp] Failed to load game data:', error)
@@ -334,6 +339,10 @@ class GameApp extends HTMLElement {
 
       if (effect.type === 'emote') {
         this.#gameBoard.emote(effect.actor, effect.emotion)
+      }
+
+      if (effect.type === 'play-sound') {
+        this.#audioPlayer?.play(effect.sound)
       }
     }
   }

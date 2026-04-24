@@ -1,0 +1,8 @@
+{
+    "tasks": {
+        "deploy": {
+            "description": "deploy prototype to ruphus.com",
+            "command": "sh deploy.sh"
+        }
+    }
+}

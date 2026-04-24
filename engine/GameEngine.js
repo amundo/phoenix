@@ -288,6 +288,11 @@ class GameEngine {
     const effects = []
 
     for (const item of items) {
+      const pickupSound = item.on?.pickup?.sound ?? this.getDefaultPickupSound(item)
+      if (pickupSound) {
+        effects.push({ type: 'play-sound', sound: pickupSound })
+      }
+
       effects.push({
         type: 'speak',
         actor,
@@ -317,6 +322,11 @@ class GameEngine {
       if (!ok) {
         const blocked = item.on?.blocked
 
+        const blockedSound = blocked?.sound ?? this.getDefaultBlockedSound(item)
+        if (blockedSound) {
+          effects.push({ type: 'play-sound', sound: blockedSound })
+        }
+
         if (blocked?.message) {
           effects.push({
             type: 'speak',
@@ -340,6 +350,11 @@ class GameEngine {
 
       if (success?.set) {
         Object.assign(item, success.set)
+      }
+
+      const successSound = success?.sound ?? this.getDefaultSuccessSound(item)
+      if (successSound) {
+        effects.push({ type: 'play-sound', sound: successSound })
       }
 
       if (success?.message) {
@@ -378,6 +393,7 @@ class GameEngine {
 
   getBlockedByWorldEffects(actor) {
     return [
+      { type: 'play-sound', sound: 'error' },
       { type: 'speak', actor, message: 'It’s the edge of the world!' },
       { type: 'emote', actor, emotion: 'pain' },
     ]
@@ -387,6 +403,7 @@ class GameEngine {
     const terrainName = cell?.terrain ?? 'terrain'
 
     return [
+      { type: 'play-sound', sound: 'fail' },
       { type: 'speak', actor, message: `Can't walk on ${terrainName}.` },
       { type: 'emote', actor, emotion: 'confused' },
     ]
@@ -398,6 +415,11 @@ class GameEngine {
     for (const item of items) {
       const bump = item.on?.bump
       if (!bump) continue
+
+      const bumpSound = bump.sound ?? this.getDefaultBumpSound(item)
+      if (bumpSound) {
+        effects.push({ type: 'play-sound', sound: bumpSound })
+      }
 
       if (bump.message) {
         effects.push({
@@ -417,6 +439,42 @@ class GameEngine {
     }
 
     return effects
+  }
+
+  getDefaultPickupSound(item) {
+    const kind = `${item?.kind ?? item?.id ?? ''}`.toLowerCase()
+    const category = `${item?.category ?? ''}`.toLowerCase()
+    const emoji = item?.emoji ?? ''
+
+    if (kind.includes('coin') || emoji === '🪙') return 'pickup-coin'
+    if (kind.includes('key') || emoji === '🗝️') return 'pickup-key'
+    if (kind.includes('book') || kind.includes('scroll') || emoji === '📖' || emoji === '📜') {
+      return 'pickup-book'
+    }
+    if (category === 'magic') return 'powerup'
+    if (item?.portable) return 'pickup-generic'
+    return null
+  }
+
+  getDefaultBlockedSound(item) {
+    const kind = `${item?.kind ?? item?.id ?? ''}`.toLowerCase()
+    if (kind.includes('door') || item?.emoji === '🚪') return 'door-locked'
+    return 'error'
+  }
+
+  getDefaultSuccessSound(item) {
+    const kind = `${item?.kind ?? item?.id ?? ''}`.toLowerCase()
+    if (kind.includes('door') || item?.emoji === '🚪') return 'door-lock-open'
+    return 'notification'
+  }
+
+  getDefaultBumpSound(item) {
+    const kind = `${item?.kind ?? item?.id ?? ''}`.toLowerCase()
+    const category = `${item?.category ?? ''}`.toLowerCase()
+
+    if (category === 'hazard' || kind.includes('cactus')) return 'fail'
+    if (kind.includes('door') || item?.emoji === '🚪') return 'door-squeak'
+    return 'bump'
   }
 
   centerCameraOnPlayer() {
