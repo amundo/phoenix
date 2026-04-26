@@ -29,12 +29,24 @@ class TerrainSelector extends HTMLElement {
   }
 
   set data(data) {
-    if (typeof data?.values === 'function' && !Array.isArray(data)) {
-      this.#data = Array.from(data.values())
-    } else {
-      this.#data = Array.isArray(data) ? data : []
-    }
+    const entries = typeof data?.values === 'function' && !Array.isArray(data)
+      ? Array.from(data.values())
+      : Array.isArray(data) ? data : []
+
+    this.#data = entries.sort((a, b) => this.compareTerrainColor(a, b))
     this.render()
+  }
+
+  compareTerrainColor(a, b) {
+    const left = getTerrainPalette(a)
+    const right = getTerrainPalette(b)
+
+    return (
+      left.hue1 - right.hue1 ||
+      right.lightness1 - left.lightness1 ||
+      right.chroma1 - left.chroma1 ||
+      `${a.name ?? a.id ?? ''}`.localeCompare(`${b.name ?? b.id ?? ''}`)
+    )
   }
 
   get data() {

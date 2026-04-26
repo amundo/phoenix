@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>terrain-selector demo</title>
+  <link rel="stylesheet" href="terrain-selector.css">
+  <style>
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Georgia, serif;
+      background: linear-gradient(180deg, #f8f8f6 0%, #ece9e1 100%);
+      color: #17313b;
+    }
+
+    body {
+      display: grid;
+      place-items: start center;
+      padding: 2rem 1rem 3rem;
+    }
+
+    main {
+      display: grid;
+      gap: 1rem;
+      width: min(100%, 44rem);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .demo-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .demo-button {
+      border: 2px solid rgb(23 49 59 / 0.9);
+      border-radius: 999px;
+      background: white;
+      color: #17313b;
+      padding: 0.55rem 0.9rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .demo-status {
+      padding: 0.75rem 1rem;
+      border: 2px solid rgb(23 49 59 / 0.2);
+      border-radius: 1rem;
+      background: rgb(255 255 255 / 0.72);
+      font-size: 0.95rem;
+    }
+
+    terrain-selector {
+      min-height: 0;
+      max-height: 70vh;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Terrain Selector</h1>
+      <p>Standalone demo for card layout, scrolling, and terrain swatch tuning.</p>
+    </header>
+
+    <div class="demo-toolbar">
+      <button class="demo-button" type="button" id="load-real">Load Real Catalog</button>
+      <button class="demo-button" type="button" id="load-mock">Load Mock Set</button>
+    </div>
+
+    <div class="demo-status" id="status">Loading terrain catalog…</div>
+
+    <terrain-selector id="demo"></terrain-selector>
+  </main>
+
+  <script type="module">
+    import { TerrainSelector } from './TerrainSelector.js'
+
+    const selector = document.getElementById('demo')
+    const status = document.getElementById('status')
+    const loadRealButton = document.getElementById('load-real')
+    const loadMockButton = document.getElementById('load-mock')
+
+    const mockTerrain = [
+      {
+        id: 'grass',
+        name: 'Grass',
+        category: 'field',
+        description: 'Open grassy ground for general exploration.',
+        walkable: true,
+        oklchHue: 132,
+      },
+      {
+        id: 'meadow',
+        name: 'Meadow',
+        category: 'field',
+        description: 'A softer, brighter grassy field.',
+        walkable: true,
+        oklchHue: 136,
+      },
+      {
+        id: 'forest-floor',
+        name: 'Forest Floor',
+        category: 'forest',
+        description: 'Dark leafy ground beneath dense tree cover.',
+        walkable: true,
+        oklchHue: 136,
+      },
+      {
+        id: 'snow',
+        name: 'Snow',
+        category: 'cold',
+        description: 'Bright snowy ground with a crisp white-blue cast.',
+        walkable: true,
+        oklchHue: 114,
+      },
+      {
+        id: 'water',
+        name: 'Water',
+        category: 'water',
+        description: 'Deep water that cannot be walked across.',
+        walkable: false,
+        oklchHue: 268,
+      },
+      {
+        id: 'lava',
+        name: 'Lava',
+        category: 'hazard',
+        description: 'Molten lava that absolutely should not be walked on.',
+        walkable: false,
+        oklchHue: 32,
+      },
+    ]
+
+    async function loadRealCatalog() {
+      status.textContent = 'Loading terrain catalog…'
+
+      try {
+        const response = await fetch('../../data/catalogs/terrain.json')
+        if (!response.ok) {
+          throw new Error(`Failed to load terrain catalog: ${response.status}`)
+        }
+
+        const terrain = await response.json()
+        selector.data = terrain
+        selector.selectedTerrain = terrain[0]?.id ?? ''
+        status.textContent = `Loaded real catalog with ${terrain.length} terrain types.`
+      } catch (error) {
+        console.error(error)
+        selector.data = mockTerrain
+        selector.selectedTerrain = mockTerrain[0].id
+        status.textContent = 'Real catalog failed to load. Showing mock terrain data instead.'
+      }
+    }
+
+    function loadMockCatalog() {
+      selector.data = mockTerrain
+      selector.selectedTerrain = mockTerrain[0].id
+      status.textContent = `Loaded mock set with ${mockTerrain.length} terrain types.`
+    }
+
+    selector.addEventListener('terrainselect', event => {
+      const terrain = event.detail?.terrain
+      if (!terrain) return
+      status.textContent = `Selected ${terrain.name ?? terrain.id} (${terrain.id}).`
+    })
+
+    loadRealButton.addEventListener('click', () => {
+      loadRealCatalog()
+    })
+
+    loadMockButton.addEventListener('click', () => {
+      loadMockCatalog()
+    })
+
+    loadRealCatalog()
+
+    window.terrainSelectorDemo = selector
+    window.TerrainSelector = TerrainSelector
+  </script>
+</body>
+</html>
