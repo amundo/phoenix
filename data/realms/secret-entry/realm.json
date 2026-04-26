@@ -1,5 +1,6 @@
 {
     "id": "secret-entry",
+    "owner": "Pat",
     "name": "Secret entry",
     "rowCount": 6,
     "columnCount": 8,

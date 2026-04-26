@@ -1,5 +1,6 @@
 {
     "id": "my-realm",
+    "owner": "Lynnette",
     "name": "My realm",
     "rowCount": 6,
     "columnCount": 8,

@@ -1,5 +1,6 @@
 {
   "id": "unlock-the-door",
+  "owner": "Pat",
   "name": "Unlock the Door",
   "rowCount": 8,
   "columnCount": 10,

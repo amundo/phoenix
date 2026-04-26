@@ -738,6 +738,12 @@ class RealmEditController extends EventTarget {
 
     form.append(
       this.createRealmField({
+        key: 'owner',
+        label: 'Owner',
+        value: this.#draft?.owner ?? '',
+        placeholder: 'Student name or owner id',
+      }),
+      this.createRealmField({
         key: 'name',
         label: 'Level Title',
         value: this.#draft?.name ?? '',
@@ -758,7 +764,7 @@ class RealmEditController extends EventTarget {
 
     return this.createEntityPanel({
       title: 'Realm',
-      message: 'Set the title and welcome text for this level.',
+      message: 'Set the owner, title, and welcome text for this level.',
       body: form,
     })
   }
