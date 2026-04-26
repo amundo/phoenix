@@ -4,6 +4,7 @@ class GameUI extends HTMLElement {
   #infoMessageTimer = null
   #infoFadeTimer = null
   #defaultInfoMessage = 'Walk the world and discover what is here.'
+  #slotMap = null
 
   constructor() {
     super()
@@ -51,6 +52,12 @@ class GameUI extends HTMLElement {
     this.leftSidebarSlot = this.querySelector('.sidebar-slot-left')
     this.rightSidebarSlot = this.querySelector('.sidebar-slot-right')
     this.footerSlot = this.querySelector('.footer-slot')
+    this.#slotMap = {
+      stage: this.stageSlot,
+      leftSidebar: this.leftSidebarSlot,
+      rightSidebar: this.rightSidebarSlot,
+      footer: this.footerSlot,
+    }
 
     this.handleRealmChange = this.handleRealmChange.bind(this)
 
@@ -96,24 +103,26 @@ class GameUI extends HTMLElement {
     }
   }
 
+  mountContent(slotName, node) {
+    const slot = this.#slotMap?.[slotName]
+    if (!slot || !node) return
+    slot.replaceChildren(node)
+  }
+
   mountStageContent(node) {
-    if (!this.stageSlot || !node) return
-    this.stageSlot.replaceChildren(node)
+    this.mountContent('stage', node)
   }
 
   mountLeftSidebarContent(node) {
-    if (!this.leftSidebarSlot || !node) return
-    this.leftSidebarSlot.replaceChildren(node)
+    this.mountContent('leftSidebar', node)
   }
 
   mountRightSidebarContent(node) {
-    if (!this.rightSidebarSlot || !node) return
-    this.rightSidebarSlot.replaceChildren(node)
+    this.mountContent('rightSidebar', node)
   }
 
   mountFooterContent(node) {
-    if (!this.footerSlot || !node) return
-    this.footerSlot.replaceChildren(node)
+    this.mountContent('footer', node)
   }
 
   restorePlayPanels() {
@@ -122,41 +131,51 @@ class GameUI extends HTMLElement {
     this.mountFooterContent(this.createFooterPanel())
   }
 
-  createInventoryPanel() {
+  createPanel({ className, id = '', html }) {
     const panel = document.createElement('section')
-    panel.id = 'inventory'
-    panel.className = 'ui-panel'
-    panel.innerHTML = `
-      <h2>Inventory</h2>
-      <div class="current-realm"></div>
-      <div id="inventory-items"></div>
-    `
+    panel.className = className
+    if (id) {
+      panel.id = id
+    }
+    panel.innerHTML = html
     return panel
+  }
+
+  createInventoryPanel() {
+    return this.createPanel({
+      id: 'inventory',
+      className: 'ui-panel',
+      html: `
+        <h2>Inventory</h2>
+        <div class="current-realm"></div>
+        <div id="inventory-items"></div>
+      `,
+    })
   }
 
   createStatusPanel() {
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel status-panel'
-    panel.innerHTML = `
-      <h2>Status</h2>
-      <p class="status-empty">Health, quests, and other status widgets can live here.</p>
-    `
-    return panel
+    return this.createPanel({
+      className: 'ui-panel status-panel',
+      html: `
+        <h2>Status</h2>
+        <p class="status-empty">Health, quests, and other status widgets can live here.</p>
+      `,
+    })
   }
 
   createFooterPanel() {
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel footer-panel'
-    panel.innerHTML = `
-      <div class="info-banner-shell" hidden>
-        <info-banner
-          class="info-banner"
-          role="status"
-          aria-live="polite"
-        >${this.#defaultInfoMessage}</info-banner>
-      </div>
-    `
-    return panel
+    return this.createPanel({
+      className: 'ui-panel footer-panel',
+      html: `
+        <div class="info-banner-shell" hidden>
+          <info-banner
+            class="info-banner"
+            role="status"
+            aria-live="polite"
+          >${this.#defaultInfoMessage}</info-banner>
+        </div>
+      `,
+    })
   }
 
   clearInfoMessageTimers() {
@@ -181,41 +200,33 @@ class GameUI extends HTMLElement {
   setInventory(items) {
     const container = this.querySelector('#inventory-items')
     if (!container) return
-    container.replaceChildren()
+    container.replaceChildren(...items.map(item => this.createInventoryItem(item)))
+  }
 
-    items.forEach(item => {
-      const element = document.createElement('div')
-      element.className = 'inventory-item'
+  createInventoryItem(item) {
+    const element = document.createElement('div')
+    element.className = 'inventory-item'
 
-      if (item.kind) {
-        element.dataset.kind = item.kind
-      }
+    if (item.kind) {
+      element.dataset.kind = item.kind
+    }
 
-      if (item.category) {
-        element.dataset.category = item.category
-      }
+    if (item.category) {
+      element.dataset.category = item.category
+    }
 
-      element.title = item.description ?? item.name ?? item.kind ?? ''
+    element.title = item.description ?? item.name ?? item.kind ?? ''
 
-      const emoji = document.createElement('span')
-      emoji.className = 'inventory-item-emoji'
-      emoji.textContent = item.emoji ?? '📦'
+    element.append(
+      this.createTextElement('span', 'inventory-item-emoji', item.emoji ?? '📦'),
+      this.createTextElement('span', 'inventory-item-name', item.name ?? item.kind ?? 'Unknown item'),
+    )
 
-      const name = document.createElement('span')
-      name.className = 'inventory-item-name'
-      name.textContent = item.name ?? item.kind ?? 'Unknown item'
+    if (item.category) {
+      element.append(this.createTextElement('span', 'inventory-item-category', item.category))
+    }
 
-      element.append(emoji, name)
-
-      if (item.category) {
-        const category = document.createElement('span')
-        category.className = 'inventory-item-category'
-        category.textContent = item.category
-        element.append(category)
-      }
-
-      container.append(element)
-    })
+    return element
   }
 
   setCurrentRealm(realmName) {
@@ -231,13 +242,22 @@ class GameUI extends HTMLElement {
     if (!this.realmSelect) return
 
     this.realmSelect.replaceChildren(
-      ...realmOptions.map(({ value, label }) => {
-        const option = document.createElement('option')
-        option.value = value
-        option.textContent = label
-        return option
-      })
+      ...realmOptions.map(({ value, label }) => this.createOption(value, label))
     )
+  }
+
+  createTextElement(tagName, className, text) {
+    const element = document.createElement(tagName)
+    element.className = className
+    element.textContent = text
+    return element
+  }
+
+  createOption(value, label) {
+    const option = document.createElement('option')
+    option.value = value
+    option.textContent = label
+    return option
   }
 
   setAdminData(data) {

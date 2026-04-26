@@ -21,6 +21,13 @@ It has these responsibilities:
 
 class GameApp extends HTMLElement {
   static localhostRealmsApiOrigin = 'http://localhost:8787'
+  static keyCommands = {
+    ArrowUp: { type: 'move', dx: 0, dy: -1 },
+    ArrowDown: { type: 'move', dx: 0, dy: 1 },
+    ArrowLeft: { type: 'move', dx: -1, dy: 0 },
+    ArrowRight: { type: 'move', dx: 1, dy: 0 },
+    ' ': { type: 'interact' },
+  }
 
   #engine = null
   #gameBoard = null
@@ -76,7 +83,7 @@ class GameApp extends HTMLElement {
   // Stop active listeners and loops when the app leaves the document.
   disconnectedCallback() {
     this.stopLoop()
-    removeEventListener('keydown', this.handleKeyDown)
+    this.unbindKeyboard()
   }
 
   get ui(){ return this.#ui }
@@ -95,6 +102,15 @@ class GameApp extends HTMLElement {
     this.#ui.addEventListener('realmchange', this.handleRealmChange)
     this.#ui.addEventListener('editoropen', this.handleEditorOpen)
     this.append(this.#ui)
+  }
+
+  bindKeyboard() {
+    this.unbindKeyboard()
+    addEventListener('keydown', this.handleKeyDown)
+  }
+
+  unbindKeyboard() {
+    removeEventListener('keydown', this.handleKeyDown)
   }
 
   // Load the shared index/catalog data, then load the configured start realm.
@@ -133,15 +149,11 @@ class GameApp extends HTMLElement {
     this.#commandQueue = []
     const realmWelcomeMessage = this.getRealmWelcomeMessage(gameData.realm)
     this.render()
-    this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
-    this.#ui?.setCurrentRealm(this.#currentRealmName ?? gameData.realm?.id ?? '')
     this.#ui?.setDefaultInfoMessage(realmWelcomeMessage)
     this.syncAdminData(gameData.realm)
     this.#ui?.setInfoMessage(realmWelcomeMessage)
     this.startLoop()
-
-    removeEventListener('keydown', this.handleKeyDown)
-    addEventListener('keydown', this.handleKeyDown)
+    this.bindKeyboard()
   }
 
   get realmEditController(){
@@ -152,7 +164,7 @@ class GameApp extends HTMLElement {
     if (!this.#sharedData || !this.#currentRealm) return
 
     this.stopLoop()
-    removeEventListener('keydown', this.handleKeyDown)
+    this.unbindKeyboard()
 
     this.#isEditing = true
     this.#realmEditController = new RealmEditController()
@@ -179,10 +191,7 @@ class GameApp extends HTMLElement {
   handleDraftCancel() {
     if (!this.#currentRealm || !this.#sharedData) return
 
-    this.start({
-      ...this.#sharedData,
-      realm: this.#currentRealm,
-    })
+    this.restartWithRealm(this.#currentRealm)
   }
 
   handleEditorInspect(event) {
@@ -196,10 +205,7 @@ class GameApp extends HTMLElement {
       const savedRealm = await this.saveRealm(event.detail.realm)
       this.#currentRealm = savedRealm
       this.#currentRealmName = savedRealm.id ?? this.#currentRealmName
-      this.start({
-        ...this.#sharedData,
-        realm: this.#currentRealm,
-      })
+      this.restartWithRealm(this.#currentRealm)
     } catch (error) {
       console.error('[GameApp] Failed to save realm:', error)
       window.alert(`Failed to save realm.\n\n${error.message}`)
@@ -229,6 +235,12 @@ class GameApp extends HTMLElement {
 
     const realm = await this.#loader.loadRealm(realmName)
     this.#currentRealmName = realmName
+
+    this.restartWithRealm(realm)
+  }
+
+  restartWithRealm(realm) {
+    if (!this.#sharedData) return
 
     this.start({
       ...this.#sharedData,
@@ -269,7 +281,7 @@ class GameApp extends HTMLElement {
 
     if (result.stateChanged) {
       this.#gameBoard.render(this.#engine.getState())
-      this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
+      this.syncGameUI()
       this.syncAdminData()
     }
 
@@ -285,9 +297,15 @@ class GameApp extends HTMLElement {
   render() {
     if (!this.#engine || !this.#gameBoard) return
     this.#gameBoard.render(this.#engine.getState())
-    this.#ui?.setInventory(this.#engine.player?.inventory ?? [])
-    this.#ui?.setCurrentRealm(this.#currentRealmName ?? this.#engine?.realmMap?.id ?? '')
+    this.syncGameUI()
     this.syncAdminData()
+  }
+
+  syncGameUI() {
+    if (!this.#ui || !this.#engine) return
+
+    this.#ui.setInventory(this.#engine.player?.inventory ?? [])
+    this.#ui.setCurrentRealm(this.#currentRealmName ?? this.#engine.realmMap?.id ?? '')
   }
 
   // Send the current game, realm, catalog, and runtime data into the admin dialog.
@@ -318,27 +336,8 @@ class GameApp extends HTMLElement {
     if (!this.#engine || this.#isEditing) return
 
     const actor = this.#engine.player
-    let command = null
-
-    if (event.key === 'ArrowUp') {
-      command = { type: 'move', actor, dx: 0, dy: -1 }
-    }
-
-    if (event.key === 'ArrowDown') {
-      command = { type: 'move', actor, dx: 0, dy: 1 }
-    }
-
-    if (event.key === 'ArrowLeft') {
-      command = { type: 'move', actor, dx: -1, dy: 0 }
-    }
-
-    if (event.key === 'ArrowRight') {
-      command = { type: 'move', actor, dx: 1, dy: 0 }
-    }
-
-    if (event.key === ' ') {
-      command = { type: 'interact', actor }
-    }
+    const commandTemplate = GameApp.keyCommands[event.key]
+    const command = commandTemplate ? { ...commandTemplate, actor } : null
 
     if (command) {
       event.preventDefault()
