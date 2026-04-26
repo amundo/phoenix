@@ -1,6 +1,7 @@
 import { GameEngine } from '../engine/GameEngine.js'
 import { Camera } from '../engine/Camera.js'
 import { GameBoard } from './GameBoard.js'
+import { EditorToolsPanel } from './EditorToolsPanel.js'
 import { SearchEmoji } from './search-emoji/SearchEmoji.js'
 import { setTerrainOverride } from '../editor/terrainEditing.js'
 
@@ -19,11 +20,7 @@ class RealmEditController extends EventTarget {
   #toolsPanel = null
   #footerPanel = null
   #inspectorNode = null
-  #terrainSelect = null
   #cameraStatus = null
-  #footerStatus = null
-  #terrainSummary = null
-  #toolStatus = null
   #toolButtons = new Set()
   #saveDialog = null
   #saveDialogOutput = null
@@ -65,7 +62,7 @@ class RealmEditController extends EventTarget {
     this.#camera = this.createEditorCamera(this.#draft)
     this.#selectedEntitySelection = null
     this.renderDraft()
-    this.populateTerrainOptions()
+    this.refreshToolsPanel()
     this.setTool('select')
     this.showRealmInspector()
     this.updateFooterPanel()
@@ -82,46 +79,15 @@ class RealmEditController extends EventTarget {
   buildToolsPanel() {
     if (this.#toolsPanel) return this.#toolsPanel
 
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel editor-sidebar-panel editor-tools-panel'
-
-    const title = document.createElement('h2')
-    title.textContent = 'Terrain'
-
-    const toolRow = document.createElement('div')
-    toolRow.className = 'editor-toolbar-group'
-    toolRow.append(
-      this.createToolButton('select', 'Select'),
-      this.createToolButton('paint-terrain', 'Paint Terrain'),
-    )
-
-    this.#toolStatus = document.createElement('div')
-    this.#toolStatus.className = 'editor-tool-status'
-    this.#toolStatus.setAttribute('aria-live', 'polite')
-
-    const terrainField = document.createElement('label')
-    terrainField.className = 'editor-toolbar-field'
-
-    const terrainLabel = document.createElement('span')
-    terrainLabel.textContent = 'Terrain'
-
-    this.#terrainSelect = document.createElement('select')
-    this.#terrainSelect.setAttribute('aria-label', 'Selected terrain')
-    this.#terrainSelect.addEventListener('input', event => {
-      this.setSelectedTerrain(event.target.value)
+    this.#toolsPanel = new EditorToolsPanel()
+    this.#toolsPanel.addEventListener('toolchange', event => {
+      this.setTool(event.detail?.tool ?? 'select')
     })
-
-    terrainField.append(terrainLabel, this.#terrainSelect)
-
-    this.#terrainSummary = document.createElement('div')
-    this.#terrainSummary.className = 'editor-summary-section'
-
-    panel.append(title, toolRow, this.#toolStatus, terrainField, this.#terrainSummary)
-    this.#toolsPanel = panel
-    this.populateTerrainOptions()
-    this.syncToolUI()
-    this.updateTerrainPanel()
-    return panel
+    this.#toolsPanel.addEventListener('terrainchange', event => {
+      this.setSelectedTerrain(event.detail?.terrain ?? 'grass')
+    })
+    this.refreshToolsPanel()
+    return this.#toolsPanel
   }
 
   buildFooterPanel() {
@@ -150,19 +116,12 @@ class RealmEditController extends EventTarget {
       this.createActionButton('Player', () => this.centerCameraOnPlayer()),
     )
 
-    const movementHint = document.createElement('p')
-    movementHint.className = 'status-empty'
-    movementHint.textContent = 'Use arrow keys or the footer buttons to move around.'
-
     this.#cameraStatus = document.createElement('div')
     this.#cameraStatus.className = 'editor-camera-status'
     this.#cameraStatus.setAttribute('aria-live', 'polite')
 
-    this.#footerStatus = document.createElement('p')
-    this.#footerStatus.className = 'status-empty editor-footer-status'
-
     this.#saveDialog = this.buildSaveDialog()
-    panel.append(actions, navRow, movementHint, this.#cameraStatus, this.#footerStatus, this.#saveDialog)
+    panel.append(actions, navRow, this.#cameraStatus, this.#saveDialog)
     this.#footerPanel = panel
     this.updateCameraStatus()
     this.updateFooterPanel()
@@ -306,7 +265,7 @@ class RealmEditController extends EventTarget {
     this.#engine.camera = this.#camera
     this.#board.render(this.#engine.getState())
     this.updateCameraStatus()
-    this.updateTerrainPanel()
+    this.refreshToolsPanel()
     this.updateFooterPanel()
   }
 
@@ -360,39 +319,18 @@ class RealmEditController extends EventTarget {
   }
 
   updateFooterPanel() {
-    if (!this.#footerStatus || !this.#draft) return
-
-    const toolLabel = this.getToolLabel()
-
-    const overrideCount = this.#draft.realmMap?.cells?.length ?? 0
-
-    this.#footerStatus.textContent =
-      `${toolLabel}. Explicit terrain overrides: ${overrideCount}.`
-  }
-
-  updateTerrainPanel() {
-    if (!this.#terrainSummary) return
-
-    const terrain = this.#catalogs?.terrain?.get?.(this.#selectedTerrain)
-    const overrideCount = this.#draft?.realmMap?.cells?.filter(cell => cell.terrain === this.#selectedTerrain).length ?? 0
-
-    this.#terrainSummary.innerHTML = `
-      <h3>${terrain?.name ?? this.#selectedTerrain}</h3>
-      <p><strong>Id:</strong> ${this.#selectedTerrain}</p>
-      <p><strong>Overrides:</strong> ${overrideCount}</p>
-      <p>${terrain?.description ?? 'Choose a terrain swatch and paint directly on the board.'}</p>
-    `
+    if (!this.#draft) return
   }
 
   syncToolUI() {
     this.#board.dataset.editorTool = this.#tool
     for (const button of this.#toolButtons) {
-      button.toggleAttribute('aria-pressed', button.dataset.tool === this.#tool)
-    }
+      if (!button.isConnected) {
+        this.#toolButtons.delete(button)
+        continue
+      }
 
-    if (this.#toolStatus) {
-      this.#toolStatus.textContent = `Mode: ${this.getToolLabel()}`
-      this.#toolStatus.dataset.tool = this.#tool
+      button.toggleAttribute('aria-pressed', button.dataset.tool === this.#tool)
     }
   }
 
@@ -411,10 +349,10 @@ class RealmEditController extends EventTarget {
   setTool(tool) {
     this.#tool = tool
     this.syncToolUI()
+    this.refreshToolsPanel()
     this.updateFooterPanel()
 
     if (tool === 'paint-terrain') {
-      this.updateTerrainPanel()
       return
     }
 
@@ -470,38 +408,33 @@ class RealmEditController extends EventTarget {
     this.#lastPaintedCellKey = null
   }
 
-  populateTerrainOptions() {
-    const select = this.#terrainSelect
-    if (!select) return
-
-    const terrainEntries = [...(this.#catalogs?.terrain?.values?.() ?? [])]
+  getTerrainChoices() {
+    return [...(this.#catalogs?.terrain?.values?.() ?? [])]
       .sort((a, b) =>
         `${a.category ?? ''}:${a.name ?? a.id}`.localeCompare(`${b.category ?? ''}:${b.name ?? b.id}`)
       )
+  }
 
-    select.replaceChildren()
+  refreshToolsPanel() {
+    if (!this.#toolsPanel) return
 
-    for (const terrain of terrainEntries) {
-      const option = document.createElement('option')
-      option.value = terrain.id
-      option.textContent = terrain.name ?? terrain.id
-      select.append(option)
-    }
-
-    const preferredTerrain = terrainEntries.some(terrain => terrain.id === this.#selectedTerrain)
+    const terrainChoices = this.getTerrainChoices()
+    const preferredTerrain = terrainChoices.some(terrain => terrain.id === this.#selectedTerrain)
       ? this.#selectedTerrain
-      : terrainEntries[0]?.id ?? 'grass'
+      : terrainChoices[0]?.id ?? 'grass'
 
-    this.setSelectedTerrain(preferredTerrain)
+    this.#selectedTerrain = preferredTerrain
+    this.#toolsPanel.setData({
+      tool: this.#tool,
+      toolLabel: this.getToolLabel(),
+      selectedTerrain: this.#selectedTerrain,
+      terrainChoices,
+    })
   }
 
   setSelectedTerrain(terrainId) {
     this.#selectedTerrain = terrainId || 'grass'
-    if (this.#terrainSelect && this.#terrainSelect.value !== this.#selectedTerrain) {
-      this.#terrainSelect.value = this.#selectedTerrain
-    }
-
-    this.updateTerrainPanel()
+    this.refreshToolsPanel()
 
     if (this.#tool === 'paint-terrain') {
       this.updateFooterPanel()

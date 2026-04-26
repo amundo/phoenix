@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>  
+  <title>&lt;terrain-selector></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="terrain-selector.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>">
+
+</head>
+<body>
+
+    <terrain-selector id="demo" src="../../data/catalogs/terrain.json"></terrain-selector>  
+
+<script type="module" defer>
+import { TerrainSelector } from './TerrainSelector.js'
+
+window.terrainSelector = document.querySelector('terrain-selector')
+</script>
+
+</body>
+</html>
