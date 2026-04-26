@@ -42,3 +42,9 @@ deno task realms create --file ./data/realms/tiny/realm.json
 deno task realms update tiny --file ./data/realms/tiny/realm.json
 deno task realms delete tiny
 ```
+
+For local browser development, you can also run a small proxy that forwards `localhost` requests to the remote realms API:
+
+```sh
+deno task realms-proxy
+```

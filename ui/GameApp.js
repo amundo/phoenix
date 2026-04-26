@@ -20,6 +20,8 @@ It has these responsibilities:
 */
 
 class GameApp extends HTMLElement {
+  static localhostRealmsApiOrigin = 'http://localhost:8787'
+
   #engine = null
   #gameBoard = null
   #hasConnected = false
@@ -187,14 +189,21 @@ class GameApp extends HTMLElement {
     this.#ui?.mountRightSidebarContent(event.detail?.node)
   }
 
-  handleDraftSave(event) {
+  async handleDraftSave(event) {
     if (!event.detail?.realm || !this.#sharedData) return
 
-    this.#currentRealm = event.detail.realm
-    this.start({
-      ...this.#sharedData,
-      realm: this.#currentRealm,
-    })
+    try {
+      const savedRealm = await this.saveRealm(event.detail.realm)
+      this.#currentRealm = savedRealm
+      this.#currentRealmName = savedRealm.id ?? this.#currentRealmName
+      this.start({
+        ...this.#sharedData,
+        realm: this.#currentRealm,
+      })
+    } catch (error) {
+      console.error('[GameApp] Failed to save realm:', error)
+      window.alert(`Failed to save realm.\n\n${error.message}`)
+    }
   }
 
   // Respond to realm selector changes by loading the requested realm.
@@ -375,6 +384,47 @@ class GameApp extends HTMLElement {
     }
 
     return 'Welcome to my realm!'
+  }
+
+  async saveRealm(realm) {
+    const realmId = String(realm?.id ?? '').trim()
+    const hasRealmId = Boolean(realmId)
+    const apiBasePath = this.getRealmsApiBasePath()
+    const url = hasRealmId
+      ? `${apiBasePath}/${encodeURIComponent(realmId)}`
+      : apiBasePath
+
+    const response = await fetch(url, {
+      method: hasRealmId ? 'PUT' : 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(realm),
+    })
+
+    const responseText = await response.text()
+    const contentType = response.headers.get('content-type') ?? ''
+    const isJson = contentType.includes('application/json')
+    const data = isJson && responseText ? JSON.parse(responseText) : responseText
+
+    if (!response.ok) {
+      const detail = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+      throw new Error(`${response.status} ${response.statusText}${detail ? `\n${detail}` : ''}`)
+    }
+
+    return typeof data === 'string' || !data ? realm : data
+  }
+
+  getRealmsApiBasePath() {
+    const { hostname } = window.location
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+
+    if (isLocalhost) {
+      return `${GameApp.localhostRealmsApiOrigin}/api/realms`
+    }
+
+    return '/api/realms'
   }
 }
 

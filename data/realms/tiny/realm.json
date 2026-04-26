@@ -19,6 +19,147 @@
       "inventory": []
     },
     "bots": [],
-    "items": []
+    "items": [
+      {
+        "id": "item-1",
+        "kind": "fish",
+        "x": 5,
+        "y": 4,
+        "portable": false,
+        "solid": false,
+        "emoji": "🐟"
+      },
+      {
+        "id": "item-2",
+        "kind": "fishing-rod",
+        "x": 7,
+        "y": 1,
+        "portable": false,
+        "solid": false,
+        "emoji": "🎣"
+      }
+    ]
+  },
+  "realmMap": {
+    "rowCount": 8,
+    "columnCount": 10,
+    "defaultTerrain": "grass",
+    "cells": [
+      {
+        "x": 4,
+        "y": 3,
+        "terrain": "water"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 6,
+        "y": 2,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 6,
+        "y": 3,
+        "terrain": "water"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "terrain": "water"
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "terrain": "water"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "terrain": "water"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "terrain": "water"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "terrain": "water"
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "terrain": "water"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "terrain": "water"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "terrain": "shallow-water"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "terrain": "shallow-water"
+      }
+    ]
   }
 }

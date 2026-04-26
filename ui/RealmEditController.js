@@ -23,6 +23,7 @@ class RealmEditController extends EventTarget {
   #cameraStatus = null
   #footerStatus = null
   #terrainSummary = null
+  #toolStatus = null
   #toolButtons = new Set()
   #saveDialog = null
   #saveDialogOutput = null
@@ -89,7 +90,14 @@ class RealmEditController extends EventTarget {
 
     const toolRow = document.createElement('div')
     toolRow.className = 'editor-toolbar-group'
-    toolRow.append(this.createToolButton('paint-terrain', 'Paint Terrain'))
+    toolRow.append(
+      this.createToolButton('select', 'Select'),
+      this.createToolButton('paint-terrain', 'Paint Terrain'),
+    )
+
+    this.#toolStatus = document.createElement('div')
+    this.#toolStatus.className = 'editor-tool-status'
+    this.#toolStatus.setAttribute('aria-live', 'polite')
 
     const terrainField = document.createElement('label')
     terrainField.className = 'editor-toolbar-field'
@@ -108,7 +116,7 @@ class RealmEditController extends EventTarget {
     this.#terrainSummary = document.createElement('div')
     this.#terrainSummary.className = 'editor-summary-section'
 
-    panel.append(title, toolRow, terrainField, this.#terrainSummary)
+    panel.append(title, toolRow, this.#toolStatus, terrainField, this.#terrainSummary)
     this.#toolsPanel = panel
     this.populateTerrainOptions()
     this.syncToolUI()
@@ -354,11 +362,7 @@ class RealmEditController extends EventTarget {
   updateFooterPanel() {
     if (!this.#footerStatus || !this.#draft) return
 
-    const toolLabel = this.#tool === 'paint-terrain'
-      ? `Painting ${this.#selectedTerrain}`
-      : this.#tool === 'place-player'
-        ? 'Placing player'
-        : 'Selecting entities'
+    const toolLabel = this.getToolLabel()
 
     const overrideCount = this.#draft.realmMap?.cells?.length ?? 0
 
@@ -385,6 +389,23 @@ class RealmEditController extends EventTarget {
     for (const button of this.#toolButtons) {
       button.toggleAttribute('aria-pressed', button.dataset.tool === this.#tool)
     }
+
+    if (this.#toolStatus) {
+      this.#toolStatus.textContent = `Mode: ${this.getToolLabel()}`
+      this.#toolStatus.dataset.tool = this.#tool
+    }
+  }
+
+  getToolLabel() {
+    if (this.#tool === 'paint-terrain') {
+      return `Painting ${this.#selectedTerrain}`
+    }
+
+    if (this.#tool === 'place-player') {
+      return 'Placing player'
+    }
+
+    return 'Selecting entities'
   }
 
   setTool(tool) {
@@ -520,6 +541,7 @@ class RealmEditController extends EventTarget {
 
   addEntity(collection) {
     if (!this.#draft?.entities) return
+    this.setTool('select')
     this.#draft.entities[collection] ??= []
 
     const entity = collection === 'bots'

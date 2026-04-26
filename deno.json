@@ -7,6 +7,10 @@
     "realms": {
       "description": "manage remote realms through the minicurso.me API",
       "command": "deno run --allow-net --allow-read --allow-write ./realms.js"
+    },
+    "realms-proxy": {
+      "description": "run a local CORS-friendly proxy for the remote realms API",
+      "command": "deno run --allow-net --allow-env ./realms-proxy.js"
     }
   }
 }
