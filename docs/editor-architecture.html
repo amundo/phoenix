@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>-</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<section id="editor-architecture" class="level1">
+<h1>Editor Architecture</h1>
+<p>This document describes the current architecture around the realm
+editor and the direction that best fits the codebase as it evolves.</p>
+<p>The key idea is that the realm editor should be a composed set of UI
+surfaces mounted into the existing app shell, rather than a separate
+application with a separate rendering stack.</p>
+<section id="current-structure" class="level2">
+<h2>Current structure</h2>
+<p>The main runtime pieces are:</p>
+<ul>
+<li><code>GameApp</code></li>
+<li><code>GameUI</code></li>
+<li><code>GameBoard</code></li>
+<li><code>RealmEditController</code></li>
+</ul>
+<p>Their current responsibilities are:</p>
+<ul>
+<li><code>GameApp</code>
+<ul>
+<li>loads data</li>
+<li>owns the game loop</li>
+<li>switches between play mode and editor mode</li>
+<li>mounts content into the <code>GameUI</code> slots</li>
+</ul></li>
+<li><code>GameUI</code>
+<ul>
+<li>owns the page shell</li>
+<li>provides layout slots for left sidebar, stage, right sidebar, and
+footer</li>
+<li>dispatches shell-level events such as <code>realmchange</code> and
+<code>editoropen</code></li>
+</ul></li>
+<li><code>GameBoard</code>
+<ul>
+<li>renders the visible board</li>
+<li>knows how to render terrain, avatars, and effects</li>
+<li>stays generic enough to work in both play mode and editor mode</li>
+</ul></li>
+<li><code>RealmEditController</code>
+<ul>
+<li>owns the mutable draft realm</li>
+<li>owns selection state</li>
+<li>owns current tool state</li>
+<li>mutates draft data in response to editor actions</li>
+<li>rebuilds runtime state from the draft for preview</li>
+</ul></li>
+</ul>
+</section>
+<section id="current-editor-flow" class="level2">
+<h2>Current editor flow</h2>
+<p>Today the editor is already mounted into the same shell as play
+mode.</p>
+<p>The flow is:</p>
+<ol type="1">
+<li><code>game-ui</code> dispatches <code>editoropen</code>.</li>
+<li><code>GameApp</code> stops the game loop and constructs
+<code>RealmEditController</code>.</li>
+<li><code>RealmEditController</code> builds editor panels and exposes a
+board node.</li>
+<li><code>GameApp</code> mounts those editor surfaces into the existing
+<code>GameUI</code> slots.</li>
+</ol>
+<p>That means the editor is already structurally a mode inside the app,
+not a separate product.</p>
+</section>
+<section id="recommended-direction" class="level2">
+<h2>Recommended direction</h2>
+<p>The next step is to make the editor more component-driven.</p>
+<p>The goal is:</p>
+<ul>
+<li><code>RealmEditController</code> stays the orchestration layer</li>
+<li>editor panels become defined reusable components</li>
+<li><code>GameApp</code> mounts a set of editor components rather than
+receiving large hand-built DOM trees</li>
+</ul>
+<p>This is a better fit for the codebase because the editor already
+behaves like composition:</p>
+<ul>
+<li>left side: tools</li>
+<li>center: board</li>
+<li>right side: inspector</li>
+<li>footer: navigation, save, cancel, status</li>
+</ul>
+</section>
+<section id="recommended-boundaries" class="level2">
+<h2>Recommended boundaries</h2>
+<p>Keep <code>RealmEditController</code> as the coordinator.</p>
+<p>Its long-term responsibilities should be:</p>
+<ul>
+<li>own the draft realm state</li>
+<li>own selection state</li>
+<li>own current tool state</li>
+<li>translate board interactions into draft mutations</li>
+<li>choose which editor components are mounted</li>
+<li>pass state into those components</li>
+<li>listen for component events and merge patches into the draft</li>
+</ul>
+<p>It should move away from being the place that hand-builds most
+inspector and toolbar DOM.</p>
+</section>
+<section id="proposed-editor-composition" class="level2">
+<h2>Proposed editor composition</h2>
+<p>The realm editor should be composed from these main pieces:</p>
+<ul>
+<li>stage:
+<ul>
+<li><code>GameBoard</code></li>
+</ul></li>
+<li>left sidebar:
+<ul>
+<li><code>&lt;editor-tools-panel&gt;</code></li>
+</ul></li>
+<li>right sidebar:
+<ul>
+<li><code>&lt;realm-inspector&gt;</code></li>
+<li><code>&lt;entity-list&gt;</code> optionally</li>
+<li><code>&lt;edit-player&gt;</code></li>
+<li><code>&lt;edit-bot&gt;</code></li>
+<li><code>&lt;edit-item&gt;</code></li>
+<li><code>&lt;edit-scenery&gt;</code></li>
+</ul></li>
+<li>footer:
+<ul>
+<li><code>&lt;editor-footer&gt;</code></li>
+</ul></li>
+<li>dialog:
+<ul>
+<li><code>&lt;save-realm-dialog&gt;</code></li>
+</ul></li>
+</ul>
+<p>These components are described in more detail in <a
+href="./ui-components.md">ui-components.md</a>.</p>
+</section>
+<section id="selection-routing" class="level2">
+<h2>Selection routing</h2>
+<p>The right-side inspector should be selected by current editor
+state.</p>
+<p>Suggested routing:</p>
+<ul>
+<li>no selection:
+<ul>
+<li>mount <code>&lt;realm-inspector&gt;</code></li>
+<li>optionally also show <code>&lt;entity-list&gt;</code></li>
+</ul></li>
+<li>selected player:
+<ul>
+<li>mount <code>&lt;edit-player&gt;</code></li>
+</ul></li>
+<li>selected bot:
+<ul>
+<li>mount <code>&lt;edit-bot&gt;</code></li>
+</ul></li>
+<li>selected item:
+<ul>
+<li>mount <code>&lt;edit-item&gt;</code></li>
+</ul></li>
+<li>selected scenery:
+<ul>
+<li>mount <code>&lt;edit-scenery&gt;</code></li>
+</ul></li>
+</ul>
+<p>That routing logic should live in one place inside
+<code>RealmEditController</code>.</p>
+<p>A method like <code>renderInspector()</code> or
+<code>mountInspectorForSelection()</code> is the right level of
+indirection.</p>
+</section>
+<section id="compact-and-detailed-views" class="level2">
+<h2>Compact and detailed views</h2>
+<p>The editor will likely need both compact summary views and detailed
+editing views for the same underlying data.</p>
+<p>A good split is:</p>
+<ul>
+<li>compact:
+<ul>
+<li><code>&lt;entity-list&gt;</code></li>
+<li>possibly <code>&lt;entity-list-item&gt;</code></li>
+</ul></li>
+<li>detailed:
+<ul>
+<li><code>&lt;edit-player&gt;</code></li>
+<li><code>&lt;edit-bot&gt;</code></li>
+<li><code>&lt;edit-item&gt;</code></li>
+<li><code>&lt;edit-scenery&gt;</code></li>
+</ul></li>
+</ul>
+<p>This is better than one giant polymorphic component once editing
+behavior diverges.</p>
+</section>
+<section id="event-protocol-for-editor-components" class="level2">
+<h2>Event protocol for editor components</h2>
+<p>The editor component model should use:</p>
+<ul>
+<li>properties or <code>setData(...)</code> for incoming rich state</li>
+<li>narrow <code>CustomEvent</code>s for outgoing user intent</li>
+</ul>
+<p>Recommended event names:</p>
+<ul>
+<li><code>toolchange</code></li>
+<li><code>terrainchange</code></li>
+<li><code>entityselect</code></li>
+<li><code>entitychange</code></li>
+<li><code>realmchange</code></li>
+<li><code>pan</code></li>
+<li><code>centerplayer</code></li>
+<li><code>save</code></li>
+<li><code>cancel</code></li>
+<li><code>confirmsave</code></li>
+</ul>
+<p>Recommended payload shapes:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{ entityId<span class="op">,</span> changes }</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>{ <span class="dt">tool</span><span class="op">:</span> <span class="st">&#39;paint-terrain&#39;</span> }</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>{ <span class="dt">terrain</span><span class="op">:</span> <span class="st">&#39;grass&#39;</span> }</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>{ <span class="dt">dx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">dy</span><span class="op">:</span> <span class="op">-</span><span class="dv">1</span> }</span></code></pre></div>
+<p>Avoid passing the entire global editor state through every event.</p>
+</section>
+<section id="what-should-stay-inside-realmeditcontroller"
+class="level2">
+<h2>What should stay inside <code>RealmEditController</code></h2>
+<p>The following logic still belongs in the controller even after UI
+extraction:</p>
+<ul>
+<li>draft mutation logic</li>
+<li>camera logic</li>
+<li>terrain painting logic</li>
+<li>board interaction handling</li>
+<li>selection state</li>
+<li>serialization/save orchestration</li>
+<li>inspector routing</li>
+</ul>
+<p>That keeps the controller as the editor brain while allowing UI
+surfaces to become reusable.</p>
+</section>
+<section id="implementation-order" class="level2">
+<h2>Implementation order</h2>
+<p>The lowest-risk extraction order is:</p>
+<ol type="1">
+<li><code>&lt;editor-tools-panel&gt;</code></li>
+<li><code>&lt;editor-footer&gt;</code></li>
+<li><code>&lt;save-realm-dialog&gt;</code></li>
+<li>right sidebar inspectors:
+<ul>
+<li><code>&lt;realm-inspector&gt;</code></li>
+<li><code>&lt;edit-player&gt;</code></li>
+<li><code>&lt;edit-bot&gt;</code></li>
+<li><code>&lt;edit-item&gt;</code></li>
+<li><code>&lt;edit-scenery&gt;</code></li>
+</ul></li>
+<li>optional <code>&lt;entity-list&gt;</code></li>
+</ol>
+<p>This sequence gives the clearest gains without rewriting the board or
+draft logic too early.</p>
+</section>
+<section id="design-rules" class="level2">
+<h2>Design rules</h2>
+<p>When deciding whether part of the editor should become a
+component:</p>
+<ul>
+<li>use a component when the UI has its own state, interaction pattern,
+or public event contract</li>
+<li>keep it plain DOM when it is mostly layout glue</li>
+<li>prefer a few substantial editor components over many thin
+wrappers</li>
+</ul>
+<p>For this project, the realm editor should evolve toward mounted,
+reusable components, but not toward a forest of tiny layout-only
+tags.</p>
+</section>
+</section>
+</body>
+</html>
