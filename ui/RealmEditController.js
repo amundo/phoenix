@@ -15,6 +15,7 @@ class RealmEditController extends EventTarget {
   #camera = null
   #tool = 'select'
   #selectedTerrain = 'grass'
+  #activeTab = 'terrain'
   #isPaintingTerrain = false
   #lastPaintedCellKey = null
   #toolsPanel = null
@@ -84,9 +85,15 @@ class RealmEditController extends EventTarget {
     this.#toolsPanel.addEventListener('toolchange', event => {
       this.setTool(event.detail?.tool ?? 'select')
     })
+    this.#toolsPanel.addEventListener('tabchange', event => {
+      this.handleTabChange(event.detail?.tab ?? 'terrain')
+    })
     this.#toolsPanel.addEventListener('terrainchange', event => {
       this.setSelectedTerrain(event.detail?.terrain ?? 'grass')
     })
+    this.#toolsPanel.setEntitiesContent(this.createEntitiesPanel())
+    this.#toolsPanel.setRealmContent(this.buildRealmInspector())
+    this.#toolsPanel.setUtilityContent(this.buildFooterPanel())
     this.refreshToolsPanel()
     return this.#toolsPanel
   }
@@ -95,7 +102,7 @@ class RealmEditController extends EventTarget {
     if (this.#footerPanel) return this.#footerPanel
 
     const panel = document.createElement('section')
-    panel.className = 'ui-panel editor-footer-panel'
+    panel.className = 'editor-footer-panel'
 
     const actions = document.createElement('div')
     actions.className = 'editor-toolbar-group editor-footer-actions'
@@ -127,11 +134,6 @@ class RealmEditController extends EventTarget {
     this.updateCameraStatus()
     this.updateFooterPanel()
     return panel
-  }
-
-  buildInitialInspectorPanel() {
-    if (this.#inspectorNode) return this.#inspectorNode
-    return this.buildRealmInspector()
   }
 
   createActionButton(label, onClick) {
@@ -360,6 +362,7 @@ class RealmEditController extends EventTarget {
 
   setTool(tool) {
     this.#tool = tool
+    this.setActiveTab(tool === 'paint-terrain' ? 'terrain' : this.#activeTab, { syncToolsPanel: false })
     this.syncToolUI()
     this.refreshToolsPanel()
     this.updateFooterPanel()
@@ -371,11 +374,33 @@ class RealmEditController extends EventTarget {
     this.#isPaintingTerrain = false
 
     if (this.#selectedEntitySelection) {
-      this.dispatchInspector(this.buildInspector(this.#selectedEntitySelection))
+      this.showSelectedEntityInspector()
       return
     }
 
     this.showEmptyInspector()
+  }
+
+  handleTabChange(tab) {
+    this.setActiveTab(tab)
+
+    if (tab !== 'terrain' && this.#tool === 'paint-terrain') {
+      this.setTool('select')
+      return
+    }
+
+    if (tab === 'realm') {
+      this.showRealmInspector()
+      return
+    }
+
+    if (tab === 'entities') {
+      if (this.#selectedEntitySelection) {
+        this.showSelectedEntityInspector()
+      } else {
+        this.showEmptyInspector()
+      }
+    }
   }
 
   handleBoardClick(event) {
@@ -441,6 +466,7 @@ class RealmEditController extends EventTarget {
       toolLabel: this.getToolLabel(),
       selectedTerrain: this.#selectedTerrain,
       terrainChoices,
+      activeTab: this.#activeTab,
     })
   }
 
@@ -543,12 +569,12 @@ class RealmEditController extends EventTarget {
     }
 
     this.#selectedEntitySelection = entitySelection
-    this.dispatchInspector(this.buildInspector(entitySelection))
+    this.showSelectedEntityInspector()
   }
 
   selectEntitySelection(entitySelection) {
     this.#selectedEntitySelection = entitySelection
-    this.dispatchInspector(this.buildInspector(entitySelection))
+    this.showSelectedEntityInspector()
   }
 
   findEntitySelection(runtimeEntity) {
@@ -587,27 +613,35 @@ class RealmEditController extends EventTarget {
     return null
   }
 
-  createEntityPanel({ title = 'Entities', message = '', body = null } = {}) {
-    const panel = document.createElement('section')
-    panel.className = 'ui-panel editor-inspector'
-
-    const heading = document.createElement('h2')
-    heading.textContent = title
-
+  createEntityActions() {
     const actions = document.createElement('div')
     actions.className = 'editor-toolbar-group editor-entity-actions'
     actions.append(
-      this.createActionButton('Realm', () => this.showRealmInspector()),
       this.createActionButton('Add Bot', () => this.addEntity('bots')),
       this.createActionButton('Add Item', () => this.addEntity('items')),
       this.createToolButton('place-player', 'Place Player'),
     )
+    return actions
+  }
+
+  createEntityPanel({ title = 'Entities', message = '', body = null, actions = this.createEntityActions() } = {}) {
+    const panel = document.createElement('section')
+    panel.className = 'editor-inspector'
+
+    const heading = document.createElement('h2')
+    heading.textContent = title
 
     const hint = document.createElement('p')
     hint.className = 'status-empty'
     hint.textContent = message
 
-    panel.append(heading, actions, hint)
+    panel.append(heading)
+
+    if (actions) {
+      panel.append(actions)
+    }
+
+    panel.append(hint)
 
     if (body) {
       panel.append(body)
@@ -617,20 +651,14 @@ class RealmEditController extends EventTarget {
   }
 
   showEmptyInspector(message = 'Click an avatar to edit its source entity.') {
-    this.dispatchInspector(this.createEntityPanel({
+    this.mountEntitiesPanel(this.createEntityPanel({
       message,
     }))
   }
 
   showRealmInspector() {
-    this.dispatchInspector(this.buildRealmInspector())
-  }
-
-  dispatchInspector(node) {
-    this.#inspectorNode = node
-    this.dispatchEvent(new CustomEvent('editorinspect', {
-      detail: { node },
-    }))
+    this.mountRealmPanel(this.buildRealmInspector())
+    this.setActiveTab('realm')
   }
 
   buildInspector(entitySelection) {
@@ -711,6 +739,7 @@ class RealmEditController extends EventTarget {
       title: 'Realm',
       message: 'Set the owner, title, and welcome text for this level.',
       body: form,
+      actions: null,
     })
   }
 
@@ -894,7 +923,7 @@ class RealmEditController extends EventTarget {
     entity.emoji = nextActor?.emoji ?? entity.emoji ?? ''
 
     this.renderDraft()
-    this.dispatchInspector(this.buildInspector(entitySelection))
+    this.showSelectedEntityInspector()
   }
 
   updateSelectedItemKind(kind) {
@@ -909,7 +938,7 @@ class RealmEditController extends EventTarget {
     entity.emoji = nextItem?.emoji ?? entity.emoji ?? ''
 
     this.renderDraft()
-    this.dispatchInspector(this.buildInspector(entitySelection))
+    this.showSelectedEntityInspector()
   }
 
   updateRealmField(key, value) {
@@ -931,7 +960,7 @@ class RealmEditController extends EventTarget {
     }
 
     this.renderDraft()
-    this.dispatchInspector(this.buildInspector(entitySelection))
+    this.showSelectedEntityInspector()
   }
 
   applySelectedMarkup(markup) {
@@ -1015,6 +1044,44 @@ class RealmEditController extends EventTarget {
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
+  }
+
+  setActiveTab(tab, { syncToolsPanel = true } = {}) {
+    const nextTab = ['terrain', 'entities', 'realm'].includes(tab) ? tab : 'terrain'
+    this.#activeTab = nextTab
+
+    if (syncToolsPanel) {
+      this.#toolsPanel?.setActiveTab(nextTab)
+    }
+  }
+
+  mountEntitiesPanel(node) {
+    this.#inspectorNode = node
+    this.#toolsPanel?.setEntitiesContent(node)
+  }
+
+  mountRealmPanel(node) {
+    this.#toolsPanel?.setRealmContent(node)
+  }
+
+  createEntitiesPanel() {
+    if (this.#selectedEntitySelection) {
+      return this.buildInspector(this.#selectedEntitySelection)
+    }
+
+    return this.createEntityPanel({
+      message: 'Click an avatar to edit its source entity.',
+    })
+  }
+
+  showSelectedEntityInspector() {
+    if (!this.#selectedEntitySelection) {
+      this.showEmptyInspector()
+      return
+    }
+
+    this.mountEntitiesPanel(this.buildInspector(this.#selectedEntitySelection))
+    this.setActiveTab('entities')
   }
 }
 

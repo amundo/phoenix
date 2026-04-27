@@ -51,7 +51,6 @@ class GameApp extends HTMLElement {
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleRealmChange = this.handleRealmChange.bind(this)
     this.handleEditorOpen = this.handleEditorOpen.bind(this)
-    this.handleEditorInspect = this.handleEditorInspect.bind(this)
     this.handleDraftSave = this.handleDraftSave.bind(this)
     this.handleDraftCancel = this.handleDraftCancel.bind(this)
 
@@ -168,15 +167,12 @@ class GameApp extends HTMLElement {
 
     this.#isEditing = true
     this.#realmEditController = new RealmEditController()
-    this.#realmEditController.addEventListener('editorinspect', this.handleEditorInspect)
     this.#realmEditController.addEventListener('draftsave', this.handleDraftSave)
     this.#realmEditController.addEventListener('draftcancel', this.handleDraftCancel)
 
     this.#ui?.setMode('editor')
     this.#ui?.mountLeftSidebarContent(this.#realmEditController.buildToolsPanel())
     this.#ui?.mountStageContent(this.#realmEditController.getBoardNode())
-    this.#ui?.mountRightSidebarContent(this.#realmEditController.buildInitialInspectorPanel())
-    this.#ui?.mountFooterContent(this.#realmEditController.buildFooterPanel())
     this.#realmEditController.setData({
       game: this.#sharedData.game,
       catalogs: this.#sharedData.catalogs,
@@ -192,10 +188,6 @@ class GameApp extends HTMLElement {
     if (!this.#currentRealm || !this.#sharedData) return
 
     this.restartWithRealm(this.#currentRealm)
-  }
-
-  handleEditorInspect(event) {
-    this.#ui?.mountRightSidebarContent(event.detail?.node)
   }
 
   async handleDraftSave(event) {

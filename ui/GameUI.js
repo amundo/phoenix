@@ -1,5 +1,3 @@
-import { AdminDialog } from './AdminDialog.js'
-
 class GameUI extends HTMLElement {
   #infoMessageTimer = null
   #infoFadeTimer = null
@@ -19,13 +17,7 @@ class GameUI extends HTMLElement {
             <span class="mode-dot"></span>
             <span class="mode-label">Editing</span>
           </div>
-          <details class="game-menu">
-            <summary class="menu-toggle" aria-label="Open menu">☰</summary>
-            <div class="menu-panel">
-              <button type="button" class="menu-action editor-link">🖋 Edit your realm!</button>
-              <button type="button" class="menu-action admin-link">🔬 Admin Inspector</button>
-            </div>
-          </details>
+          <button type="button" class="edit-realm-button editor-link" aria-label="Edit your realm">✏️</button>
         </div>
       </header>
       <aside class="game-sidebar game-sidebar-left">
@@ -42,11 +34,8 @@ class GameUI extends HTMLElement {
       <footer class="game-footer">
         <div class="footer-slot"></div>
       </footer>
-      <admin-dialog></admin-dialog>
     `
 
-    this.adminDialog = this.querySelector('admin-dialog')
-    this.menu = this.querySelector('.game-menu')
     this.realmSelect = this.querySelector('.realm-select')
     this.stageSlot = this.querySelector('.stage-slot')
     this.leftSidebarSlot = this.querySelector('.sidebar-slot-left')
@@ -62,24 +51,9 @@ class GameUI extends HTMLElement {
     this.handleRealmChange = this.handleRealmChange.bind(this)
 
     this.querySelector('.editor-link')?.addEventListener('click', () => {
-      this.closeMenu()
       this.dispatchEvent(new CustomEvent('editoropen', { bubbles: true }))
     })
-    this.querySelector('.admin-link')?.addEventListener('click', () => {
-      this.closeMenu()
-      this.adminDialog?.open()
-    })
     this.realmSelect?.addEventListener('change', this.handleRealmChange)
-
-    this.adminDialog?.addEventListener('realmchange', event => {
-      if (this.realmSelect) {
-        this.realmSelect.value = event.detail?.realmName ?? ''
-      }
-      this.dispatchEvent(new CustomEvent('realmchange', {
-        bubbles: true,
-        detail: event.detail,
-      }))
-    })
 
     this.restorePlayPanels()
   }
@@ -95,12 +69,6 @@ class GameUI extends HTMLElement {
       bubbles: true,
       detail: { realmName },
     }))
-  }
-
-  closeMenu() {
-    if (this.menu) {
-      this.menu.open = false
-    }
   }
 
   mountContent(slotName, node) {
@@ -263,7 +231,6 @@ class GameUI extends HTMLElement {
   setAdminData(data) {
     this.setRealmOptions(data?.realmOptions ?? [])
     this.setCurrentRealm(data?.realm?.id ?? '')
-    this.adminDialog?.setData(data)
   }
 
   setDefaultInfoMessage(message) {
