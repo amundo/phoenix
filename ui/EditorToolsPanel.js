@@ -29,7 +29,7 @@ class EditorToolsPanel extends HTMLElement {
         <div class="editor-tablist" role="tablist" aria-label="Realm editor sections">
           <button type="button" class="editor-tab" data-tab="realm" role="tab" aria-selected="false">🏰 Realm</button>
           <button type="button" class="editor-tab" data-tab="entities" role="tab" aria-selected="false">👤 Entities</button>
-          <button type="button" class="editor-tab" data-tab="terrain" role="tab" aria-selected="true">🗺 Terrain</button>
+          <button type="button" class="editor-tab" data-tab="terrain" role="tab" aria-selected="true">🗺 Map</button>
         </div>
         <section class="editor-tab-panel editor-tab-panel-terrain" data-panel="terrain" role="tabpanel">
           <div class="editor-toolbar-group">
