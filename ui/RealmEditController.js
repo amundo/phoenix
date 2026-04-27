@@ -53,6 +53,7 @@ class RealmEditController extends EventTarget {
       this.handleBoardPointerUp()
     })
     this.#board.addEventListener('keydown', event => this.handleKeyDown(event))
+    this.#board.addEventListener('wheel', event => this.handleBoardWheel(event), { passive: false })
   }
 
   setData({ game = null, catalogs = null, realm = null } = {}) {
@@ -292,6 +293,17 @@ class RealmEditController extends EventTarget {
 
     event.preventDefault()
     this.panCamera(delta[0], delta[1])
+  }
+
+  handleBoardWheel(event) {
+    const dx = Math.abs(event.deltaX) >= 1 ? Math.sign(event.deltaX) : 0
+    const dy = Math.abs(event.deltaY) >= 1 ? Math.sign(event.deltaY) : 0
+
+    if (dx === 0 && dy === 0) return
+
+    event.preventDefault()
+    this.#board.focus()
+    this.panCamera(dx, dy)
   }
 
   panCamera(dx, dy) {
